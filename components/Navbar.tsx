@@ -74,24 +74,58 @@ export function Navbar() {
                                 <span className="sr-only">Toggle menu</span>
                             </Button>
                         </SheetTrigger>
-                        <SheetContent side="right">
+                        <SheetContent side="right" className="w-[300px] sm:w-[350px] p-0 border-l border-slate-200">
                             <VisuallyHidden.Root>
                                 <SheetTitle>Menu</SheetTitle>
                             </VisuallyHidden.Root>
-                            <div className="flex flex-col gap-4 mt-8">
-                                {navItems.map((item) => (
-                                    <Link
-                                        key={item.href}
-                                        href={item.href}
-                                        onClick={() => setIsOpen(false)}
-                                        className="text-lg font-medium"
-                                    >
-                                        {item.name}
+
+                            <div className="flex flex-col h-full bg-white">
+                                {/* Mobile Menu Header */}
+                                <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-10 w-10 relative flex-shrink-0">
+                                            <img
+                                                src="/ada_logo.png"
+                                                alt="ADA Logo"
+                                                className="h-full w-full object-contain"
+                                            />
+                                        </div>
+                                        <div>
+                                            <span className="block font-bold text-slate-900 text-sm leading-none">ADA</span>
+                                            <span className="block text-[10px] text-slate-500 font-medium mt-0.5">Church</span>
+                                        </div>
+                                    </div>
+                                    {/* Close button is automatically added by SheetContent, but we can customize if needed */}
+                                </div>
+
+                                {/* Menu Items */}
+                                <div className="flex-1 overflow-y-auto py-6 px-6">
+                                    <div className="flex flex-col gap-1">
+                                        {navItems.map((item) => (
+                                            <Link
+                                                key={item.href}
+                                                href={item.href}
+                                                onClick={() => setIsOpen(false)}
+                                                className="group flex items-center justify-between py-3 px-4 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all"
+                                            >
+                                                <span className="text-base font-medium">{item.name}</span>
+                                                <div className="h-1.5 w-1.5 rounded-full bg-slate-200 group-hover:bg-[#8b1d2c] transition-colors" />
+                                            </Link>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Footer / CTA */}
+                                <div className="p-6 bg-slate-50 border-t border-slate-100 space-y-4">
+                                    <Link href="/receive-jesus" onClick={() => setIsOpen(false)} className="w-full block">
+                                        <Button className="w-full bg-[#8b1d2c] hover:bg-[#6d1722] text-white h-12 rounded-xl shadow-sm text-base">
+                                            {t("nav.receiveJesus")}
+                                        </Button>
                                     </Link>
-                                ))}
-                                <Link href="/receive-jesus" onClick={() => setIsOpen(false)} className="w-full">
-                                    <Button className="w-full">{t("nav.receiveJesus")}</Button>
-                                </Link>
+                                    <p className="text-center text-xs text-slate-400 font-medium">
+                                        &copy; {new Date().getFullYear()} ADA Church
+                                    </p>
+                                </div>
                             </div>
                         </SheetContent>
                     </Sheet>
