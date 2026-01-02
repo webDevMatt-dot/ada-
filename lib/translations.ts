@@ -175,7 +175,12 @@ export const translations = {
             heroSubtitle: "Join us for conferences, worship nights, and community gatherings.",
             upcoming: "Upcoming Events",
             location: "Location",
-            time: "Time"
+            time: "Time",
+            nationalPlan: "National Plan",
+            nationalPlanDesc: "Stay connected with our national calendar of worship, training, and conferences.",
+            listView: "List View",
+            calendarView: "Calendar View",
+            calendarIntegration: "Calendar View Integration (Standard libraries like react-calendar would be mapped here using event.start_date)."
         },
         updates: {
             heroTitle: "Latest Updates",
@@ -450,7 +455,12 @@ export const translations = {
             heroSubtitle: "Junte-se a nós para conferências, noites de adoração e reuniões comunitárias.",
             upcoming: "Próximos Eventos",
             location: "Localização",
-            time: "Hora"
+            time: "Hora",
+            nationalPlan: "Plano Nacional",
+            nationalPlanDesc: "Fique conectado com o nosso calendário nacional de adoração, formação e conferências.",
+            listView: "Ver Lista",
+            calendarView: "Ver Calendário",
+            calendarIntegration: "Integração com Calendário (Bibliotecas padrão como react-calendar seriam mapeadas aqui usando event.start_date)."
         },
         updates: {
             heroTitle: "Últimas Atualizações",
