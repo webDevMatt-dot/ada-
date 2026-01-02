@@ -61,8 +61,8 @@ export default function CounsellingPage() {
                             <Button asChild size="lg" className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white px-8">
                                 <a href="#appointment-form">Schedule Appointment</a>
                             </Button>
-                            <Button size="lg" variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50 hover:text-[#8b1d2c]">
-                                Speak to a Pastor
+                            <Button asChild size="lg" variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50 hover:text-[#8b1d2c]">
+                                <a href="tel:+258841234567">Speak to a Pastor</a>
                             </Button>
                         </div>
                     </div>
