@@ -222,8 +222,8 @@ function CalendarView({ events, language, t, getCategoryStyles }: any) {
         : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     return (
-        <div className="space-y-8">
-            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="lg:col-span-2 bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden h-fit">
                 {/* Header */}
                 <div className="flex items-center justify-between p-6 border-b border-slate-100">
                     <button onClick={prevMonth} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500">
@@ -305,70 +305,83 @@ function CalendarView({ events, language, t, getCategoryStyles }: any) {
                 </div>
             </div>
 
-            {/* Selected Date Details */}
-            {selectedDate && (
-                <div className="animate-in fade-in slide-in-from-top-4 duration-300">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="h-px bg-slate-200 flex-1" />
-                        <span className="text-slate-400 font-medium text-sm uppercase tracking-widest">
-                            {selectedDate.getDate()} {monthNames[selectedDate.getMonth()]} {selectedDate.getFullYear()}
-                        </span>
-                        <div className="h-px bg-slate-200 flex-1" />
-                    </div>
-
-                    {selectedEvents.length > 0 ? (
-                        <div className="space-y-4">
-                            {selectedEvents.map((event: NationalEvent) => (
-                                <EventCard key={event.id} event={event} language={language} t={t} />
-                            ))}
-                        </div>
-                    ) : (
-                        <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                            {(() => {
-                                // Find next upcoming event after selected date
-                                const nextEvent = events
-                                    .filter((e: NationalEvent) => new Date(e.start_date) > selectedDate)
-                                    .sort((a: NationalEvent, b: NationalEvent) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
-
-                                if (nextEvent) {
-                                    // Normalize dates to midnight for calendar day calculation
-                                    const eventDate = new Date(nextEvent.start_date);
-                                    eventDate.setHours(0, 0, 0, 0);
-
-                                    const selectedDateNormalized = new Date(selectedDate);
-                                    selectedDateNormalized.setHours(0, 0, 0, 0);
-
-                                    const diffTime = eventDate.getTime() - selectedDateNormalized.getTime();
-                                    const daysUntil = Math.round(diffTime / (1000 * 60 * 60 * 24));
-
-                                    const eventTitle = translateDynamicText(nextEvent.title, language);
-
-                                    let message = (t('events.daysUntil') || "{{days}} days until {{event}}")
-                                        .replace('{{days}}', daysUntil.toString())
-                                        .replace('{{event}}', eventTitle);
-
-                                    if (daysUntil === 1) {
-                                        message = (t('events.oneDayUntil') || "1 day until {{event}}").replace('{{event}}', eventTitle);
-                                    } else if (daysUntil === 0) {
-                                        message = (t('events.todayIs') || "Today is {{event}}").replace('{{event}}', eventTitle);
-                                    }
-
-                                    return (
-                                        <div className="flex flex-col items-center gap-2">
-                                            <p className="text-slate-500 font-medium text-lg">{message}</p>
-                                            <div className="mt-4 w-full max-w-lg opacity-80 scale-95">
-                                                <span className="text-xs text-slate-400 uppercase tracking-wider mb-2 block">{t('events.upcoming') || "Upcoming"}</span>
-                                                <EventCard event={nextEvent} language={language} t={t} />
-                                            </div>
-                                        </div>
-                                    );
-                                }
-                                return <p className="text-slate-400 italic">{t('events.noEventsOnDate') || "No events scheduled for this date."}</p>;
-                            })()}
-                        </div>
-                    )}
+            {/* Selected Date Details (Right Sidebar) */}
+            <div className="lg:col-span-1 space-y-6">
+                <div className="flex items-center gap-2 pb-4 border-b border-slate-200">
+                    <div className="h-6 w-1 rounded-full bg-[#8b1d2c]" />
+                    <h2 className="text-xl font-bold text-slate-800">{t('events.eventsAndAnnouncements') || "Events & Announcements"}</h2>
                 </div>
-            )}
+
+                {selectedDate && (
+                    <div className="animate-in fade-in slide-in-from-right-4 duration-500">
+                        <div className="flex items-center gap-4 mb-6">
+                            <span className="text-slate-400 font-medium text-sm uppercase tracking-widest">
+                                {selectedDate.getDate()} {monthNames[selectedDate.getMonth()]} {selectedDate.getFullYear()}
+                            </span>
+                            <div className="h-px bg-slate-200 flex-1" />
+                        </div>
+
+                        {selectedEvents.length > 0 ? (
+                            <div className="space-y-4">
+                                {selectedEvents.map((event: NationalEvent) => (
+                                    <EventCard key={event.id} event={event} language={language} t={t} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                                {(() => {
+                                    // Find next upcoming event after selected date
+                                    const nextEvent = events
+                                        .filter((e: NationalEvent) => new Date(e.start_date) > selectedDate)
+                                        .sort((a: NationalEvent, b: NationalEvent) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
+
+                                    if (nextEvent) {
+                                        // Normalize dates to midnight for calendar day calculation
+                                        const eventDate = new Date(nextEvent.start_date);
+                                        eventDate.setHours(0, 0, 0, 0);
+
+                                        const selectedDateNormalized = new Date(selectedDate);
+                                        selectedDateNormalized.setHours(0, 0, 0, 0);
+
+                                        const diffTime = eventDate.getTime() - selectedDateNormalized.getTime();
+                                        const daysUntil = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+                                        const eventTitle = translateDynamicText(nextEvent.title, language);
+
+                                        let message = (t('events.daysUntil') || "{{days}} days until {{event}}")
+                                            .replace('{{days}}', daysUntil.toString())
+                                            .replace('{{event}}', eventTitle);
+
+                                        if (daysUntil === 1) {
+                                            message = (t('events.oneDayUntil') || "1 day until {{event}}").replace('{{event}}', eventTitle);
+                                        } else if (daysUntil === 0) {
+                                            message = (t('events.todayIs') || "Today is {{event}}").replace('{{event}}', eventTitle);
+                                        }
+
+                                        return (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <p className="text-slate-500 font-medium text-lg">{message}</p>
+                                                <div
+                                                    className="mt-4 w-full max-w-lg opacity-80 scale-95 cursor-pointer hover:scale-100 hover:opacity-100 transition-all duration-300"
+                                                    onClick={() => {
+                                                        const newDate = new Date(nextEvent.start_date);
+                                                        setSelectedDate(newDate);
+                                                        setCurrentMonth(new Date(newDate.getFullYear(), newDate.getMonth(), 1));
+                                                    }}
+                                                >
+                                                    <span className="text-xs text-slate-400 uppercase tracking-wider mb-2 block">{t('events.upcoming') || "Upcoming"}</span>
+                                                    <EventCard event={nextEvent} language={language} t={t} />
+                                                </div>
+                                            </div>
+                                        );
+                                    }
+                                    return <p className="text-slate-400 italic">{t('events.noEventsOnDate') || "No events scheduled for this date."}</p>;
+                                })()}
+                            </div>
+                        )}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

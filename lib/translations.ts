@@ -190,6 +190,7 @@ export const translations = {
             daysUntil: "{{days}} days until {{event}}",
             oneDayUntil: "1 day until {{event}}",
             todayIs: "Today is {{event}}",
+            eventsAndAnnouncements: "Events & Announcements",
             categories: {
                 all: "All",
                 conferences: "Conferences",
@@ -489,6 +490,7 @@ export const translations = {
             daysUntil: "{{days}} dias para {{event}}",
             oneDayUntil: "1 dia para {{event}}",
             todayIs: "Hoje é {{event}}",
+            eventsAndAnnouncements: "Eventos e Anúncios",
             categories: {
                 all: "Todos",
                 conferences: "Conferências",
