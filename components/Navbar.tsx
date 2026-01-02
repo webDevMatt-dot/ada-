@@ -13,20 +13,23 @@ import {
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden"
 
 
+import { useLanguage } from "@/context/LanguageContext";
+
 export function Navbar() {
     const [isOpen, setIsOpen] = React.useState(false)
+    const { t } = useLanguage();
 
     const navItems = [
-        { name: "Home", href: "/" },
-        { name: "Locations", href: "/locations" },
-        { name: "Events", href: "/events" },
-        { name: "Updates", href: "/updates" },
-        { name: "Our History", href: "/history" },
-        { name: "About Us", href: "/about" },
-        { name: "FAQ", href: "/faq" },
-        { name: "Prayer Wall", href: "/prayer-wall" },
-        { name: "Counselling", href: "/counselling" },
-        { name: "Contact", href: "/contact" },
+        { name: t("nav.home"), href: "/" },
+        { name: t("nav.locations"), href: "/locations" },
+        { name: t("nav.events"), href: "/events" },
+        { name: t("nav.updates"), href: "/updates" },
+        { name: t("nav.history"), href: "/history" },
+        { name: t("nav.about"), href: "/about" },
+        { name: t("nav.faq"), href: "/faq" },
+        { name: t("nav.prayerWall"), href: "/prayer-wall" },
+        { name: t("nav.counselling"), href: "/counselling" },
+        { name: t("nav.contact"), href: "/contact" },
     ]
 
     return (
@@ -58,7 +61,7 @@ export function Navbar() {
 
                 <div className="hidden xl:flex">
                     <Link href="/receive-jesus">
-                        <Button>Receive Jesus</Button>
+                        <Button>{t("nav.receiveJesus")}</Button>
                     </Link>
                 </div>
 
@@ -87,7 +90,7 @@ export function Navbar() {
                                     </Link>
                                 ))}
                                 <Link href="/receive-jesus" onClick={() => setIsOpen(false)} className="w-full">
-                                    <Button className="w-full">Receive Jesus</Button>
+                                    <Button className="w-full">{t("nav.receiveJesus")}</Button>
                                 </Link>
                             </div>
                         </SheetContent>

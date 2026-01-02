@@ -1,15 +1,19 @@
+"use client"
 
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Heart, MapPin, Church, Users, Globe, BookOpen } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function Hero() {
+    const { t } = useLanguage();
+
     return (
         <div className="relative min-h-[700px] w-full flex flex-col items-center justify-center overflow-visible">
             {/* Background Image with Dark Overlay */}
             <div className="absolute inset-0 z-0">
                 <Image
-                    src="/hero.png"
+                    src="/guti.png"
                     alt="Worship Background"
                     fill
                     className="object-cover brightness-[0.3]"
@@ -22,23 +26,23 @@ export function Hero() {
                 {/* Top Badge */}
                 <div className="flex items-center gap-2 bg-white/10 backdrop-blur-md px-4 py-1.5 rounded-full border border-white/20 mb-4">
                     <div className="h-2 w-2 rounded-full bg-amber-500" />
-                    <span className="text-xs font-medium uppercase tracking-wider">African Assembly of God</span>
+                    <span className="text-xs font-medium uppercase tracking-wider">{t('hero.badge')}</span>
                 </div>
 
                 <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
-                    Forward in Faith
+                    {t('hero.title')}
                 </h1>
 
                 <p className="text-lg md:text-xl text-gray-300 max-w-2xl leading-relaxed">
-                    African Assembly of God - Spreading the Gospel across Mozambique and beyond
+                    {t('hero.subtitle')}
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
                     <Button size="lg" className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white border-none px-8 h-12">
-                        <Heart className="mr-2 h-4 w-4" /> Receive Jesus
+                        <Heart className="mr-2 h-4 w-4" /> {t('hero.btnReceive')}
                     </Button>
                     <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 px-8 h-12">
-                        <MapPin className="mr-2 h-4 w-4" /> Find a Location
+                        <MapPin className="mr-2 h-4 w-4" /> {t('hero.btnLocations')}
                     </Button>
                 </div>
             </div>
@@ -46,10 +50,10 @@ export function Hero() {
             {/* Floating Stats Card */}
             <div className="absolute -bottom-16 left-1/2 -translate-x-1/2 w-full max-w-5xl px-4 z-20">
                 <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8 grid grid-cols-2 md:grid-cols-4 gap-8">
-                    <StatItem icon={<Church className="text-[#8b1d2c]" />} count="100+" label="Churches" />
-                    <StatItem icon={<Users className="text-[#8b1d2c]" />} count="50,000+" label="Members" />
-                    <StatItem icon={<Globe className="text-[#8b1d2c]" />} count="11" label="Provinces" />
-                    <StatItem icon={<BookOpen className="text-[#8b1d2c]" />} count="70+" label="Years of Ministry" />
+                    <StatItem icon={<Church className="text-[#8b1d2c]" />} count="100+" label={t('hero.statChurches')} />
+                    <StatItem icon={<Users className="text-[#8b1d2c]" />} count="50,000+" label={t('hero.statMembers')} />
+                    <StatItem icon={<Globe className="text-[#8b1d2c]" />} count="11" label={t('hero.statProvinces')} />
+                    <StatItem icon={<BookOpen className="text-[#8b1d2c]" />} count="70+" label={t('hero.statYears')} />
                 </div>
             </div>
         </div>
