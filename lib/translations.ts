@@ -186,6 +186,10 @@ export const translations = {
             viewAll: "View All",
             pastEvents: "Past Events",
             past: "Past",
+            passed: "Passed",
+            daysUntil: "{{days}} days until {{event}}",
+            oneDayUntil: "1 day until {{event}}",
+            todayIs: "Today is {{event}}",
             categories: {
                 all: "All",
                 conferences: "Conferences",
@@ -481,6 +485,10 @@ export const translations = {
             viewAll: "Ver Todos",
             pastEvents: "Eventos Passados",
             past: "Passado",
+            passed: "Passado",
+            daysUntil: "{{days}} dias para {{event}}",
+            oneDayUntil: "1 dia para {{event}}",
+            todayIs: "Hoje é {{event}}",
             categories: {
                 all: "Todos",
                 conferences: "Conferências",

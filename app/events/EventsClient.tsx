@@ -324,7 +324,47 @@ function CalendarView({ events, language, t, getCategoryStyles }: any) {
                         </div>
                     ) : (
                         <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
-                            <p className="text-slate-400 italic">{t('events.noEventsOnDate') || "No events scheduled for this date."}</p>
+                            {(() => {
+                                // Find next upcoming event after selected date
+                                const nextEvent = events
+                                    .filter((e: NationalEvent) => new Date(e.start_date) > selectedDate)
+                                    .sort((a: NationalEvent, b: NationalEvent) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())[0];
+
+                                if (nextEvent) {
+                                    // Normalize dates to midnight for calendar day calculation
+                                    const eventDate = new Date(nextEvent.start_date);
+                                    eventDate.setHours(0, 0, 0, 0);
+
+                                    const selectedDateNormalized = new Date(selectedDate);
+                                    selectedDateNormalized.setHours(0, 0, 0, 0);
+
+                                    const diffTime = eventDate.getTime() - selectedDateNormalized.getTime();
+                                    const daysUntil = Math.round(diffTime / (1000 * 60 * 60 * 24));
+
+                                    const eventTitle = translateDynamicText(nextEvent.title, language);
+
+                                    let message = (t('events.daysUntil') || "{{days}} days until {{event}}")
+                                        .replace('{{days}}', daysUntil.toString())
+                                        .replace('{{event}}', eventTitle);
+
+                                    if (daysUntil === 1) {
+                                        message = (t('events.oneDayUntil') || "1 day until {{event}}").replace('{{event}}', eventTitle);
+                                    } else if (daysUntil === 0) {
+                                        message = (t('events.todayIs') || "Today is {{event}}").replace('{{event}}', eventTitle);
+                                    }
+
+                                    return (
+                                        <div className="flex flex-col items-center gap-2">
+                                            <p className="text-slate-500 font-medium text-lg">{message}</p>
+                                            <div className="mt-4 w-full max-w-lg opacity-80 scale-95">
+                                                <span className="text-xs text-slate-400 uppercase tracking-wider mb-2 block">{t('events.upcoming') || "Upcoming"}</span>
+                                                <EventCard event={nextEvent} language={language} t={t} />
+                                            </div>
+                                        </div>
+                                    );
+                                }
+                                return <p className="text-slate-400 italic">{t('events.noEventsOnDate') || "No events scheduled for this date."}</p>;
+                            })()}
                         </div>
                     )}
                 </div>

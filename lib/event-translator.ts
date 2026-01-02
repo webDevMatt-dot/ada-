@@ -2,6 +2,7 @@
 export const CHURCH_TERMS: Record<string, string> = {
     // Categories & Types (Case insensitive matching)
     "National Youth Conference": "Conferência Nacional de Jovens",
+    "General Conference": "Conferência Geral",
     "National Women's Conference": "Conferência Nacional de Mulheres",
     "National Men's Conference": "Conferência Nacional de Homens",
     "Youth Conference": "Conferência de Jovens",
