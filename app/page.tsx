@@ -1,63 +1,45 @@
-"use client";
+
+
 
 import { Hero } from "@/components/Hero";
-import { Button } from "@/components/ui/button";
-import { Calendar, Users, Heart } from "lucide-react";
-import { useLanguage } from "@/context/LanguageContext";
+import { NationalEvent } from "@/types/events";
+import { HomeEvents } from "@/components/HomeEvents";
+import { HomeContent, ServicesContent } from "@/components/HomeSections";
 
-export default function Home() {
-  const { t } = useLanguage();
+export default async function Home() {
+  let events: NationalEvent[] = [];
+
+  try {
+    const years = ["2024", "2025", "2026"];
+    const fetchPromises = years.map(year =>
+      fetch(`https://financas.ada.org.mz/api/v1/planning/public/events/?year=${year}`, {
+        cache: 'no-store',
+        headers: {
+          'Authorization': 'Token 4eece2fe44e1019df9e33e88708d92a9b1586e6d'
+        }
+      }).then(res => res.ok ? res.json() : [])
+    );
+
+    const results = await Promise.all(fetchPromises);
+    const allEvents = results.flat() as NationalEvent[];
+    const uniqueEvents = new Map(allEvents.map(e => [e.id, e]));
+    events = Array.from(uniqueEvents.values());
+  } catch (error) {
+    console.error("Failed to fetch events for home:", error);
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
       <Hero />
 
+      {/* Upcoming Events Section - Placed prominently below Hero */}
+      <HomeEvents events={events} />
+
       {/* Welcome / About Section */}
-      <section className="pt-32 pb-20 bg-background">
-        <div className="container mx-auto px-4 text-center max-w-3xl">
-          <h2 className="text-3xl font-bold mb-6">{t('home.whoWeAre')}</h2>
-          <p className="text-muted-foreground text-lg leading-relaxed mb-8">
-            {t('home.whoWeAreText')}
-          </p>
-          <Button variant="outline">{t('home.learnMore')}</Button>
-        </div>
-      </section>
+      <HomeContent />
 
       {/* Service Times Grid */}
-      <section className="py-20 bg-muted/50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-center mb-12">{t('home.joinUs')}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <FeatureCard
-              icon={<Calendar className="h-10 w-10 text-primary" />}
-              title={t('home.serviceTimes')}
-              description={t('home.serviceTimesDesc')}
-            />
-            <FeatureCard
-              icon={<Users className="h-10 w-10 text-primary" />}
-              title={t('home.communityGroups')}
-              description={t('home.communityGroupsDesc')}
-            />
-            <FeatureCard
-              icon={<Heart className="h-10 w-10 text-primary" />}
-              title={t('home.serve')}
-              description={t('home.serveDesc')}
-            />
-          </div>
-        </div>
-      </section>
+      <ServicesContent />
     </div>
   );
-}
-
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
-  return (
-    <div className="flex flex-col items-center text-center p-6 bg-background rounded-lg shadow-sm border">
-      <div className="mb-4 bg-primary/10 p-4 rounded-full">
-        {icon}
-      </div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
-      <p className="text-muted-foreground">{description}</p>
-    </div>
-  )
 }

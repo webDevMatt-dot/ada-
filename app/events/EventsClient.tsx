@@ -3,34 +3,13 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Calendar, List, Clock, MapPin } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
+import { Calendar, List, ChevronLeft, ChevronRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
-
-export interface NationalEvent {
-    id: number;
-    title: string;
-    category?: string;
-    start_date: string;
-    end_date?: string;
-    location?: string;
-    description?: string;
-    is_national?: boolean;
-}
+import { NationalEvent } from "@/types/events";
+import { EventCard, getCategoryStyles } from "@/components/EventCard";
 
 export default function EventsClient({ initialEvents }: { initialEvents: NationalEvent[] }) {
     const { t, language } = useLanguage();
-
-    // Logic for assigning colors based on category
-    const getCategoryStyles = (category?: string) => {
-        if (!category) return "bg-slate-100 text-slate-700";
-        const normalized = category.toLowerCase();
-        if (normalized.includes("youth")) return "bg-blue-100 text-blue-700";
-        if (normalized.includes("training")) return "bg-amber-100 text-amber-700";
-        if (normalized.includes("worship")) return "bg-purple-100 text-purple-700";
-        if (normalized.includes("conference")) return "bg-red-100 text-[#8b1d2c]";
-        return "bg-slate-100 text-slate-700";
-    };
 
     const now = new Date();
     const upcomingEvents = initialEvents.filter(e => new Date(e.start_date) >= now);
@@ -85,7 +64,7 @@ export default function EventsClient({ initialEvents }: { initialEvents: Nationa
                         <div className="space-y-6">
                             {upcomingEvents.length > 0 ? (
                                 upcomingEvents.map((event) => (
-                                    <EventCard key={event.id} event={event} language={language} t={t} getCategoryStyles={getCategoryStyles} />
+                                    <EventCard key={event.id} event={event} language={language} t={t} />
                                 ))
                             ) : (
                                 <div className="text-center py-12 bg-white rounded-xl border border-dashed border-slate-300">
@@ -100,7 +79,7 @@ export default function EventsClient({ initialEvents }: { initialEvents: Nationa
                                 <h2 className="text-2xl font-bold text-slate-800">{t('events.pastEvents') || "Past Events"}</h2>
                                 <div className="opacity-80 grayscale-[0.3] hover:grayscale-0 transition-all duration-300 space-y-6">
                                     {pastEvents.map((event) => (
-                                        <EventCard key={event.id} event={event} language={language} t={t} getCategoryStyles={getCategoryStyles} isPast />
+                                        <EventCard key={event.id} event={event} language={language} t={t} isPast />
                                     ))}
                                 </div>
                             </div>
@@ -108,9 +87,12 @@ export default function EventsClient({ initialEvents }: { initialEvents: Nationa
                     </TabsContent>
 
                     <TabsContent value="calendar">
-                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 min-h-[400px] flex items-center justify-center italic text-slate-400">
-                            {t('events.calendarIntegration')}
-                        </div>
+                        <CalendarView
+                            events={initialEvents}
+                            language={language}
+                            t={t}
+                            getCategoryStyles={getCategoryStyles}
+                        />
                     </TabsContent>
                 </Tabs>
             </div>
@@ -118,40 +100,157 @@ export default function EventsClient({ initialEvents }: { initialEvents: Nationa
     );
 }
 
-function EventCard({ event, language, t, getCategoryStyles, isPast }: any) {
-    const date = new Date(event.start_date);
-    const locale = language === 'pt' ? 'pt-PT' : 'en-US';
+function CalendarView({ events, language, t, getCategoryStyles }: any) {
+    const [currentMonth, setCurrentMonth] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+
+    // Helper: Get days in month
+    const getDaysInMonth = (year: number, month: number) => new Date(year, month + 1, 0).getDate();
+    // Helper: Get start day of week (0 = Sunday)
+    const getStartDayOfMonth = (year: number, month: number) => new Date(year, month, 1).getDay();
+
+    const year = currentMonth.getFullYear();
+    const month = currentMonth.getMonth();
+    const daysInMonth = getDaysInMonth(year, month);
+    const startDay = getStartDayOfMonth(year, month);
+
+    const prevMonth = () => setCurrentMonth(new Date(year, month - 1, 1));
+    const nextMonth = () => setCurrentMonth(new Date(year, month + 1, 1));
+
+    // Get events for specific date
+    const getEventsForDate = (day: number) => {
+        return events.filter((e: NationalEvent) => {
+            const eDate = new Date(e.start_date);
+            return eDate.getDate() === day && eDate.getMonth() === month && eDate.getFullYear() === year;
+        });
+    };
+
+    // Events for the selected date detail view
+    const selectedEvents = selectedDate
+        ? events.filter((e: NationalEvent) => {
+            const eDate = new Date(e.start_date);
+            return eDate.getDate() === selectedDate.getDate() &&
+                eDate.getMonth() === selectedDate.getMonth() &&
+                eDate.getFullYear() === selectedDate.getFullYear();
+        })
+        : [];
+
+    const monthNames = language === 'pt'
+        ? ['Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho', 'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro']
+        : ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+    const weekDays = language === 'pt'
+        ? ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb']
+        : ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
     return (
-        <div className={`bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all flex flex-col md:flex-row ${isPast ? 'bg-slate-50' : ''}`}>
-            <div className={`hidden md:flex flex-col items-center justify-center w-32 p-6 border-r border-slate-100 shrink-0 text-center ${isPast ? 'bg-slate-100' : 'bg-[#f8fafd]'}`}>
-                <span className={`text-3xl font-bold ${isPast ? 'text-slate-500' : 'text-[#8b1d2c]'}`}>{date.getDate()}</span>
-                <span className="text-slate-500 font-medium uppercase tracking-wider">
-                    {date.toLocaleDateString(locale, { month: 'short' })}
-                </span>
-                <span className="text-xs text-slate-400 mt-1">{date.getFullYear()}</span>
-            </div>
-            <div className="p-8 flex-1">
-                <div className="flex justify-between items-start">
-                    <Badge className={`mb-3 border-none ${getCategoryStyles(event.category)}`}>
-                        {event.category || "Event"}
-                    </Badge>
-                    {isPast && <Badge className="bg-slate-200 text-slate-600 hover:bg-slate-200" variant="secondary">{t('events.past') || "Past"}</Badge>}
+        <div className="space-y-8">
+            <div className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-slate-100">
+                    <button onClick={prevMonth} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500">
+                        <ChevronLeft className="w-5 h-5" />
+                    </button>
+                    <h2 className="text-xl font-bold text-slate-800">
+                        {monthNames[month]} {year}
+                    </h2>
+                    <button onClick={nextMonth} className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-500">
+                        <ChevronRight className="w-5 h-5" />
+                    </button>
                 </div>
 
-                <h3 className={`text-2xl font-bold mb-4 ${isPast ? 'text-slate-600' : 'text-slate-800'}`}>{event.title}</h3>
-                <div className="flex flex-col sm:flex-row gap-4 text-slate-500 mb-4">
-                    <div className="flex items-center gap-2">
-                        <Clock className={`w-4 h-4 ${isPast ? 'text-slate-400' : 'text-[#8b1d2c]'}`} />
-                        <span>{new Date(event.start_date).toLocaleTimeString(locale, { hour: '2-digit', minute: '2-digit' })}</span>
+                {/* Grid */}
+                <div className="p-6">
+                    <div className="grid grid-cols-7 mb-4">
+                        {weekDays.map(day => (
+                            <div key={day} className="text-center text-sm font-medium text-slate-400 py-2">
+                                {day}
+                            </div>
+                        ))}
                     </div>
-                    <div className="flex items-center gap-2">
-                        <MapPin className={`w-4 h-4 ${isPast ? 'text-slate-400' : 'text-[#8b1d2c]'}`} />
-                        <span>{event.location || t('events.locationTBA') || "Location TBA"}</span>
+                    <div className="grid grid-cols-7 gap-1 md:gap-2">
+                        {Array.from({ length: startDay }).map((_, i) => (
+                            <div key={`empty-${i}`} className="aspect-square" />
+                        ))}
+                        {Array.from({ length: daysInMonth }).map((_, i) => {
+                            const day = i + 1;
+                            const dayEvents = getEventsForDate(day);
+                            const isSelected = selectedDate?.getDate() === day && selectedDate?.getMonth() === month && selectedDate?.getFullYear() === year;
+                            const isToday = new Date().getDate() === day && new Date().getMonth() === month && new Date().getFullYear() === year;
+
+                            return (
+                                <button
+                                    key={day}
+                                    onClick={() => setSelectedDate(new Date(year, month, day))}
+                                    className={`
+                                        min-h-[100px] md:min-h-[120px] rounded-xl flex flex-col items-stretch justify-start p-1.5 relative border transition-all text-left group
+                                        ${isSelected ? 'bg-white border-[#8b1d2c] ring-2 ring-[#8b1d2c] ring-offset-2 z-10' :
+                                            isToday ? 'bg-amber-50/50 border-amber-200' : 'bg-white border-slate-100 hover:border-slate-300 hover:bg-slate-50'}
+                                    `}
+                                >
+                                    <span className={`
+                                        text-sm font-semibold mb-1 ml-1 w-7 h-7 flex items-center justify-center rounded-full
+                                        ${isSelected ? 'bg-[#8b1d2c] text-white' : isToday ? 'bg-amber-100 text-amber-700' : 'text-slate-700'}
+                                    `}>
+                                        {day}
+                                    </span>
+
+                                    {/* Event Names */}
+                                    <div className="flex flex-col gap-1 w-full flex-1">
+                                        {dayEvents.map((ev: NationalEvent, idx: number) => {
+                                            if (idx > 2) return null; // Limit to 3 items
+
+                                            // Determine styles
+                                            const isYouth = ev.category?.toLowerCase().includes("youth");
+                                            const isTraining = ev.category?.toLowerCase().includes("training");
+
+                                            const bgClass = isYouth ? 'bg-blue-100 text-blue-700' :
+                                                isTraining ? 'bg-amber-100 text-amber-700' :
+                                                    'bg-red-50 text-[#8b1d2c]';
+
+                                            return (
+                                                <div key={ev.id} className={`px-1.5 py-0.5 rounded text-[10px] md:text-xs font-medium truncate w-full ${bgClass}`}>
+                                                    {ev.title}
+                                                </div>
+                                            );
+                                        })}
+                                        {dayEvents.length > 3 && (
+                                            <span className="text-[10px] text-slate-400 pl-1">
+                                                +{dayEvents.length - 3} {t('events.more')}
+                                            </span>
+                                        )}
+                                    </div>
+                                </button>
+                            );
+                        })}
                     </div>
                 </div>
-                <p className="text-slate-600 mb-6 line-clamp-3">{event.description}</p>
             </div>
+
+            {/* Selected Date Details */}
+            {selectedDate && (
+                <div className="animate-in fade-in slide-in-from-top-4 duration-300">
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="h-px bg-slate-200 flex-1" />
+                        <span className="text-slate-400 font-medium text-sm uppercase tracking-widest">
+                            {selectedDate.getDate()} {monthNames[selectedDate.getMonth()]} {selectedDate.getFullYear()}
+                        </span>
+                        <div className="h-px bg-slate-200 flex-1" />
+                    </div>
+
+                    {selectedEvents.length > 0 ? (
+                        <div className="space-y-4">
+                            {selectedEvents.map((event: NationalEvent) => (
+                                <EventCard key={event.id} event={event} language={language} t={t} />
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-12 bg-slate-50 rounded-xl border border-dashed border-slate-200">
+                            <p className="text-slate-400 italic">{t('events.noEventsOnDate') || "No events scheduled for this date."}</p>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
     );
 }
