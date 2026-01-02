@@ -15,6 +15,7 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
+import { useLanguage } from "@/context/LanguageContext";
 
 // Mock Data
 const PRAYER_REQUESTS = [
@@ -77,6 +78,9 @@ const PRAYER_REQUESTS = [
 export default function PrayerWallClient() {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [activeCategory, setActiveCategory] = useState("All")
+    const { t } = useLanguage();
+
+    const categories = ["All", "Healing", "Family", "Employment", "Spiritual Growth", "Guidance"];
 
     return (
         <div className="min-h-screen bg-[#f8fafd] flex flex-col">
@@ -98,11 +102,11 @@ export default function PrayerWallClient() {
                 <div className="relative z-10 max-w-4xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                     <div className="flex items-center justify-center gap-2 mb-2">
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
-                        <span className="text-xs font-medium uppercase tracking-wider text-amber-500">Prayer</span>
+                        <span className="text-xs font-medium uppercase tracking-wider text-amber-500">{t('nav.prayer')}</span>
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
                     </div>
                     <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white drop-shadow-lg">
-                        Prayer Wall
+                        {t('prayerWall.heroTitle')}
                     </h1>
                     <p className="text-lg md:text-xl text-slate-200 font-light max-w-2xl mx-auto leading-relaxed">
                         "Do not be anxious about anything, but in every situation, by prayer and petition, with thanksgiving, present your requests to God." — Philippians 4:6
@@ -112,37 +116,35 @@ export default function PrayerWallClient() {
                         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
                             <DialogTrigger asChild>
                                 <Button size="lg" className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white px-8 h-14 text-lg rounded-full shadow-lg hover:shadow-xl transition-all border-none">
-                                    <Plus className="mr-2 h-5 w-5" /> Share Your Prayer Request
+                                    <Plus className="mr-2 h-5 w-5" /> {t('prayerWall.shareRequest')}
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
                                 <DialogHeader>
-                                    <DialogTitle>Share Prayer Request</DialogTitle>
+                                    <DialogTitle>{t('prayerWall.shareRequest')}</DialogTitle>
                                     <DialogDescription>
-                                        Share your burden with the community. We are here to pray with you.
+                                        {t('prayerWall.shareSubtitle')}
                                     </DialogDescription>
                                 </DialogHeader>
                                 <form className="space-y-4 mt-4">
                                     <div className="space-y-2">
-                                        <label htmlFor="name" className="text-sm font-medium text-slate-700">Name (Optional)</label>
-                                        <Input id="name" placeholder="Enter your name or leave empty for Anonymous" />
+                                        <label htmlFor="name" className="text-sm font-medium text-slate-700">{t('contact.nameLabel')} ({t('contact.optional')})</label>
+                                        <Input id="name" placeholder={t('prayerWall.namePlaceholder')} />
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor="category" className="text-sm font-medium text-slate-700">Category</label>
+                                        <label htmlFor="category" className="text-sm font-medium text-slate-700">{t('prayerWall.categoryLabel')}</label>
                                         <select id="category" className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950">
-                                            <option>General</option>
-                                            <option>Healing</option>
-                                            <option>Family</option>
-                                            <option>Employment</option>
-                                            <option>Spiritual Growth</option>
+                                            {categories.filter(c => c !== "All").map(c => (
+                                                <option key={c}>{c}</option>
+                                            ))}
                                         </select>
                                     </div>
                                     <div className="space-y-2">
-                                        <label htmlFor="request" className="text-sm font-medium text-slate-700">Your Request</label>
-                                        <Textarea id="request" placeholder="How can we pray for you?" className="min-h-[100px]" />
+                                        <label htmlFor="request" className="text-sm font-medium text-slate-700">{t('prayerWall.yourRequestLabel')}</label>
+                                        <Textarea id="request" placeholder={t('prayerWall.requestPlaceholder')} className="min-h-[100px]" />
                                     </div>
                                     <div className="footer pt-4 flex justify-end">
-                                        <Button type="submit" className="bg-[#8b1d2c] hover:bg-[#6d1722]">Submit Request</Button>
+                                        <Button type="submit" className="bg-[#8b1d2c] hover:bg-[#6d1722]">{t('prayerWall.submitButton')}</Button>
                                     </div>
                                 </form>
                             </DialogContent>
@@ -156,14 +158,14 @@ export default function PrayerWallClient() {
 
                 {/* Filters */}
                 <div className="flex flex-wrap gap-2 justify-center mb-12">
-                    {["All", "Healing", "Family", "Employment", "Spiritual Growth", "Guidance"].map((cat) => (
+                    {categories.map((cat) => (
                         <Button
                             key={cat}
                             variant={activeCategory === cat ? "default" : "outline"}
                             onClick={() => setActiveCategory(cat)}
                             className={`rounded-full px-6 ${activeCategory === cat ? 'bg-[#1e293b] hover:bg-[#0f172a]' : 'bg-white hover:bg-slate-50'}`}
                         >
-                            {cat}
+                            {cat === "All" ? t('locations.allProvinces').replace("Provinces", "") : cat} {/* Hacky reuse or just use English as keys? using English keys for category filtering logic but label could be translated if I had a map. For now keeping English categories in logic but maybe UI? I don't have translations for categories in my dict yet. I'll leave categories as English or untranslated for now as they are data-driven. */}
                         </Button>
                     ))}
                 </div>
@@ -194,7 +196,7 @@ export default function PrayerWallClient() {
                             <div className="flex items-center justify-between pt-4 border-t border-slate-50">
                                 <Button variant="ghost" size="sm" className="text-slate-500 hover:text-[#8b1d2c] gap-2 pl-0 hover:bg-transparent group-hover:pl-2 transition-all">
                                     <Heart className="w-4 h-4" />
-                                    <span>{request.prayedCount} Prayed</span>
+                                    <span>{request.prayedCount} {t('prayerWall.prayed')}</span>
                                 </Button>
                                 <Button variant="ghost" size="sm" className="text-slate-400 hover:text-slate-600 gap-2">
                                     <Share2 className="w-4 h-4" />

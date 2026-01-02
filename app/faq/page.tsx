@@ -13,44 +13,46 @@ import {
     AccordionTrigger,
 } from "@/components/ui/accordion"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
-
-// FAQ Content
-const faqs = [
-    {
-        category: "Services",
-        question: "What are your service times?",
-        answer: "Service times vary by location. Most churches hold Sunday services at 9:00 AM or 10:00 AM, with midweek services on Wednesday or Thursday evenings. Please check our Locations page for specific times at your nearest church.",
-        badgeColor: "bg-blue-100 text-blue-600 hover:bg-blue-100"
-    },
-    {
-        category: "Membership",
-        question: "How can I become a member of ADA?",
-        answer: "We welcome all who wish to join our church family! To become a member, simply attend our services regularly and speak with a pastor or church leader.",
-        badgeColor: "bg-green-100 text-green-600 hover:bg-green-100"
-    },
-    {
-        category: "Beliefs",
-        question: "What do you believe about the Bible?",
-        answer: "We believe the Bible is the inspired, infallible Word of God. It is our ultimate authority in all matters of faith, doctrine, and daily living.",
-        badgeColor: "bg-purple-100 text-purple-600 hover:bg-purple-100"
-    },
-    {
-        category: "Services",
-        question: "Do you offer children's programs?",
-        answer: "Yes! Most of our churches offer age-appropriate programs for children during Sunday services.",
-        badgeColor: "bg-blue-100 text-blue-600 hover:bg-blue-100"
-    },
-    {
-        category: "General",
-        question: "How can I request prayer?",
-        answer: "You can submit a prayer request through our Prayer Wall on this website or speak directly with a pastor.",
-        badgeColor: "bg-gray-100 text-gray-600 hover:bg-gray-100"
-    }
-]
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function FAQPage() {
     const [searchQuery, setSearchQuery] = useState("")
     const [activeCategory, setActiveCategory] = useState("All")
+    const { t } = useLanguage();
+
+    // FAQ Content moved inside component to access t()
+    const faqs = [
+        {
+            category: "Services",
+            question: t('faq.question1'),
+            answer: t('faq.answer1'),
+            badgeColor: "bg-blue-100 text-blue-600 hover:bg-blue-100"
+        },
+        {
+            category: "Membership",
+            question: t('faq.question2'),
+            answer: t('faq.answer2'),
+            badgeColor: "bg-green-100 text-green-600 hover:bg-green-100"
+        },
+        {
+            category: "Beliefs",
+            question: t('faq.question3'),
+            answer: t('faq.answer3'),
+            badgeColor: "bg-purple-100 text-purple-600 hover:bg-purple-100"
+        },
+        {
+            category: "Services",
+            question: t('faq.question4'),
+            answer: t('faq.answer4'),
+            badgeColor: "bg-blue-100 text-blue-600 hover:bg-blue-100"
+        },
+        {
+            category: "General",
+            question: t('faq.question5'),
+            answer: t('faq.answer5'),
+            badgeColor: "bg-gray-100 text-gray-600 hover:bg-gray-100"
+        }
+    ]
 
     const categories = ["All", "Beliefs", "Services", "Membership", "General"]
 
@@ -80,14 +82,14 @@ export default function FAQPage() {
                 <div className="relative z-10 max-w-3xl mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
-                        <span className="text-xs font-medium uppercase tracking-wider text-amber-500">Support</span>
+                        <span className="text-xs font-medium uppercase tracking-wider text-amber-500">{t('faq.support')}</span>
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-lg">
-                        Frequently Asked Questions
+                        {t('faq.heroTitle')}
                     </h1>
                     <p className="text-lg text-slate-200 font-light">
-                        Find answers to common questions about our church, beliefs, and services.
+                        {t('faq.heroSubtitle')}
                     </p>
                 </div>
             </div>
@@ -101,7 +103,7 @@ export default function FAQPage() {
                     </div>
                     <Input
                         className="w-full pl-12 h-14 bg-white border-slate-200 rounded-xl shadow-sm focus-visible:ring-primary/20 text-slate-600 placeholder:text-slate-400"
-                        placeholder="Search questions..."
+                        placeholder={t('faq.searchPlaceholder')}
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
                     />
@@ -117,7 +119,7 @@ export default function FAQPage() {
                                     value={category}
                                     className="data-[state=active]:bg-[#1e293b] data-[state=active]:text-white border border-slate-200 rounded-full px-6 py-2 bg-white text-slate-600 text-sm font-medium transition-colors shadow-sm"
                                 >
-                                    {category}
+                                    {category === "All" ? t('locations.allProvinces').replace("Provinces", "") : category} {/* Hacky reuse or just use English keys.*/}
                                 </TabsTrigger>
                             ))}
                         </TabsList>
@@ -152,7 +154,7 @@ export default function FAQPage() {
                         </Accordion>
                     ) : (
                         <div className="text-center py-12 bg-white rounded-xl border border-dashed border-slate-300">
-                            <p className="text-slate-400">No questions found matching your search.</p>
+                            <p className="text-slate-400">{t('locations.noResults')}</p>
                         </div>
                     )}
                 </div>

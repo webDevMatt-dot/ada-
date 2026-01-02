@@ -1,7 +1,10 @@
+"use client";
+
 import { Calendar, MapPin, Clock } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { useLanguage } from "@/context/LanguageContext";
 
 const EVENTS = [
     {
@@ -43,6 +46,8 @@ const EVENTS = [
 ];
 
 export default function Events() {
+    const { t, language } = useLanguage();
+
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col">
             {/* Hero Section */}
@@ -63,14 +68,14 @@ export default function Events() {
                 <div className="relative z-10 max-w-3xl mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
-                        <span className="text-xs font-medium uppercase tracking-wider text-amber-500">Calendar</span>
+                        <span className="text-xs font-medium uppercase tracking-wider text-amber-500">{t('events.upcoming')}</span>
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-lg">
-                        Upcoming Events
+                        {t('events.heroTitle')}
                     </h1>
                     <p className="text-lg text-slate-200 font-light max-w-2xl mx-auto">
-                        Stay connected with what's happening at ADA. Join us for worship, fellowship, and service.
+                        {t('events.heroSubtitle')}
                     </p>
                 </div>
             </div>
@@ -81,7 +86,8 @@ export default function Events() {
                     {EVENTS.map((event) => {
                         const dateObj = new Date(event.date);
                         const day = dateObj.getDate();
-                        const month = dateObj.toLocaleDateString('en-US', { month: 'short' });
+                        const locale = language === 'pt' ? 'pt-PT' : 'en-US';
+                        const month = dateObj.toLocaleDateString(locale, { month: 'short' });
 
                         return (
                             <div key={event.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-shadow flex flex-col md:flex-row">
@@ -97,7 +103,7 @@ export default function Events() {
                                             {/* Mobile Date */}
                                             <div className="md:hidden flex items-center gap-2 text-[#8b1d2c] font-bold mb-2">
                                                 <Calendar className="w-4 h-4" />
-                                                <span>{dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' })}</span>
+                                                <span>{dateObj.toLocaleDateString(locale, { weekday: 'short', month: 'long', day: 'numeric' })}</span>
                                             </div>
 
                                             <Badge variant="secondary" className="bg-slate-100 text-slate-600 hover:bg-slate-200 border-none mb-2">
@@ -114,7 +120,7 @@ export default function Events() {
                                         </div>
                                         <div className="flex items-center gap-2">
                                             <MapPin className="w-4 h-4 text-[#8b1d2c]" />
-                                            <span>{event.location}</span>
+                                            <span>{event.location} - {t('events.location')}</span>
                                         </div>
                                     </div>
 
@@ -122,7 +128,7 @@ export default function Events() {
 
                                     <div className="flex gap-4">
                                         <Button className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white">
-                                            Learn More
+                                            {t('home.learnMore')}
                                         </Button>
                                     </div>
                                 </div>

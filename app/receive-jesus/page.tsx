@@ -14,36 +14,38 @@ import {
 } from "@/components/ui/select"
 import { Heart, ArrowRight, ArrowLeft, BookOpen, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function ReceiveJesusPage() {
     const [hasDecided, setHasDecided] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
+    const { t } = useLanguage();
 
     const steps = [
         {
-            title: "God Loves You",
-            scripture: "For God so loved the world that he gave his one and only Son, that whoever believes in him shall not perish but have eternal life.",
-            reference: "— John 3:16",
-            description: "The Creator of the universe loves you personally and deeply. He created you for a relationship with Him and has a wonderful plan for your life."
+            title: t('receiveJesus.step1Title'),
+            scripture: t('receiveJesus.step1Scripture'),
+            reference: t('receiveJesus.step1Reference'),
+            description: t('receiveJesus.step1Desc')
         },
         {
-            title: "We Have All Sinned",
-            scripture: "For all have sinned and fall short of the glory of God.",
-            reference: "— Romans 3:23",
-            description: "Every person has done wrong things that separate us from God. This sin creates a barrier between us and our Creator, causing spiritual death."
+            title: t('receiveJesus.step2Title'),
+            scripture: t('receiveJesus.step2Scripture'),
+            reference: t('receiveJesus.step2Reference'),
+            description: t('receiveJesus.step2Desc')
         },
         {
-            title: "Jesus Is the Way",
-            scripture: "For the wages of sin is death, but the gift of God is eternal life in Christ Jesus our Lord.",
-            reference: "— Romans 6:23",
-            description: "Jesus Christ died on the cross to pay the penalty for our sins. He rose from the dead, conquering death, and offers us forgiveness and eternal life as a free gift."
+            title: t('receiveJesus.step3Title'),
+            scripture: t('receiveJesus.step3Scripture'),
+            reference: t('receiveJesus.step3Reference'),
+            description: t('receiveJesus.step3Desc')
         },
         {
-            title: "Receive Him Today",
-            scripture: "If you declare with your mouth, 'Jesus is Lord,' and believe in your heart that God raised him from the dead, you will be saved.",
-            reference: "— Romans 10:9",
-            description: "Salvation is a free gift that you receive by faith. When you confess Jesus as Lord and believe in your heart, you are saved!"
+            title: t('receiveJesus.step4Title'),
+            scripture: t('receiveJesus.step4Scripture'),
+            reference: t('receiveJesus.step4Reference'),
+            description: t('receiveJesus.step4Desc')
         }
     ]
 
@@ -107,10 +109,10 @@ export default function ReceiveJesusPage() {
 
                 <div className="relative z-10 max-w-3xl mx-auto space-y-6">
                     <h1 className="text-4xl md:text-6xl font-bold tracking-tight text-white">
-                        Begin Your Journey with Jesus
+                        {t('receiveJesus.heroTitle')}
                     </h1>
                     <p className="text-lg md:text-xl text-slate-200 leading-relaxed font-light">
-                        God loves you and has a wonderful plan for your life. Through Jesus Christ, you can have eternal life and a personal relationship with God.
+                        {t('receiveJesus.heroSubtitle')}
                     </p>
                 </div>
             </div>
@@ -170,27 +172,27 @@ export default function ReceiveJesusPage() {
                                 )}
                             </div>
                             <h2 className="text-3xl md:text-4xl font-bold text-white tracking-tight">
-                                {isSubmitted ? "Welcome to the Family!" : hasDecided ? "Your Information" : "Prayer of Salvation"}
+                                {isSubmitted ? t('receiveJesus.welcomeTitle') : hasDecided ? t('receiveJesus.yourInfo') : t('receiveJesus.prayerTitle')}
                             </h2>
                         </div>
 
                         {!hasDecided ? (
                             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                                 <p className="text-slate-300 text-lg mb-10 max-w-2xl leading-relaxed">
-                                    If you're ready to accept Jesus as your Lord and Savior, you can pray this prayer from your heart:
+                                    {t('receiveJesus.prayerIntro')}
                                 </p>
 
                                 {/* Prayer Text Card */}
                                 <div className="bg-slate-700/50 backdrop-blur-sm border border-white/10 rounded-2xl p-8 md:p-12 mb-10">
                                     <div className="space-y-6 text-slate-100 text-xl md:text-2xl leading-relaxed font-medium">
-                                        <p>"Dear Lord Jesus,</p>
+                                        <p>"{t('receiveJesus.prayerText1')}</p>
                                         <div className="space-y-2">
-                                            <p>I know that I am a sinner, and I ask for Your forgiveness.</p>
-                                            <p>I believe You died for my sins and rose from the dead.</p>
-                                            <p>I turn from my sins and invite You to come into my heart and life.</p>
-                                            <p>I want to trust and follow You as my Lord and Savior.</p>
+                                            <p>{t('receiveJesus.prayerText2')}</p>
+                                            <p>{t('receiveJesus.prayerText3')}</p>
+                                            <p>{t('receiveJesus.prayerText4')}</p>
+                                            <p>{t('receiveJesus.prayerText5')}</p>
                                         </div>
-                                        <p>In Jesus name, Amen."</p>
+                                        <p>{t('receiveJesus.prayerText6')}"</p>
                                     </div>
                                 </div>
 
@@ -200,7 +202,7 @@ export default function ReceiveJesusPage() {
                                     onClick={() => setHasDecided(true)}
                                     className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white text-lg h-14 px-8 rounded-xl shadow-lg transition-all active:scale-95 group"
                                 >
-                                    I Made My Decision
+                                    {t('receiveJesus.madeDecision')}
                                     <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                                 </Button>
                             </div>
@@ -209,9 +211,9 @@ export default function ReceiveJesusPage() {
                                 <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-8 mb-6 inline-block">
                                     <Heart className="h-16 w-16 text-green-500 mx-auto fill-green-500/20" />
                                 </div>
-                                <h3 className="text-2xl font-bold text-white mb-4">We are rejoicing with you!</h3>
+                                <h3 className="text-2xl font-bold text-white mb-4">{t('receiveJesus.rejoicing')}</h3>
                                 <p className="text-slate-300 text-lg max-w-lg mx-auto">
-                                    Thank you for letting us know about your decision. A pastor will be in touch with you shortly to welcome you and help you on this new journey.
+                                    {t('receiveJesus.rejoicingText')}
                                 </p>
                             </div>
                         ) : (
@@ -219,12 +221,12 @@ export default function ReceiveJesusPage() {
 
 
                                 <p className="text-slate-300 text-lg mb-8 max-w-2xl">
-                                    We would love to connect with you and help you grow in your new relationship with Christ. Please share your details below.
+                                    {t('receiveJesus.formIntro')}
                                 </p>
 
                                 <div className="grid gap-6">
                                     <div className="space-y-2">
-                                        <Label htmlFor="name" className="text-slate-200">Full Name <span className="text-red-400">*</span></Label>
+                                        <Label htmlFor="name" className="text-slate-200">{t('contact.nameLabel')} <span className="text-red-400">*</span></Label>
                                         <Input
                                             id="name"
                                             name="name"
@@ -235,7 +237,7 @@ export default function ReceiveJesusPage() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label className="text-slate-200">Phone Number <span className="text-slate-500">(Optional)</span></Label>
+                                        <Label className="text-slate-200">{t('contact.phoneLabel')} <span className="text-slate-500">({t('contact.optional')})</span></Label>
                                         <div className="flex gap-2">
                                             <Select defaultValue="ZA" name="countryCode">
                                                 <SelectTrigger className="w-[140px] bg-slate-800/50 border-slate-700 text-white focus:ring-amber-500">
@@ -262,7 +264,7 @@ export default function ReceiveJesusPage() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="email" className="text-slate-200">Email Address <span className="text-slate-500">(Optional)</span></Label>
+                                        <Label htmlFor="email" className="text-slate-200">{t('contact.emailLabel')} <span className="text-slate-500">({t('contact.optional')})</span></Label>
                                         <Input
                                             id="email"
                                             name="email"
@@ -273,7 +275,7 @@ export default function ReceiveJesusPage() {
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="location" className="text-slate-200">Nearest Church/Area <span className="text-slate-500">(Optional)</span></Label>
+                                        <Label htmlFor="location" className="text-slate-200">{t('receiveJesus.churchArea')} <span className="text-slate-500">({t('contact.optional')})</span></Label>
                                         <Input
                                             id="location"
                                             name="location"
@@ -290,7 +292,7 @@ export default function ReceiveJesusPage() {
                                         disabled={isSubmitting}
                                         className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white text-lg h-14 px-8 w-full md:w-auto rounded-xl shadow-lg transition-all active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
                                     >
-                                        {isSubmitting ? "Sending..." : "Submit Information"}
+                                        {isSubmitting ? t('receiveJesus.sending') : t('receiveJesus.submitInfo')}
                                     </Button>
 
                                     <Button
@@ -299,7 +301,7 @@ export default function ReceiveJesusPage() {
                                         onClick={() => setHasDecided(false)}
                                         className="text-slate-200 hover:text-white hover:bg-white/5 h-auto font-medium"
                                     >
-                                        <ArrowLeft className="h-4 w-4 mr-2" /> Go back
+                                        <ArrowLeft className="h-4 w-4 mr-2" /> {t('receiveJesus.goBack')}
                                     </Button>
                                 </div>
                             </form>

@@ -7,8 +7,11 @@ import { Textarea } from "@/components/ui/textarea"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent } from "@/components/ui/card"
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react"
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function ContactPage() {
+    const { t } = useLanguage();
+
     return (
         <div className="min-h-screen flex flex-col bg-[#f8fafd]">
             {/* Hero Section */}
@@ -27,14 +30,14 @@ export default function ContactPage() {
                 <div className="relative z-10 max-w-3xl mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                     <div className="flex items-center justify-center gap-2 mb-4">
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
-                        <span className="text-xs font-medium uppercase tracking-wider text-amber-500">Connect</span>
+                        <span className="text-xs font-medium uppercase tracking-wider text-amber-500">{t('nav.contact')}</span>
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-lg">
-                        Get in Touch
+                        {t('contact.heroTitle')}
                     </h1>
                     <p className="text-lg text-slate-200 font-light">
-                        We'd love to hear from you. Reach out to us with any questions or prayer requests.
+                        {t('contact.heroSubtitle')}
                     </p>
                 </div>
             </div>
@@ -45,7 +48,7 @@ export default function ContactPage() {
 
                     {/* Left Side - Contact Info Cards */}
                     <div className="lg:col-span-1 flex flex-col gap-6">
-                        <h2 className="text-2xl font-bold text-slate-900">Contact Information</h2>
+                        <h2 className="text-2xl font-bold text-slate-900">{t('contact.infoTitle')}</h2>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <Card className="border-none shadow-md hover:shadow-lg transition-shadow h-full">
@@ -54,11 +57,11 @@ export default function ContactPage() {
                                         <MapPin className="h-6 w-6" />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-semibold text-slate-900">Visit Us</h3>
+                                        <h3 className="font-semibold text-slate-900">{t('contact.visitUs')}</h3>
                                         <p className="text-slate-600 mt-1 text-sm">
                                             ADA Headquarters<br />
                                             123 Faith Avenue<br />
-                                            Cape Town, 8001
+                                            Maputo, Mozambique
                                         </p>
                                     </div>
                                 </CardContent>
@@ -70,10 +73,10 @@ export default function ContactPage() {
                                         <Phone className="h-6 w-6" />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-semibold text-slate-900">Call Us</h3>
+                                        <h3 className="font-semibold text-slate-900">{t('contact.callUs')}</h3>
                                         <div className="text-slate-600 mt-1 space-y-1 text-sm">
-                                            <p>+27 21 123 4567</p>
-                                            <p>+27 82 987 6543</p>
+                                            <p>+258 84 123 4567</p>
+                                            <p>+258 87 987 6543</p>
                                         </div>
                                     </div>
                                 </CardContent>
@@ -85,7 +88,7 @@ export default function ContactPage() {
                                         <Mail className="h-6 w-6" />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-semibold text-slate-900">Email Us</h3>
+                                        <h3 className="font-semibold text-slate-900">{t('contact.emailUs')}</h3>
                                         <p className="text-slate-600 mt-1 text-sm">
                                             info@ada-church.org
                                         </p>
@@ -99,7 +102,7 @@ export default function ContactPage() {
                                         <Clock className="h-6 w-6" />
                                     </div>
                                     <div className="flex-1">
-                                        <h3 className="font-semibold text-slate-900">Office Hours</h3>
+                                        <h3 className="font-semibold text-slate-900">{t('contact.officeHours')}</h3>
                                         <p className="text-slate-600 mt-1 text-sm">
                                             Monday - Friday<br />
                                             8:00 AM - 5:00 PM
@@ -113,38 +116,38 @@ export default function ContactPage() {
                     {/* Right Side - Contact Form */}
                     <div className="lg:col-span-1">
                         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 border border-slate-100">
-                            <h2 className="text-2xl font-bold text-slate-900 mb-2">Send us a Message</h2>
-                            <p className="text-slate-500 mb-8">Fill out the form below and we'll get back to you as soon as possible.</p>
+                            <h2 className="text-2xl font-bold text-slate-900 mb-2">{t('contact.formTitle')}</h2>
+                            <p className="text-slate-500 mb-8">{t('contact.formSubtitle')}</p>
 
                             <form className="space-y-6">
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <Label htmlFor="name">Full Name <span className="text-red-500">*</span></Label>
+                                        <Label htmlFor="name">{t('contact.nameLabel')} <span className="text-red-500">*</span></Label>
                                         <Input id="name" placeholder="John Doe" required className="bg-slate-50" />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="email">Email Address <span className="text-red-500">*</span></Label>
+                                        <Label htmlFor="email">{t('contact.emailLabel')} <span className="text-red-500">*</span></Label>
                                         <Input id="email" type="email" placeholder="john@example.com" required className="bg-slate-50" />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="subject">Subject <span className="text-slate-400 font-normal">(Optional)</span></Label>
-                                    <Input id="subject" placeholder="How can we help?" className="bg-slate-50" />
+                                    <Label htmlFor="subject">{t('contact.subjectLabel')}</Label>
+                                    <Input id="subject" placeholder="" className="bg-slate-50" />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="message">Message <span className="text-red-500">*</span></Label>
+                                    <Label htmlFor="message">{t('contact.messageLabel')} <span className="text-red-500">*</span></Label>
                                     <Textarea
                                         id="message"
-                                        placeholder="Type your message here..."
+                                        placeholder=""
                                         className="min-h-[150px] bg-slate-50 resize-y"
                                         required
                                     />
                                 </div>
 
                                 <Button size="lg" className="w-full md:w-auto min-w-[200px] h-12 bg-primary hover:bg-primary/90">
-                                    <Send className="w-4 h-4 mr-2" /> Send Message
+                                    <Send className="w-4 h-4 mr-2" /> {t('contact.sendButton')}
                                 </Button>
                             </form>
                         </div>

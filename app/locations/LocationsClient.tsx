@@ -48,9 +48,12 @@ const MOZAMBIQUE_PROVINCES = [
     "Zambézia"
 ];
 
+import { useLanguage } from "@/context/LanguageContext";
+
 export default function LocationsClient({ locations }: { locations: ApiLocation[] }) {
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedProvince, setSelectedProvince] = useState("all")
+    const { t } = useLanguage();
 
     // Filter locations based on search and province
     const filteredLocations = locations.filter(loc => {
@@ -70,10 +73,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
     });
 
     // Group filtered locations by province
-
     const groupedLocations = filteredLocations.reduce((acc, loc) => {
-        // Use the province grouping but handle distinct casing if necessary, 
-        // though we assume consistency.
         if (!acc[loc.province]) acc[loc.province] = [];
         acc[loc.province].push(loc);
         return acc;
@@ -103,10 +103,10 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
                     </div>
                     <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-lg">
-                        Find an Assembly Near You
+                        {t('locations.heroTitle')}
                     </h1>
                     <p className="text-lg text-slate-200 font-light max-w-2xl mx-auto">
-                        Connect with a local church family for worship, fellowship, and spiritual growth.
+                        {t('locations.heroSubtitle')}
                     </p>
                 </div>
             </div>
@@ -118,7 +118,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                     <div className="relative flex-1 w-full">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                         <Input
-                            placeholder="Search by pastor, church, phone, address, or coordinates..."
+                            placeholder={t('locations.searchPlaceholder')}
                             className="pl-12 h-12 bg-white border-none shadow-sm rounded-xl w-full focus-visible:ring-amber-500"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
@@ -131,10 +131,10 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                         </div>
                         <Select value={selectedProvince} onValueChange={setSelectedProvince}>
                             <SelectTrigger className="w-full sm:w-[200px] h-12 bg-white border-none shadow-sm rounded-xl order-last sm:order-none">
-                                <SelectValue placeholder="All Provinces" />
+                                <SelectValue placeholder={t('locations.allProvinces')} />
                             </SelectTrigger>
                             <SelectContent>
-                                <SelectItem value="all">All Provinces</SelectItem>
+                                <SelectItem value="all">{t('locations.allProvinces')}</SelectItem>
                                 {MOZAMBIQUE_PROVINCES.map(province => (
                                     <SelectItem key={province} value={province.toLowerCase()}>
                                         {province}
@@ -143,7 +143,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                             </SelectContent>
                         </Select>
                         <Button className="h-12 bg-[#8b1d2c] hover:bg-[#6d1722] text-white rounded-xl px-6 gap-2 shrink-0 flex-1 sm:flex-none">
-                            <Plus className="h-5 w-5" /> Submit a Location
+                            <Plus className="h-5 w-5" /> {t('locations.submitLocation')}
                         </Button>
                     </div>
                 </div>
@@ -159,7 +159,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                     <div className="space-y-10">
                         {Object.keys(groupedLocations).length === 0 ? (
                             <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
-                                <p className="text-slate-500 text-lg">No locations found matching your criteria.</p>
+                                <p className="text-slate-500 text-lg">{t('locations.noResults')}</p>
                                 {(searchQuery || selectedProvince !== "all") && (
                                     <Button
                                         variant="link"
@@ -169,7 +169,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                                         }}
                                         className="mt-2 text-[#8b1d2c]"
                                     >
-                                        Clear filters
+                                        {t('locations.clearFilters')}
                                     </Button>
                                 )}
                             </div>
@@ -183,7 +183,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                                                     {province}
                                                 </div>
                                                 <span className="text-slate-400 text-sm font-medium">
-                                                    {churches.length} churches
+                                                    {churches.length} {t('locations.churches')}
                                                 </span>
                                             </div>
                                         </AccordionTrigger>

@@ -14,42 +14,43 @@ import {
     SelectTrigger,
     SelectValue
 } from "@/components/ui/select"
-
-const SUPPORT_TYPES = [
-    {
-        id: "spiritual",
-        title: "Spiritual Guidance",
-        desc: "Faith questions, spiritual growth, biblical understanding"
-    },
-    {
-        id: "marital",
-        title: "Marital Counselling",
-        desc: "Marriage support, relationship guidance, family planning"
-    },
-    {
-        id: "family",
-        title: "Family Support",
-        desc: "Parenting, family conflicts, generational issues"
-    },
-    {
-        id: "grief",
-        title: "Grief Support",
-        desc: "Loss of loved ones, processing grief, finding hope"
-    },
-    {
-        id: "general",
-        title: "General Life Counselling",
-        desc: "Life decisions, personal challenges, guidance"
-    }
-]
-
 import { COUNTRY_CODES } from "@/data/countryCodes"
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function CounsellingClient() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [selectedSupport, setSelectedSupport] = useState<string>("")
     const [email, setEmail] = useState("")
     const [selectedCountryIso, setSelectedCountryIso] = useState("MZ")
+    const { t } = useLanguage();
+
+    const SUPPORT_TYPES = [
+        {
+            id: "spiritual",
+            title: t('counselling.spiritualTitle'),
+            desc: t('counselling.spiritualDesc')
+        },
+        {
+            id: "marital",
+            title: t('counselling.maritalTitle'),
+            desc: t('counselling.maritalDesc')
+        },
+        {
+            id: "family",
+            title: t('counselling.familyTitle'),
+            desc: t('counselling.familyDesc')
+        },
+        {
+            id: "grief",
+            title: t('counselling.griefTitle'),
+            desc: t('counselling.griefDesc')
+        },
+        {
+            id: "general",
+            title: t('counselling.generalTitle'),
+            desc: t('counselling.generalDesc')
+        }
+    ]
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -73,9 +74,9 @@ export default function CounsellingClient() {
                     <Lock className="h-5 w-5 text-amber-600" />
                 </div>
                 <div className="space-y-1">
-                    <h3 className="font-bold text-slate-800">Your Privacy Matters</h3>
+                    <h3 className="font-bold text-slate-800">{t('counselling.privacyTitle')}</h3>
                     <p className="text-sm text-slate-600 leading-relaxed">
-                        Your information is kept strictly confidential and will only be used to connect you with a counsellor. All conversations are strictly confidential and handled with the utmost care and respect.
+                        {t('counselling.privacyText')}
                     </p>
                 </div>
             </div>
@@ -83,8 +84,8 @@ export default function CounsellingClient() {
             {/* Form Container */}
             <div className="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden">
                 <div className="bg-[#1e293b] py-6 px-8 border-b border-slate-800">
-                    <h2 className="text-xl font-bold text-white">Your Information</h2>
-                    <p className="text-slate-400 text-sm mt-1">Please fill in the details below so we can best assist you.</p>
+                    <h2 className="text-xl font-bold text-white">{t('receiveJesus.yourInfo')}</h2>
+                    <p className="text-slate-400 text-sm mt-1">{t('counselling.formSubtitle')}</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="p-8 md:p-10 space-y-8">
@@ -92,12 +93,12 @@ export default function CounsellingClient() {
                     {/* Basics */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="md:col-span-2 space-y-2">
-                            <Label htmlFor="name" className="text-slate-700 font-medium">Name <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="name" className="text-slate-700 font-medium">{t('contact.nameLabel')} <span className="text-red-500">*</span></Label>
                             <Input id="name" placeholder="Full Name" required className="rounded-xl border-slate-200 h-12 focus-visible:ring-[#8b1d2c]/20" />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="phone" className="text-slate-700 font-medium">Phone <span className="text-red-500">*</span></Label>
+                            <Label htmlFor="phone" className="text-slate-700 font-medium">{t('contact.phoneLabel')} <span className="text-red-500">*</span></Label>
                             <div className="flex gap-2">
                                 <Select value={selectedCountryIso} onValueChange={setSelectedCountryIso}>
                                     <SelectTrigger className="w-[140px] h-12 rounded-xl border-slate-200">
@@ -123,7 +124,7 @@ export default function CounsellingClient() {
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="email" className="text-slate-700 font-medium">Email <span className="text-slate-400 font-normal">(Optional)</span></Label>
+                            <Label htmlFor="email" className="text-slate-700 font-medium">{t('contact.emailLabel')} <span className="text-slate-400 font-normal">({t('contact.optional')})</span></Label>
                             <Input
                                 id="email"
                                 type="email"
@@ -137,7 +138,7 @@ export default function CounsellingClient() {
 
                     {/* Support Type Cards */}
                     <div className="space-y-4">
-                        <Label className="text-slate-700 font-medium block">Type of Support Needed <span className="text-red-500">*</span></Label>
+                        <Label className="text-slate-700 font-medium block">{t('counselling.supportTypeLabel')} <span className="text-red-500">*</span></Label>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {SUPPORT_TYPES.map((type) => (
                                 <div
@@ -171,31 +172,31 @@ export default function CounsellingClient() {
 
                     {/* Message Box */}
                     <div className="space-y-2">
-                        <Label htmlFor="message" className="text-slate-700 font-medium">Brief Description of Your Situation <span className="text-red-500">*</span></Label>
+                        <Label htmlFor="message" className="text-slate-700 font-medium">{t('counselling.messageLabel')} <span className="text-red-500">*</span></Label>
                         <Textarea
                             id="message"
                             required
                             minLength={10}
-                            placeholder="Please share a brief overview..."
+                            placeholder=""
                             className="rounded-xl border-slate-200 min-h-[120px] resize-none focus-visible:ring-[#8b1d2c]/20"
                         />
-                        <p className="text-xs text-slate-400 text-right">Minimum 10 characters</p>
+                        <p className="text-xs text-slate-400 text-right">{t('counselling.minChars')}</p>
                     </div>
 
                     {/* Preferred Contact Method */}
                     <div className="space-y-2">
-                        <Label htmlFor="contactMethod" className="text-slate-700 font-medium">Preferred Contact Method</Label>
+                        <Label htmlFor="contactMethod" className="text-slate-700 font-medium">{t('counselling.contactMethodLabel')}</Label>
                         <Select>
                             <SelectTrigger className="h-12 rounded-xl border-slate-200">
-                                <SelectValue placeholder="Select method" />
+                                <SelectValue placeholder={t('counselling.contactMethodPlaceholder')} />
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="phone" disabled={!isMozambique}>
-                                    Phone Call {(!isMozambique) && "(Mozambique Only)"}
+                                    {t('counselling.methodPhone')} {(!isMozambique) && "(Mozambique Only)"}
                                 </SelectItem>
                                 <SelectItem value="whatsapp">WhatsApp</SelectItem>
                                 <SelectItem value="email" disabled={!email}>
-                                    Email {(!email) && "(Requires Email Address)"}
+                                    {t('counselling.methodEmail')} {(!email) && "(Requires Email Address)"}
                                 </SelectItem>
                             </SelectContent>
                         </Select>
@@ -206,7 +207,7 @@ export default function CounsellingClient() {
                         disabled={isSubmitting || !selectedSupport}
                         className="w-full h-14 bg-[#8b1d2c] hover:bg-[#6d1722] text-lg rounded-xl shadow-lg transition-all"
                     >
-                        {isSubmitting ? "Sending..." : "Submit Request"}
+                        {isSubmitting ? t('receiveJesus.sending') : t('receiveJesus.submitInfo')}
                     </Button>
                 </form>
             </div>
