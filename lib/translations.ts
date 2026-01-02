@@ -17,7 +17,7 @@ export const translations = {
             receiveJesus: "Receive Jesus"
         },
         hero: {
-            badge: "Guided by the Holy Spirit",
+            badge: "Bound by the Holy Spirit",
             title: "Forward in Faith",
             subtitle: "African Assembly of God - Spreading the Gospel across Mozambique and beyond",
             btnReceive: "Receive Jesus",
@@ -114,7 +114,23 @@ export const translations = {
             griefTitle: "Grief Support",
             griefDesc: "Loss of loved ones, processing grief",
             generalTitle: "General Life Counselling",
-            generalDesc: "Life decisions, personal challenges"
+            generalDesc: "Life decisions, personal challenges",
+            introTitle: "We Are Here to Listen",
+            introText1: "Life can be challenging, but you don't have to walk through it alone. Our pastoral team is available to provide spiritual guidance, prayer, and biblical counsel for whatever season of life you are navigating.",
+            introText2: "Whether you are facing marital difficulties, grief, spiritual doubts, or personal struggles, we offer a safe and confidential space to seek God's wisdom together.",
+            scheduleBtn: "Schedule Appointment",
+            callBtn: "Speak to a Pastor",
+            contactStatsTitle: "Contact Information",
+            careLine: "Pastoral Care Line",
+            careLineHours: "Available Mon-Fri, 9am - 5pm",
+            emailSupport: "Email Support",
+            confidentialNote: "Confidential correspondence",
+            quote: "\"Where there is no guidance, a people falls, but in an abundance of counselors there is safety.\" — Proverbs 11:14",
+            placeholderName: "Full Name",
+            placeholderPhone: "84 123 4567",
+            placeholderEmail: "john@example.com",
+            mozambiqueOnly: "(Mozambique Only)",
+            requiresEmail: "(Requires Email Address)"
         },
         receiveJesus: {
             heroTitle: "A New Beginning",
@@ -161,6 +177,52 @@ export const translations = {
             location: "Location",
             time: "Time"
         },
+        updates: {
+            heroTitle: "Latest Updates",
+            heroSubtitle: "Stay connected with what's happening at Assembleia de Deus Africana.",
+            badge: "News & Blog",
+            searchPlaceholder: "Search updates...",
+            categories: {
+                all: "All",
+                videos: "Videos",
+                announcements: "Announcements",
+                newsletters: "Newsletters",
+                gallery: "Gallery",
+                apostle: "Apostle's Update"
+            },
+            featured: "Featured Story",
+            readStory: "Read Story",
+            readMore: "Read More",
+            recentNews: "Recent News",
+            searchResults: "Search Results",
+            noResults: "No updates found matching your criteria.",
+            clearSearch: "Clear search",
+            loadMore: "Load More Updates"
+        },
+        history: {
+            heroTitle: "Our History",
+            heroSubtitle: "Celebrating decades of God's faithfulness and the growth of His church in Mozambique.",
+            badge: "Legacy",
+            title: "A Journey of Faith",
+            description: "The Assembleia de Deus Africana (ADA) has a rich history rooted in the Great Commission. From humble beginnings to a nationwide movement, our story is a testament to the power of the Gospel and the dedication of faithful servants.",
+            timeline: {
+                item1: {
+                    year: "19XX",
+                    title: "The Beginning",
+                    description: "The church was founded with a vision to reach the local community with the transformative message of Jesus Christ. Early gatherings were held in homes, marked by fervent prayer and evangelism."
+                },
+                item2: {
+                    year: "19XX",
+                    title: "Expansion & Growth",
+                    description: "As the congregation grew, new assemblies were planted across the city. This period saw the establishment of our first permanent sanctuary and the formal organization of church leadership."
+                },
+                item3: {
+                    year: "20XX",
+                    title: "Present Day",
+                    description: "Today, ADA continues to thrive as a beacon of hope, with ministries serving men, women, youth, and children. We remain committed to our founding principles while embracing new ways to serve our generation."
+                }
+            }
+        },
         faq: {
             heroTitle: "Frequently Asked Questions",
             heroSubtitle: "Find answers to common questions about our church, beliefs, and services.",
@@ -188,6 +250,15 @@ export const translations = {
         prayerWall: {
             heroTitle: "Prayer Wall",
             heroSubtitle: "Share your burdens and let the community pray for you.",
+            categories: {
+                all: "All",
+                healing: "Healing",
+                family: "Family",
+                employment: "Employment",
+                spiritual_growth: "Spiritual Growth",
+                guidance: "Guidance",
+                health: "Health"
+            },
             submitRequest: "Submit Prayer Request",
             searchPlaceholder: "Search requests...",
             prayingForThis: "praying for this",
@@ -318,7 +389,23 @@ export const translations = {
             griefTitle: "Apoio no Luto",
             griefDesc: "Perda de entes queridos, processar o luto",
             generalTitle: "Aconselhamento Geral",
-            generalDesc: "Decisões de vida, desafios pessoais"
+            generalDesc: "Decisões de vida, desafios pessoais",
+            introTitle: "Estamos Aqui para Ouvir",
+            introText1: "A vida pode ser um desafio, mas você não precisa passar por ela sozinho. A nossa equipa pastoral está disponível para fornecer orientação espiritual, oração e aconselhamento bíblico para qualquer fase da vida que esteja a atravessar.",
+            introText2: "Seja enfrentando dificuldades conjugais, luto, dúvidas espirituais ou lutas pessoais, oferecemos um espaço seguro e confidencial para buscar a sabedoria de Deus juntos.",
+            scheduleBtn: "Marcar Consulta",
+            callBtn: "Falar com um Pastor",
+            contactStatsTitle: "Informação de Contacto",
+            careLine: "Linha de Apoio Pastoral",
+            careLineHours: "Disponível Seg-Sex, 9h - 17h",
+            emailSupport: "Suporte por Email",
+            confidentialNote: "Correspondência confidencial",
+            quote: "\"Não havendo sábia direção, o povo cai, mas na multidão de conselheiros há segurança.\" — Provérbios 11:14",
+            placeholderName: "Nome Completo",
+            placeholderPhone: "84 123 4567",
+            placeholderEmail: "joao@exemplo.com",
+            mozambiqueOnly: "(Apenas Moçambique)",
+            requiresEmail: "(Requer Endereço de Email)"
         },
         receiveJesus: {
             heroTitle: "Um Novo Começo",
@@ -365,6 +452,52 @@ export const translations = {
             location: "Localização",
             time: "Hora"
         },
+        updates: {
+            heroTitle: "Últimas Atualizações",
+            heroSubtitle: "Fique conectado com o que está a acontecer na Assembleia de Deus Africana.",
+            badge: "Notícias & Blog",
+            searchPlaceholder: "Pesquisar atualizações...",
+            categories: {
+                all: "Todas",
+                videos: "Vídeos",
+                announcements: "Anúncios",
+                newsletters: "Boletins",
+                gallery: "Galeria",
+                apostle: "Palavra do Apóstolo"
+            },
+            featured: "Destaque",
+            readStory: "Ler História",
+            readMore: "Ler Mais",
+            recentNews: "Notícias Recentes",
+            searchResults: "Resultados da Pesquisa",
+            noResults: "Nenhuma atualização encontrada com os seus critérios.",
+            clearSearch: "Limpar pesquisa",
+            loadMore: "Carregar Mais"
+        },
+        history: {
+            heroTitle: "A Nossa História",
+            heroSubtitle: "Celebrando décadas da fidelidade de Deus e o crescimento da Sua igreja em Moçambique.",
+            badge: "Legado",
+            title: "Uma Jornada de Fé",
+            description: "A Assembleia de Deus Africana (ADA) tem uma história rica enraizada na Grande Comissão. De humildes começos a um movimento nacional, a nossa história é um testemunho do poder do Evangelho e da dedicação de servos fiéis.",
+            timeline: {
+                item1: {
+                    year: "19XX",
+                    title: "O Início",
+                    description: "A igreja foi fundada com a visão de alcançar a comunidade local com a mensagem transformadora de Jesus Cristo. As primeiras reuniões eram realizadas em casas, marcadas por fervorosa oração e evangelismo."
+                },
+                item2: {
+                    year: "19XX",
+                    title: "Expansão e Crescimento",
+                    description: "À medida que a congregação crescia, novas assembleias foram plantadas por toda a cidade. Este período viu o estabelecimento do nosso primeiro santuário permanente e a organização formal da liderança da igreja."
+                },
+                item3: {
+                    year: "20XX",
+                    title: "Dias de Hoje",
+                    description: "Hoje, a ADA continua a prosperar como um farol de esperança, com ministérios servindo homens, mulheres, jovens e crianças. Permanecemos comprometidos com os nossos princípios fundadores enquanto abraçamos novas formas de servir a nossa geração."
+                }
+            }
+        },
         faq: {
             heroTitle: "Perguntas Frequentes",
             heroSubtitle: "Encontre respostas para perguntas comuns sobre a nossa igreja, crenças e cultos.",
@@ -392,6 +525,15 @@ export const translations = {
         prayerWall: {
             heroTitle: "Mural de Oração",
             heroSubtitle: "Partilhe os seus fardos e deixe a comunidade orar por si.",
+            categories: {
+                all: "Todas",
+                healing: "Cura",
+                family: "Família",
+                employment: "Emprego",
+                spiritual_growth: "Crescimento Espiritual",
+                guidance: "Orientação",
+                health: "Saúde"
+            },
             submitRequest: "Submeter Pedido de Oração",
             searchPlaceholder: "Pesquisar pedidos...",
             prayingForThis: "a orar por isto",

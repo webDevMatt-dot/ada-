@@ -56,6 +56,10 @@ export default function FAQPage() {
 
     const categories = ["All", "Beliefs", "Services", "Membership", "General"]
 
+    const getCategoryLabel = (category: string) => {
+        return t(`faq.categories.${category.toLowerCase()}`);
+    }
+
     const filteredFaqs = faqs.filter(faq => {
         const matchesSearch = faq.question.toLowerCase().includes(searchQuery.toLowerCase())
         const matchesCategory = activeCategory === "All" || faq.category === activeCategory
@@ -119,7 +123,7 @@ export default function FAQPage() {
                                     value={category}
                                     className="data-[state=active]:bg-[#1e293b] data-[state=active]:text-white border border-slate-200 rounded-full px-6 py-2 bg-white text-slate-600 text-sm font-medium transition-colors shadow-sm"
                                 >
-                                    {category === "All" ? t('locations.allProvinces').replace("Provinces", "") : category} {/* Hacky reuse or just use English keys.*/}
+                                    {getCategoryLabel(category)}
                                 </TabsTrigger>
                             ))}
                         </TabsList>
@@ -139,7 +143,7 @@ export default function FAQPage() {
                                     <AccordionTrigger className="hover:no-underline py-8 group [&[data-state=open]>svg]:rotate-180">
                                         <div className="flex flex-col items-start text-left gap-3">
                                             <Badge className={`rounded-md px-2 py-0.5 text-[11px] font-bold border-none ${faq.badgeColor}`}>
-                                                {faq.category}
+                                                {getCategoryLabel(faq.category)}
                                             </Badge>
                                             <span className="text-xl font-bold text-slate-800 tracking-tight">
                                                 {faq.question}
@@ -154,7 +158,7 @@ export default function FAQPage() {
                         </Accordion>
                     ) : (
                         <div className="text-center py-12 bg-white rounded-xl border border-dashed border-slate-300">
-                            <p className="text-slate-400">{t('locations.noResults')}</p>
+                            <p className="text-slate-400">{t('faq.noResults')}</p>
                         </div>
                     )}
                 </div>

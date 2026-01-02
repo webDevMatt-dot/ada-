@@ -94,7 +94,7 @@ export default function CounsellingClient() {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="md:col-span-2 space-y-2">
                             <Label htmlFor="name" className="text-slate-700 font-medium">{t('contact.nameLabel')} <span className="text-red-500">*</span></Label>
-                            <Input id="name" placeholder="Full Name" required className="rounded-xl border-slate-200 h-12 focus-visible:ring-[#8b1d2c]/20" />
+                            <Input id="name" placeholder={t('counselling.placeholderName')} required className="rounded-xl border-slate-200 h-12 focus-visible:ring-[#8b1d2c]/20" />
                         </div>
 
                         <div className="space-y-2">
@@ -119,7 +119,7 @@ export default function CounsellingClient() {
                                         ))}
                                     </SelectContent>
                                 </Select>
-                                <Input id="phone" type="tel" placeholder="84 123 4567" required className="flex-1 rounded-xl border-slate-200 h-12" />
+                                <Input id="phone" type="tel" placeholder={t('counselling.placeholderPhone')} required className="flex-1 rounded-xl border-slate-200 h-12" />
                             </div>
                         </div>
 
@@ -128,7 +128,7 @@ export default function CounsellingClient() {
                             <Input
                                 id="email"
                                 type="email"
-                                placeholder="john@example.com"
+                                placeholder={t('counselling.placeholderEmail')}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 className="rounded-xl border-slate-200 h-12"
@@ -192,11 +192,11 @@ export default function CounsellingClient() {
                             </SelectTrigger>
                             <SelectContent>
                                 <SelectItem value="phone" disabled={!isMozambique}>
-                                    {t('counselling.methodPhone')} {(!isMozambique) && "(Mozambique Only)"}
+                                    {t('counselling.methodPhone')} {(!isMozambique) && t('counselling.mozambiqueOnly')}
                                 </SelectItem>
                                 <SelectItem value="whatsapp">WhatsApp</SelectItem>
                                 <SelectItem value="email" disabled={!email}>
-                                    {t('counselling.methodEmail')} {(!email) && "(Requires Email Address)"}
+                                    {t('counselling.methodEmail')} {(!email) && t('counselling.requiresEmail')}
                                 </SelectItem>
                             </SelectContent>
                         </Select>

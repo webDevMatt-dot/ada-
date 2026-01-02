@@ -80,7 +80,12 @@ export default function PrayerWallClient() {
     const [activeCategory, setActiveCategory] = useState("All")
     const { t } = useLanguage();
 
-    const categories = ["All", "Healing", "Family", "Employment", "Spiritual Growth", "Guidance"];
+    const categories = ["All", "Healing", "Family", "Employment", "Spiritual Growth", "Guidance", "Health"];
+
+    const getCategoryLabel = (category: string) => {
+        const key = category.toLowerCase().replace(" ", "_");
+        return t(`prayerWall.categories.${key}`);
+    }
 
     return (
         <div className="min-h-screen bg-[#f8fafd] flex flex-col">
@@ -135,7 +140,7 @@ export default function PrayerWallClient() {
                                         <label htmlFor="category" className="text-sm font-medium text-slate-700">{t('prayerWall.categoryLabel')}</label>
                                         <select id="category" className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950">
                                             {categories.filter(c => c !== "All").map(c => (
-                                                <option key={c}>{c}</option>
+                                                <option key={c} value={c}>{getCategoryLabel(c)}</option>
                                             ))}
                                         </select>
                                     </div>
@@ -165,7 +170,7 @@ export default function PrayerWallClient() {
                             onClick={() => setActiveCategory(cat)}
                             className={`rounded-full px-6 ${activeCategory === cat ? 'bg-[#1e293b] hover:bg-[#0f172a]' : 'bg-white hover:bg-slate-50'}`}
                         >
-                            {cat === "All" ? t('locations.allProvinces').replace("Provinces", "") : cat} {/* Hacky reuse or just use English as keys? using English keys for category filtering logic but label could be translated if I had a map. For now keeping English categories in logic but maybe UI? I don't have translations for categories in my dict yet. I'll leave categories as English or untranslated for now as they are data-driven. */}
+                            {getCategoryLabel(cat)}
                         </Button>
                     ))}
                 </div>
@@ -185,7 +190,7 @@ export default function PrayerWallClient() {
                                     </div>
                                 </div>
                                 <Badge variant="secondary" className="bg-slate-50 text-slate-500 hover:bg-slate-100">
-                                    {request.category}
+                                    {getCategoryLabel(request.category)}
                                 </Badge>
                             </div>
 

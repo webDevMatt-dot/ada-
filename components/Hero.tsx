@@ -1,6 +1,7 @@
 "use client"
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Heart, MapPin, Church, Users, Globe, BookOpen } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -38,12 +39,16 @@ export function Hero() {
                 </p>
 
                 <div className="flex flex-col sm:flex-row gap-4 mt-4">
-                    <Button size="lg" className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white border-none px-8 h-12">
-                        <Heart className="mr-2 h-4 w-4" /> {t('hero.btnReceive')}
-                    </Button>
-                    <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 px-8 h-12">
-                        <MapPin className="mr-2 h-4 w-4" /> {t('hero.btnLocations')}
-                    </Button>
+                    <Link href="/receive-jesus">
+                        <Button size="lg" className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white border-none px-8 h-12 w-full sm:w-auto">
+                            <Heart className="mr-2 h-4 w-4" /> {t('hero.btnReceive')}
+                        </Button>
+                    </Link>
+                    <Link href="/locations">
+                        <Button size="lg" variant="outline" className="bg-white/10 backdrop-blur-md border-white/30 text-white hover:bg-white/20 px-8 h-12 w-full sm:w-auto">
+                            <MapPin className="mr-2 h-4 w-4" /> {t('hero.btnLocations')}
+                        </Button>
+                    </Link>
                 </div>
             </div>
 
