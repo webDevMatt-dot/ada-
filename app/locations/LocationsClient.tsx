@@ -125,12 +125,12 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                         />
                     </div>
 
-                    <div className="flex gap-2 w-full md:w-auto">
-                        <div className="bg-white p-3 rounded-xl shadow-sm border-none">
+                    <div className="flex flex-wrap gap-2 w-full md:w-auto">
+                        <div className="bg-white p-3 rounded-xl shadow-sm border-none shrink-0">
                             <SlidersHorizontal className="h-5 w-5 text-slate-500" />
                         </div>
                         <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                            <SelectTrigger className="w-[200px] h-12 bg-white border-none shadow-sm rounded-xl">
+                            <SelectTrigger className="w-full sm:w-[200px] h-12 bg-white border-none shadow-sm rounded-xl order-last sm:order-none">
                                 <SelectValue placeholder="All Provinces" />
                             </SelectTrigger>
                             <SelectContent>
@@ -142,7 +142,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Button className="h-12 bg-[#8b1d2c] hover:bg-[#6d1722] text-white rounded-xl px-6 gap-2 shrink-0">
+                        <Button className="h-12 bg-[#8b1d2c] hover:bg-[#6d1722] text-white rounded-xl px-6 gap-2 shrink-0 flex-1 sm:flex-none">
                             <Plus className="h-5 w-5" /> Submit a Location
                         </Button>
                     </div>
