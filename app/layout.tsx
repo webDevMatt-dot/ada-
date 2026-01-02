@@ -13,8 +13,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Assembleia de Deus Africana",
+  title: "Assembleia de Deus Africana | Avante na Fé",
   description: "Official website of ADA Church",
+  icons: {
+    icon: "/ada_logo.png",
+    apple: "/ada_logo.png",
+  },
 };
 
 import { Navbar } from "@/components/Navbar";
