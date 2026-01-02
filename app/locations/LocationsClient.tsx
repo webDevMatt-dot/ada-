@@ -28,8 +28,8 @@ interface ApiLocation {
     latitude: number | null;
     longitude: number | null;
     address: string | null;
-    leader_name: string;
-    leader_phone: string;
+    leader_name: string | null;
+    leader_phone: string | null;
     // App-specific field injected by server
     province: string;
 }
@@ -64,9 +64,9 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
         const query = searchQuery.toLowerCase();
         const matchesSearch =
             loc.name.toLowerCase().includes(query) ||
-            loc.leader_name.toLowerCase().includes(query) ||
+            (loc.leader_name && loc.leader_name.toLowerCase().includes(query)) ||
             (loc.address && loc.address.toLowerCase().includes(query)) ||
-            loc.leader_phone.toLowerCase().includes(query) ||
+            (loc.leader_phone && loc.leader_phone.toLowerCase().includes(query)) ||
             (loc.latitude && loc.longitude && `${loc.latitude},${loc.longitude}`.includes(query));
 
         return matchesProvince && matchesSearch;
@@ -114,23 +114,20 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
             <div className="container mx-auto max-w-7xl space-y-8 py-10 px-4">
 
                 {/* Search and Filters Bar */}
-                <div className="flex flex-col md:flex-row gap-4 items-center bg-transparent">
+                <div className="flex flex-col md:flex-row gap-4 items-center bg-transparent w-full">
                     <div className="relative flex-1 w-full">
                         <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
                         <Input
                             placeholder={t('locations.searchPlaceholder')}
-                            className="pl-12 h-12 bg-white border-none shadow-sm rounded-xl w-full focus-visible:ring-amber-500"
+                            className="pl-12 !h-12 bg-white border-none shadow-sm rounded-xl w-full text-base focus-visible:ring-amber-500"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                     </div>
 
-                    <div className="flex flex-wrap gap-2 w-full md:w-auto">
-                        <div className="bg-white p-3 rounded-xl shadow-sm border-none shrink-0">
-                            <SlidersHorizontal className="h-5 w-5 text-slate-500" />
-                        </div>
+                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-center">
                         <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                            <SelectTrigger className="w-full sm:w-[200px] h-12 bg-white border-none shadow-sm rounded-xl order-last sm:order-none">
+                            <SelectTrigger className="w-full sm:w-[200px] !h-12 bg-white border-none shadow-sm rounded-xl text-base flex items-center">
                                 <SelectValue placeholder={t('locations.allProvinces')} />
                             </SelectTrigger>
                             <SelectContent>
@@ -142,7 +139,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                                 ))}
                             </SelectContent>
                         </Select>
-                        <Button className="h-12 bg-[#8b1d2c] hover:bg-[#6d1722] text-white rounded-xl px-6 gap-2 shrink-0 flex-1 sm:flex-none">
+                        <Button className="!h-12 bg-[#8b1d2c] hover:bg-[#6d1722] text-white rounded-xl px-6 gap-2 shrink-0 w-full sm:w-auto shadow-sm text-base font-medium">
                             <Plus className="h-5 w-5" /> {t('locations.submitLocation')}
                         </Button>
                     </div>
@@ -206,19 +203,19 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                                                             <div className="space-y-2">
                                                                 <div className="flex items-start gap-2 text-slate-500 text-sm">
                                                                     <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                                                                    <span>{loc.address || "Address not available"}</span>
+                                                                    <span>{loc.address || t('locations.addressNotAvailable')}</span>
                                                                 </div>
 
                                                                 {/* Service time removed as it's not in new payload */}
 
                                                                 <div className="flex items-center gap-2 text-slate-500 text-sm">
                                                                     <User className="h-4 w-4 shrink-0" />
-                                                                    <span>{loc.leader_name}</span>
+                                                                    <span>{loc.leader_name || t('locations.regionalPastor')}</span>
                                                                 </div>
 
                                                                 <div className="flex items-center gap-2 text-slate-500 text-sm">
                                                                     <Phone className="h-4 w-4 shrink-0" />
-                                                                    <span>{loc.leader_phone}</span>
+                                                                    <span>{loc.leader_phone || t('locations.contactHQ')}</span>
                                                                 </div>
 
                                                                 {loc.latitude && loc.longitude && (

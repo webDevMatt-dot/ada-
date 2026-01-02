@@ -65,7 +65,9 @@ export const translations = {
             noResults: "No locations found matching your criteria.",
             clearFilters: "Clear filters",
             churches: "churches",
-            addressNotAvailable: "Address not available"
+            addressNotAvailable: "Address not available",
+            regionalPastor: "Regional Pastor",
+            contactHQ: "Contact HQ"
         },
         contact: {
             heroTitle: "Get in Touch",
@@ -345,7 +347,9 @@ export const translations = {
             noResults: "Nenhuma igreja encontrada com os seus critérios.",
             clearFilters: "Limpar filtros",
             churches: "igrejas",
-            addressNotAvailable: "Endereço não disponível"
+            addressNotAvailable: "Endereço não disponível",
+            regionalPastor: "Pastor Regional",
+            contactHQ: "Contactar Sede"
         },
         contact: {
             heroTitle: "Contacte-nos",
