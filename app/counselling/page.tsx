@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Phone, Mail, Calendar, MessageCircle } from "lucide-react";
+import CounsellingClient from "./CounsellingClient";
 
 export const metadata = {
     title: 'Counselling - ADA Church',
@@ -40,60 +41,73 @@ export default function CounsellingPage() {
                 </div>
             </div>
 
-            {/* Content Section */}
-            <div className="container mx-auto max-w-5xl px-4 py-16">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-                    <div className="space-y-6">
-                        <h2 className="text-3xl font-bold text-slate-800">We Are Here to Listen</h2>
-                        <p className="text-slate-600 leading-relaxed text-lg">
-                            Life can be challenging, but you don't have to walk through it alone. Our pastoral team is available to provide spiritual guidance, prayer, and biblical counsel for whatever season of life you are navigating.
-                        </p>
-                        <p className="text-slate-600 leading-relaxed">
-                            Whether you are facing marital difficulties, grief, spiritual doubts, or personal struggles, we offer a safe and confidential space to seek God's wisdom together.
-                        </p>
+            {/* Top Content Section */}
+            <div className="container mx-auto max-w-6xl px-4 pt-16 pb-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-12 lg:gap-20 items-start">
 
-                        <div className="pt-4 flex gap-4">
-                            <Button size="lg" className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white">
-                                <Calendar className="mr-2 h-4 w-4" /> Schedule Appointment
+                    {/* Left: Text & Buttons (No Border) */}
+                    <div className="space-y-8">
+                        <div>
+                            <h2 className="text-3xl font-bold text-slate-800 mb-6">We Are Here to Listen</h2>
+                            <p className="text-slate-600 leading-relaxed text-lg mb-4">
+                                Life can be challenging, but you don t have to walk through it alone. Our pastoral team is available to provide spiritual guidance, prayer, and biblical counsel for whatever season of life you are navigating.
+                            </p>
+                            <p className="text-slate-600 leading-relaxed text-lg">
+                                Whether you are facing marital difficulties, grief, spiritual doubts, or personal struggles, we offer a safe and confidential space to seek God s wisdom together.
+                            </p>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <Button asChild size="lg" className="bg-[#8b1d2c] hover:bg-[#6d1722] text-white px-8">
+                                <a href="#appointment-form">Schedule Appointment</a>
                             </Button>
-                            <Button size="lg" variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50">
-                                <MessageCircle className="mr-2 h-4 w-4" /> Speak to a Pastor
+                            <Button size="lg" variant="outline" className="border-slate-300 text-slate-700 hover:bg-slate-50 hover:text-[#8b1d2c]">
+                                Speak to a Pastor
                             </Button>
                         </div>
                     </div>
 
-                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100">
-                        <h3 className="text-xl font-bold text-slate-800 mb-6 border-b border-slate-100 pb-4">Contact Information</h3>
-                        <div className="space-y-6">
+                    {/* Right: Contact Card (Card Style) */}
+                    <div className="bg-white p-8 rounded-2xl shadow-sm border border-slate-100 relative overflow-hidden">
+                        {/* Decorative accent top */}
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-[#8b1d2c] to-amber-500" />
+
+                        <h3 className="text-xl font-bold text-slate-800 mb-6 pb-4 border-b border-slate-100">Contact Information</h3>
+                        <div className="space-y-8">
                             <div className="flex items-start gap-4">
-                                <div className="bg-amber-50 p-3 rounded-lg text-amber-600">
-                                    <Phone className="h-6 w-6" />
+                                <div className="bg-amber-50 h-10 w-10 rounded-lg flex items-center justify-center text-amber-600 shrink-0">
+                                    <Phone className="h-5 w-5" />
                                 </div>
-                                <div>
-                                    <p className="font-semibold text-slate-800">Pastoral Care Line</p>
-                                    <p className="text-slate-500">+258 84 123 4567</p>
+                                <div className="space-y-1">
+                                    <p className="font-bold text-slate-800">Pastoral Care Line</p>
+                                    <p className="text-slate-600 font-mono text-sm">+258 84 123 4567</p>
                                     <p className="text-xs text-slate-400 mt-1">Available Mon-Fri, 9am - 5pm</p>
                                 </div>
                             </div>
 
                             <div className="flex items-start gap-4">
-                                <div className="bg-amber-50 p-3 rounded-lg text-amber-600">
-                                    <Mail className="h-6 w-6" />
+                                <div className="bg-[#8b1d2c]/10 h-10 w-10 rounded-lg flex items-center justify-center text-[#8b1d2c] shrink-0">
+                                    <Mail className="h-5 w-5" />
                                 </div>
-                                <div>
-                                    <p className="font-semibold text-slate-800">Email Support</p>
-                                    <p className="text-slate-500">counselling@ada.org.mz</p>
+                                <div className="space-y-1">
+                                    <p className="font-bold text-slate-800">Email Support</p>
+                                    <p className="text-slate-600 font-medium">counselling@ada.org.mz</p>
                                     <p className="text-xs text-slate-400 mt-1">Confidential correspondence</p>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mt-8 bg-slate-50 p-4 rounded-xl text-sm text-slate-500 border border-slate-100 italic">
-                            "Where there is no guidance, a people falls, but in an abundance of counselors there is safety." — Proverbs 11:14
+                        <div className="mt-8 bg-slate-50 p-5 rounded-xl border border-slate-100">
+                            <p className="text-sm text-slate-500 italic leading-relaxed">
+                                "Where there is no guidance, a people falls, but in an abundance of counselors there is safety." — Proverbs 11:14
+                            </p>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Client Form Section */}
+            <CounsellingClient />
         </div>
     );
 }
