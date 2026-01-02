@@ -176,12 +176,25 @@ export const translations = {
             heroTitle: "Upcoming Events",
             heroSubtitle: "Join us for conferences, worship nights, and community gatherings.",
             upcoming: "Upcoming Events",
+            searchPlaceholder: "Search events...",
             location: "Location",
             time: "Time",
-            nationalPlan: "National Plan",
+            nationalPlan: "Events",
             nationalPlanDesc: "Stay connected with our national calendar of worship, training, and conferences.",
             listView: "List View",
             calendarView: "Calendar View",
+            viewAll: "View All",
+            pastEvents: "Past Events",
+            past: "Past",
+            categories: {
+                all: "All",
+                conferences: "Conferences",
+                youth: "Youth",
+                training: "Training",
+                seminars: "Seminars",
+                executive: "Executive",
+                workshops: "Workshops"
+            },
             calendarIntegration: "Calendar View Integration (Standard libraries like react-calendar would be mapped here using event.start_date)."
         },
         updates: {
@@ -458,12 +471,25 @@ export const translations = {
             heroTitle: "Próximos Eventos",
             heroSubtitle: "Junte-se a nós para conferências, noites de adoração e reuniões comunitárias.",
             upcoming: "Próximos Eventos",
+            searchPlaceholder: "Pesquisar eventos...",
             location: "Localização",
             time: "Hora",
-            nationalPlan: "Plano Nacional",
+            nationalPlan: "Eventos",
             nationalPlanDesc: "Fique conectado com o nosso calendário nacional de adoração, formação e conferências.",
             listView: "Ver Lista",
             calendarView: "Ver Calendário",
+            viewAll: "Ver Todos",
+            pastEvents: "Eventos Passados",
+            past: "Passado",
+            categories: {
+                all: "Todos",
+                conferences: "Conferências",
+                youth: "Jovens",
+                training: "Treinamento",
+                seminars: "Seminários",
+                executive: "Executivo",
+                workshops: "Workshops"
+            },
             calendarIntegration: "Integração com Calendário (Bibliotecas padrão como react-calendar seriam mapeadas aqui usando event.start_date)."
         },
         updates: {

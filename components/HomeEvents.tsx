@@ -34,7 +34,7 @@ export function HomeEvents({ events }: { events: NationalEvent[] }) {
 
                     <Link href="/events">
                         <Button className="hidden md:flex gap-2 bg-[#8b1d2c] hover:bg-[#6d1722] text-white rounded-full px-8">
-                            {t('events.viewAll') || "View All Events"} <ArrowRight className="w-4 h-4" />
+                            {t('events.viewAll') || "View All"} <ArrowRight className="w-4 h-4" />
                         </Button>
                     </Link>
                 </div>
@@ -48,7 +48,7 @@ export function HomeEvents({ events }: { events: NationalEvent[] }) {
                 <div className="mt-8 text-center md:hidden">
                     <Link href="/events">
                         <Button className="w-full gap-2 bg-[#8b1d2c] hover:bg-[#6d1722] text-white rounded-full">
-                            {t('events.viewAll') || "View All Events"} <ArrowRight className="w-4 h-4" />
+                            {t('events.viewAll') || "View All"} <ArrowRight className="w-4 h-4" />
                         </Button>
                     </Link>
                 </div>

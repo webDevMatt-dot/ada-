@@ -3,6 +3,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Clock, MapPin } from "lucide-react";
 import { NationalEvent } from "@/types/events";
+import { translateDynamicText } from "@/lib/event-translator";
 
 export function getCategoryStyles(category?: string) {
     if (!category) return "bg-slate-100 text-slate-700";
@@ -25,6 +26,12 @@ export function EventCard({ event, language, t, isPast }: EventCardProps) {
     const date = new Date(event.start_date);
     const locale = language === 'pt' ? 'pt-PT' : 'en-US';
 
+    // Translate dynamic fields
+    const title = translateDynamicText(event.title, language);
+    const category = translateDynamicText(event.category || "Event", language);
+    const location = event.location ? translateDynamicText(event.location, language) : (t('events.locationTBA') || "Location TBA");
+    const description = translateDynamicText(event.description, language);
+
     return (
         <div className={`bg-white rounded-2xl shadow-sm border border-slate-100 overflow-hidden hover:shadow-md transition-all flex flex-col md:flex-row ${isPast ? 'bg-slate-50' : ''}`}>
             <div className={`hidden md:flex flex-col items-center justify-center w-32 p-6 border-r border-slate-100 shrink-0 text-center ${isPast ? 'bg-slate-100' : 'bg-[#f8fafd]'}`}>
@@ -37,12 +44,12 @@ export function EventCard({ event, language, t, isPast }: EventCardProps) {
             <div className="p-8 flex-1">
                 <div className="flex justify-between items-start">
                     <Badge className={`mb-3 border-none ${getCategoryStyles(event.category)}`}>
-                        {event.category || "Event"}
+                        {category}
                     </Badge>
                     {isPast && <Badge className="bg-slate-200 text-slate-600 hover:bg-slate-200" variant="secondary">{t('events.past') || "Past"}</Badge>}
                 </div>
 
-                <h3 className={`text-2xl font-bold mb-4 ${isPast ? 'text-slate-600' : 'text-slate-800'}`}>{event.title}</h3>
+                <h3 className={`text-2xl font-bold mb-4 ${isPast ? 'text-slate-600' : 'text-slate-800'}`}>{title}</h3>
                 <div className="flex flex-col sm:flex-row gap-4 text-slate-500 mb-4">
                     <div className="flex items-center gap-2">
                         <Clock className={`w-4 h-4 ${isPast ? 'text-slate-400' : 'text-[#8b1d2c]'}`} />
@@ -50,10 +57,10 @@ export function EventCard({ event, language, t, isPast }: EventCardProps) {
                     </div>
                     <div className="flex items-center gap-2">
                         <MapPin className={`w-4 h-4 ${isPast ? 'text-slate-400' : 'text-[#8b1d2c]'}`} />
-                        <span>{event.location || t('events.locationTBA') || "Location TBA"}</span>
+                        <span>{location}</span>
                     </div>
                 </div>
-                <p className="text-slate-600 mb-6 line-clamp-3">{event.description}</p>
+                <p className="text-slate-600 mb-6 line-clamp-3">{description}</p>
             </div>
         </div>
     );

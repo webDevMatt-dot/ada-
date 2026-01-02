@@ -1,4 +1,4 @@
-import EventsClient from "./EventsClient";
+import { EventsClient } from "./EventsClient";
 import { NationalEvent } from "@/types/events";
 
 export const metadata = {
