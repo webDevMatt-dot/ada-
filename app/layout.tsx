@@ -16,8 +16,8 @@ export const metadata: Metadata = {
   title: "Assembleia de Deus Africana | Avante na Fé",
   description: "Official website of ADA Church",
   icons: {
-    icon: "/ada_logo.png",
-    apple: "/ada_logo.png",
+    icon: "/ada_logo2.png",
+    apple: "/ada_logo2.png",
   },
 };
 
