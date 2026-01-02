@@ -46,7 +46,7 @@ export default async function Locations() {
         const fetchPromises = PROVINCES.map(async (province) => {
             try {
                 const response = await fetch(`https://financas.ada.org.mz/api/v1/churchdata/public-locations/search/?q=${encodeURIComponent(province)}`, {
-                    cache: 'no-store',
+                    next: { revalidate: 3600 },
                     headers: {
                         'Authorization': 'Token 4eece2fe44e1019df9e33e88708d92a9b1586e6d'
                     }
