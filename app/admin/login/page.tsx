@@ -60,7 +60,9 @@ export default function AdminLoginPage() {
                     return;
                 }
 
-                setError("Invalid credentials");
+                // Show actual error for debugging
+                const errorText = await res.text();
+                setError(`Login failed: ${res.status} ${res.statusText} - ${errorText.substring(0, 100)}`);
             }
         } catch (err) {
             console.error(err);
