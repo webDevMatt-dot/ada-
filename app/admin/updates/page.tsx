@@ -69,7 +69,7 @@ export default function UpdatesAdminPage() {
         }
 
         try {
-            const res = await fetch("http://localhost:8000/api/updates/", {
+            const res = await fetch("/api/updates/", {
                 headers: { "Authorization": `Token ${token}` }
             });
 
@@ -94,7 +94,7 @@ export default function UpdatesAdminPage() {
             const token = localStorage.getItem("authToken");
             if (token) {
                 try {
-                    const res = await fetch("http://localhost:8000/api/me/", {
+                    const res = await fetch("/api/me/", {
                         headers: { "Authorization": `Token ${token}` }
                     });
                     if (res.ok) {
@@ -158,7 +158,7 @@ export default function UpdatesAdminPage() {
         }
 
         try {
-            const res = await fetch(`http://localhost:8000/api/updates/${id}/${action}/`, {
+            const res = await fetch(`/api/updates/${id}/${action}/`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Token ${token}`,
