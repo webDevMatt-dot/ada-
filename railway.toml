@@ -1,0 +1,6 @@
+[build]
+rootDirectory = "backend"
+
+[deploy]
+startCommand = "python manage.py migrate && python manage.py createsuperuser_if_none_exists && gunicorn config.wsgi --log-file -"
+restartPolicyType = "ON_FAILURE"
