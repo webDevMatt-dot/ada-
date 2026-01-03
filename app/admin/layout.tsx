@@ -15,6 +15,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const [authorized, setAuthorized] = useState(false);
     const [currentUser, setCurrentUser] = useState<any>(null);
 
+    const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
+    const [counts, setCounts] = useState({ pending: 0, live: 0, review: 0 });
+
     useEffect(() => {
         // Skip check on login page
         if (pathname === "/admin/login") {
@@ -44,6 +47,24 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 localStorage.removeItem("authToken");
                 router.push("/admin/login");
             });
+
+        // Fetch updates for counts
+        fetch("/api/updates", {
+            headers: { "Authorization": `Token ${token}` }
+        })
+            .then(res => res.ok ? res.json() : [])
+            .then(updates => {
+                const newCounts = { pending: 0, live: 0, review: 0 };
+                if (Array.isArray(updates)) {
+                    updates.forEach((u: any) => {
+                        if (u.status === 'pending') newCounts.pending++;
+                        if (u.status === 'live') newCounts.live++;
+                        if (u.status === 'review') newCounts.review++;
+                    });
+                }
+                setCounts(newCounts);
+            })
+            .catch(err => console.error("Failed to fetch counts", err));
 
         // Inactivity Timer
         let timeout: NodeJS.Timeout;
@@ -77,6 +98,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         router.push("/admin/login");
     };
 
+    const toggleMenu = (name: string) => {
+        setExpandedMenus(prev =>
+            prev.includes(name)
+                ? prev.filter(n => n !== name)
+                : [...prev, name]
+        );
+    };
+
     if (!authorized) {
         return null; // Or a loading spinner
     }
@@ -91,12 +120,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         { name: "Prayer Wall", href: "/admin/prayers", icon: MessageSquare, adminOnly: true },
         {
             name: "Updates",
-            href: "/admin/updates",
+            href: "#", // Changed to hash to prevent nav, controlled by click
             icon: Calendar,
             subItems: [
-                { name: "Pending", href: "/admin/updates?tab=pending" },
-                { name: "Live", href: "/admin/updates?tab=live" },
-                { name: "Review", href: "/admin/updates?tab=review" },
+                { name: "Pending", href: "/admin/updates?tab=pending", count: counts.pending, color: "bg-amber-100 text-amber-700" },
+                { name: "Live", href: "/admin/updates?tab=live", count: counts.live, color: "bg-green-100 text-green-700" },
+                { name: "Review", href: "/admin/updates?tab=review", count: counts.review, color: "bg-red-100 text-red-700" },
             ]
         },
         { name: "Users", href: "/admin/users", icon: Users, adminOnly: true },
@@ -128,36 +157,60 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
                     {visibleNavItems.map((item) => {
                         const Icon = item.icon;
-                        const isActive = pathname === item.href || (item.subItems && pathname === item.href); // Keep parent active if on main page
-                        const isSubActive = item.subItems?.some(sub => pathname + window.location.search === sub.href); // Complex check usually needed but keeping simple for now
+                        const hasSubItems = !!item.subItems;
+                        const isExpanded = expandedMenus.includes(item.name);
+                        const isActive = pathname === item.href || (item.subItems && item.subItems.some(sub => pathname + window.location.search === sub.href));
+
+                        // If it has subitems, the parent is a toggle, unless invalid href
+                        const isLink = !hasSubItems;
+
+                        const ItemContent = (
+                            <div className={cn(
+                                "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm cursor-pointer",
+                                isActive && !hasSubItems
+                                    ? "bg-[#8b1d2c] text-white shadow-md"
+                                    : "text-slate-400 hover:bg-white/5 hover:text-white",
+                                collapsed && "justify-center px-2"
+                            )}>
+                                <Icon className="w-5 h-5 flex-shrink-0" />
+                                {!collapsed && (
+                                    <>
+                                        <span className="whitespace-nowrap overflow-hidden flex-1">{item.name}</span>
+                                        {hasSubItems && (
+                                            <ChevronRight className={cn("w-4 h-4 transition-transform", isExpanded && "rotate-90")} />
+                                        )}
+                                    </>
+                                )}
+                            </div>
+                        );
 
                         return (
                             <div key={item.name} className="space-y-1">
-                                <Link
-                                    href={item.href}
-                                    title={collapsed ? item.name : undefined}
-                                    className={cn(
-                                        "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm",
-                                        isActive
-                                            ? "bg-[#8b1d2c] text-white shadow-md"
-                                            : "text-slate-400 hover:bg-white/5 hover:text-white",
-                                        collapsed && "justify-center px-2"
-                                    )}
-                                >
-                                    <Icon className="w-5 h-5 flex-shrink-0" />
-                                    {!collapsed && <span className="whitespace-nowrap overflow-hidden flex-1">{item.name}</span>}
-                                </Link>
+                                {isLink ? (
+                                    <Link href={item.href} title={collapsed ? item.name : undefined}>
+                                        {ItemContent}
+                                    </Link>
+                                ) : (
+                                    <div onClick={() => !collapsed && toggleMenu(item.name)} title={collapsed ? item.name : undefined}>
+                                        {ItemContent}
+                                    </div>
+                                )}
 
                                 {/* Subitems */}
-                                {!collapsed && item.subItems && (
-                                    <div className="pl-12 space-y-1 pb-2">
+                                {!collapsed && hasSubItems && isExpanded && (
+                                    <div className="pl-12 space-y-1 pb-2 animate-in slide-in-from-top-2 duration-200">
                                         {item.subItems.map(sub => (
                                             <Link
                                                 key={sub.name}
                                                 href={sub.href}
-                                                className="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors"
+                                                className="flex items-center justify-between py-1.5 pr-4 text-xs text-slate-500 hover:text-white transition-colors"
                                             >
-                                                {sub.name}
+                                                <span>{sub.name}</span>
+                                                {sub.count !== undefined && sub.count > 0 && (
+                                                    <span className={cn("px-1.5 py-0.5 rounded-full text-[10px] font-bold min-w-[1.5rem] text-center", sub.color)}>
+                                                        {sub.count}
+                                                    </span>
+                                                )}
                                             </Link>
                                         ))}
                                     </div>
