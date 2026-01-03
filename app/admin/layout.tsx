@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, MessageSquare, LogOut, Menu, X, Calendar, Users } from "lucide-react";
+import { LayoutDashboard, MessageSquare, LogOut, Menu, X, Calendar, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
     const router = useRouter();
     const pathname = usePathname();
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Mobile
+    const [collapsed, setCollapsed] = useState(false); // Desktop
     const [authorized, setAuthorized] = useState(false);
     const [currentUser, setCurrentUser] = useState<any>(null);
 
@@ -99,15 +100,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     return (
         <div className="min-h-screen bg-slate-50 flex">
             {/* Sidebar Desktop */}
-            <aside className="hidden md:flex flex-col w-64 bg-[#1e293b] text-white fixed h-full inset-y-0 z-50">
-                <div className="p-6 border-b border-slate-700 flex items-center gap-3">
-                    <div className="bg-white/10 p-2 rounded-lg">
+            <aside className={cn(
+                "hidden md:flex flex-col bg-[#1e293b] text-white fixed h-full inset-y-0 z-50 transition-all duration-300",
+                collapsed ? "w-20" : "w-64"
+            )}>
+                <div className={cn("p-6 border-b border-slate-700 flex items-center gap-3", collapsed && "justify-center p-4")}>
+                    <div className="bg-white/10 p-2 rounded-lg flex-shrink-0">
                         <LayoutDashboard className="w-6 h-6 text-amber-500" />
                     </div>
-                    <div>
-                        <span className="block font-bold text-lg tracking-tight">ADA Admin</span>
-                        <span className="text-xs text-slate-400">Management Portal</span>
-                    </div>
+                    {!collapsed && (
+                        <div className="overflow-hidden whitespace-nowrap">
+                            <span className="block font-bold text-lg tracking-tight">ADA Admin</span>
+                            <span className="text-xs text-slate-400">Management Portal</span>
+                        </div>
+                    )}
                 </div>
 
                 <nav className="flex-1 p-4 space-y-2">
@@ -118,28 +124,42 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                             <Link
                                 key={item.href}
                                 href={item.href}
+                                title={collapsed ? item.name : undefined}
                                 className={cn(
                                     "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm",
                                     isActive
                                         ? "bg-[#8b1d2c] text-white shadow-md"
-                                        : "text-slate-400 hover:bg-white/5 hover:text-white"
+                                        : "text-slate-400 hover:bg-white/5 hover:text-white",
+                                    collapsed && "justify-center px-2"
                                 )}
                             >
-                                <Icon className="w-5 h-5" />
-                                {item.name}
+                                <Icon className="w-5 h-5 flex-shrink-0" />
+                                {!collapsed && <span className="whitespace-nowrap overflow-hidden">{item.name}</span>}
                             </Link>
                         );
                     })}
                 </nav>
 
-                <div className="p-4 border-t border-slate-700">
+                <div className="p-4 border-t border-slate-700 space-y-2">
+                    <Button
+                        variant="ghost"
+                        onClick={() => setCollapsed(!collapsed)}
+                        className="w-full justify-center text-slate-400 hover:text-white hover:bg-white/5"
+                    >
+                        {collapsed ? <ChevronRight className="w-5 h-5" /> : <div className="flex items-center gap-2 w-full"><ChevronLeft className="w-5 h-5" /> <span>Collapse</span></div>}
+                    </Button>
+
                     <Button
                         variant="ghost"
                         onClick={handleLogout}
-                        className="w-full justify-start text-slate-400 hover:text-red-400 hover:bg-red-500/10 gap-3"
+                        className={cn(
+                            "w-full justify-start text-slate-400 hover:text-red-400 hover:bg-red-500/10 gap-3",
+                            collapsed && "justify-center px-0"
+                        )}
+                        title={collapsed ? "Sign Out" : undefined}
                     >
-                        <LogOut className="w-5 h-5" />
-                        Sign Out
+                        <LogOut className="w-5 h-5 flex-shrink-0" />
+                        {!collapsed && <span className="whitespace-nowrap overflow-hidden">Sign Out</span>}
                     </Button>
                 </div>
             </aside>
@@ -152,7 +172,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 />
             )}
 
-            {/* Mobile Sidebar */}
+            {/* Mobile Sidebar (Unchanged) */}
             <aside className={cn(
                 "fixed inset-y-0 left-0 z-50 w-64 bg-[#1e293b] text-white transform transition-transform duration-200 md:hidden flex flex-col",
                 isSidebarOpen ? "translate-x-0" : "-translate-x-full"
@@ -199,7 +219,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
 
             {/* Main Content */}
-            <main className="flex-1 md:ml-64 min-h-screen transition-all duration-200">
+            <main className={cn(
+                "flex-1 min-h-screen transition-all duration-300",
+                collapsed ? "md:ml-20" : "md:ml-64"
+            )}>
                 <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-4 md:px-8 sticky top-0 z-30">
                     <div className="flex items-center gap-4">
                         <Button
