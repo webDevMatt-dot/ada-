@@ -25,8 +25,7 @@ interface ApiLocation {
     province: string | null;
 }
 
-userLocation ?: { latitude: number; longitude: number } | null;
-}
+
 
 export default function Map({ locations, userLocation }: { locations: ApiLocation[], userLocation?: { latitude: number; longitude: number } | null }) {
 

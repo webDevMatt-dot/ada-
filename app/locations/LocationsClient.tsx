@@ -32,6 +32,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
     const [userLocation, setUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
     const [isLocating, setIsLocating] = useState(false);
     const [sortByDistance, setSortByDistance] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const { t } = useLanguage();
 
     // Haversine formula to calculate distance in km
