@@ -24,24 +24,51 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         const token = localStorage.getItem("authToken");
         if (!token) {
             router.push("/admin/login");
-        } else {
-            // Validate token and get user info
-            fetch("http://localhost:8000/api/me/", {
-                headers: { "Authorization": `Token ${token}` }
-            })
-                .then(res => {
-                    if (res.ok) return res.json();
-                    throw new Error("Invalid token");
-                })
-                .then(user => {
-                    setCurrentUser(user);
-                    setAuthorized(true);
-                })
-                .catch(() => {
-                    localStorage.removeItem("authToken");
-                    router.push("/admin/login");
-                });
+            return;
         }
+
+        // Validate token and get user info
+        fetch("http://localhost:8000/api/me/", {
+            headers: { "Authorization": `Token ${token}` }
+        })
+            .then(res => {
+                if (res.ok) return res.json();
+                throw new Error("Invalid token");
+            })
+            .then(user => {
+                setCurrentUser(user);
+                setAuthorized(true);
+            })
+            .catch(() => {
+                localStorage.removeItem("authToken");
+                router.push("/admin/login");
+            });
+
+        // Inactivity Timer
+        let timeout: NodeJS.Timeout;
+        const events = ['mousemove', 'keydown', 'click', 'scroll'];
+
+        const resetTimer = () => {
+            clearTimeout(timeout);
+            // 3 minutes = 180000 ms
+            timeout = setTimeout(() => {
+                localStorage.removeItem("authToken");
+                router.push("/admin/login?reason=timeout");
+            }, 180000);
+        };
+
+        // Start timer initially
+        resetTimer();
+
+        // Listen for events
+        events.forEach(event => window.addEventListener(event, resetTimer));
+
+        // Cleanup
+        return () => {
+            clearTimeout(timeout);
+            events.forEach(event => window.removeEventListener(event, resetTimer));
+        };
+
     }, [pathname, router]);
 
     const handleLogout = () => {

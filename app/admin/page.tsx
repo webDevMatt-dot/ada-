@@ -2,31 +2,94 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { MessageSquare, Calendar, MapPin, ArrowRight, Users } from "lucide-react";
+import { MessageSquare, Calendar, MapPin, ArrowRight, Users, RotateCcw } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+
+interface Update {
+    id: number;
+    title: string;
+    status: string;
+    rejection_reason?: string;
+    created_by: number;
+}
 
 export default function AdminDashboard() {
     const [currentUser, setCurrentUser] = useState<any>(null);
+    const [deniedUpdates, setDeniedUpdates] = useState<Update[]>([]);
+    const [deniedOpen, setDeniedOpen] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const router = useRouter();
 
     useEffect(() => {
-        const fetchUser = async () => {
+        const init = async () => {
             const token = localStorage.getItem("authToken");
-            if (token) {
-                try {
-                    const res = await fetch("http://localhost:8000/api/me/", {
-                        headers: { "Authorization": `Token ${token}` }
-                    });
-                    if (res.ok) {
-                        const data = await res.json();
-                        setCurrentUser(data);
-                    }
-                } catch (e) {
-                    console.error("Failed to fetch user", e);
+            if (!token) {
+                setLoading(false);
+                return;
+            }
+
+            try {
+                // 1. Fetch User
+                const userRes = await fetch("http://localhost:8000/api/me/", {
+                    headers: { "Authorization": `Token ${token}` }
+                });
+
+                let user = null;
+                if (userRes.ok) {
+                    user = await userRes.json();
+                    setCurrentUser(user);
                 }
+
+                // 2. Fetch User's Updates
+                // Fetch ALL updates and filter client-side to be safe and consistent
+                const updatesRes = await fetch("http://localhost:8000/api/updates/", {
+                    headers: { "Authorization": `Token ${token}` }
+                });
+
+                if (updatesRes.ok && user) {
+                    const updates: Update[] = await updatesRes.json();
+                    // Filter for: Status is 'review' AND Created by Me
+                    const myDenied = updates.filter(u => u.status === 'review' && u.created_by === user.id);
+
+                    // console.log("DEBUG: Found matched denied updates", myDenied);
+
+                    // Check session storage to see if we already ignored this session globally
+                    const globalIgnored = sessionStorage.getItem("ignoredDeniedPopup");
+
+                    // Also check for specific IDs ignored (e.g. just returned by me)
+                    const ignoredIds: number[] = JSON.parse(sessionStorage.getItem("ignoredDeniedIds") || "[]");
+
+                    const actionableDenied = myDenied.filter(u => !ignoredIds.includes(u.id));
+
+                    if (actionableDenied.length > 0 && !globalIgnored) {
+                        setDeniedUpdates(actionableDenied);
+                        setDeniedOpen(true);
+                    }
+                }
+
+            } catch (e) {
+                console.error("Failed to fetch dashboard data", e);
+            } finally {
+                setLoading(false);
             }
         }
-        fetchUser();
+        init();
     }, []);
+
+    const handleIgnore = () => {
+        setDeniedOpen(false);
+        sessionStorage.setItem("ignoredDeniedPopup", "true");
+    };
 
     const modules = [
         {
@@ -112,6 +175,41 @@ export default function AdminDashboard() {
                     </Card>
                 ))}
             </div>
+
+            {/* Notification Dialog */}
+            <Dialog open={deniedOpen} onOpenChange={setDeniedOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle className="text-amber-600 flex items-center gap-2">
+                            <RotateCcw className="w-5 h-5" /> Action Required
+                        </DialogTitle>
+                        <DialogDescription>
+                            Some of your updates have been returned for review.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="max-h-[300px] overflow-y-auto space-y-3">
+                        {deniedUpdates.map(u => (
+                            <div key={u.id} className="p-3 bg-slate-50 rounded-lg border border-slate-100">
+                                <h4 className="font-medium text-slate-800 text-sm">{u.title}</h4>
+                                <p className="text-xs text-red-600 mt-1 font-semibold">{u.rejection_reason}</p>
+                            </div>
+                        ))}
+                    </div>
+                    <DialogFooter className="gap-2 sm:gap-0">
+                        <Button variant="ghost" onClick={handleIgnore}>Ignore for now</Button>
+                        <Button
+                            className="bg-[#8b1d2c] hover:bg-[#6d1722]"
+                            onClick={() => {
+                                setDeniedOpen(false);
+                                // Navigate to updates page with tab pre-selected
+                                router.push(`/admin/updates?tab=review`);
+                            }}
+                        >
+                            Fix Updates
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

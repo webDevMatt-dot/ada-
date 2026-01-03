@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useLanguage } from "@/context/LanguageContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
@@ -13,6 +14,15 @@ export default function AdminLoginPage() {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const { t } = useLanguage();
+
+    useEffect(() => {
+        const reason = searchParams.get("reason");
+        if (reason === "timeout") {
+            setError(t("nav.sessionExpired"));
+        }
+    }, [searchParams, t]);
 
     const [failedAttempts, setFailedAttempts] = useState(0);
 
@@ -34,6 +44,10 @@ export default function AdminLoginPage() {
             if (res.ok) {
                 const data = await res.json();
                 localStorage.setItem("authToken", data.token);
+                // Clear notification suppression flags so new session gets fresh popups
+                sessionStorage.removeItem("ignoredDeniedPopup");
+                sessionStorage.removeItem("ignoredDeniedIds");
+
                 // Redirect to the main admin dashboard
                 router.push("/admin");
             } else {
@@ -62,7 +76,7 @@ export default function AdminLoginPage() {
                     <div className="mx-auto bg-[#8b1d2c]/10 p-4 rounded-full w-fit mb-2">
                         <Lock className="w-8 h-8 text-[#8b1d2c]" />
                     </div>
-                    <CardTitle className="text-2xl font-bold text-slate-800">ADA Admin Portal</CardTitle>
+                    <CardTitle className="text-2xl font-bold text-slate-800">ADA Portal</CardTitle>
                     <CardDescription>Sign in to manage the church website</CardDescription>
                 </CardHeader>
                 <form onSubmit={handleLogin}>

@@ -16,7 +16,8 @@ export const translations = {
             contact: "Contact",
             login: "Login",
             receiveJesus: "Receive Jesus",
-            finance: "Finance Portal"
+            finance: "Finance Portal",
+            sessionExpired: "You were logged out due to inactivity."
         },
         hero: {
             badge: "Bound by the Holy Spirit",
@@ -320,7 +321,8 @@ export const translations = {
             contact: "Contacto",
             login: "Login",
             receiveJesus: "Aceitar Jesus",
-            finance: "Portal de Finanças"
+            finance: "Portal de Finanças",
+            sessionExpired: "Você foi desconectado devido à inatividade."
         },
         hero: {
             badge: "Guiada pelo Espírito Santo",

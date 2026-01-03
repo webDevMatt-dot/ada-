@@ -23,6 +23,14 @@ class Update(models.Model):
         ('FABM Team', 'FABM Team'),
     ]
 
+    STATUS_CHOICES = [
+        ('pending', 'Pending'),
+        ('live', 'Live'),
+        ('review', 'Resent for Review'),
+        ('inactive', 'Inactive'),
+        ('deleted', 'Deleted'),
+    ]
+
     title = models.CharField(max_length=200)
     description = models.TextField()
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
@@ -30,7 +38,8 @@ class Update(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     created_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
     team = models.CharField(max_length=100, choices=TEAM_CHOICES, default='HQ')
-    is_approved = models.BooleanField(default=False)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='pending')
+    rejection_reason = models.TextField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
         # Auto-assign team based on UserProfile department
@@ -38,13 +47,16 @@ class Update(models.Model):
             if hasattr(self.created_by, 'profile'):
                 self.team = self.created_by.profile.department
             
-            # Auto-approve if Superuser or HQ
-            if self.created_by.is_superuser or self.team == 'HQ':
-                self.is_approved = True
+            # Auto-approve (Live) if Superuser or HQ, ONLY if it's a new instance or currently pending
+            # logic: if it's new, set based on user. if existing, don't override unless specific transition needed.
+            # simpler approach: if it is pending and user is superuser/HQ, make it live.
+            if not self.pk and (self.created_by.is_superuser or self.team == 'HQ'):
+                self.status = 'live'
 
         elif not self.team: # Fallback
             self.team = 'HQ'
-            self.is_approved = True # System/Fallback updates auto-approved
+            if not self.pk:
+                self.status = 'live' # System/Fallback updates auto-approved
             
         super().save(*args, **kwargs)
 

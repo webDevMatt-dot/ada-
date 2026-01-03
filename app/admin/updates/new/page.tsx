@@ -52,7 +52,9 @@ export default function NewUpdatePage() {
                 router.push("/admin/updates");
                 router.refresh();
             } else {
-                console.error("Failed to create update");
+                const errorData = await res.text();
+                console.error("Failed to create update:", errorData);
+                // Optional: set form error state to display to user
             }
         } catch (error) {
             console.error("Error submitting form", error);
