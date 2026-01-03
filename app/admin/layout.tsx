@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, MessageSquare, LogOut, Menu, X, Calendar, Users, ChevronLeft, ChevronRight } from "lucide-react";
+import { LayoutDashboard, MessageSquare, LogOut, Menu, X, Calendar, Users, ChevronLeft, ChevronRight, CalendarDays, MapPin } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -157,25 +157,33 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         adminOnly: true
     };
 
-    const navItems: NavItem[] = [
-        { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-        prayerWallItem,
+    const navGroups = [
         {
-            name: "Updates",
-            href: "#", // Changed to hash to prevent nav, controlled by click
-            icon: Calendar,
-            subItems: [
-                { name: "Pending", href: "/admin/updates?tab=pending", count: counts.pending, color: "bg-amber-100 text-amber-700" },
-                { name: "Live", href: "/admin/updates?tab=live", count: counts.live, color: "bg-green-100 text-green-700" },
-                { name: "Review", href: "/admin/updates?tab=review", count: counts.review, color: "bg-red-100 text-red-700" },
+            title: "",
+            items: [
+                { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+                prayerWallItem,
+                {
+                    name: "Updates",
+                    href: "#", // Changed to hash to prevent nav, controlled by click
+                    icon: Calendar,
+                    subItems: [
+                        { name: "Pending", href: "/admin/updates?tab=pending", count: counts.pending, color: "bg-amber-100 text-amber-700" },
+                        { name: "Live", href: "/admin/updates?tab=live", count: counts.live, color: "bg-green-100 text-green-700" },
+                        { name: "Review", href: "/admin/updates?tab=review", count: counts.review, color: "bg-red-100 text-red-700" },
+                    ]
+                },
+                { name: "Users", href: "/admin/users", icon: Users, adminOnly: true },
             ]
         },
-        { name: "Users", href: "/admin/users", icon: Users, adminOnly: true },
+        {
+            title: "CMS",
+            items: [
+                { name: "Events", href: "/events", icon: CalendarDays, external: true },
+                { name: "Locations", href: "/locations", icon: MapPin, external: true },
+            ]
+        }
     ];
-
-    const visibleNavItems = navItems.filter(item =>
-        !item.adminOnly || (currentUser?.is_superuser || currentUser?.is_staff)
-    );
 
     return (
         <div className="min-h-screen bg-slate-50 flex">
@@ -196,70 +204,87 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     )}
                 </div>
 
-                <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
-                    {visibleNavItems.map((item) => {
-                        const Icon = item.icon;
-                        const hasSubItems = !!item.subItems;
-                        const isExpanded = expandedMenus.includes(item.name);
-                        const isActive = pathname === item.href || (item.subItems && item.subItems.some(sub => pathname + window.location.search === sub.href));
+                <nav className="flex-1 p-4 space-y-6 overflow-y-auto custom-scrollbar">
+                    {navGroups.map((group, groupIndex) => (
+                        <div key={groupIndex} className="space-y-1">
+                            {group.title && !collapsed && (
+                                <h3 className="px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">
+                                    {group.title}
+                                </h3>
+                            )}
+                            {group.title && collapsed && (
+                                <div className="h-px bg-slate-700 mx-2 my-2" />
+                            )}
 
-                        // If it has subitems, the parent is a toggle, unless invalid href
-                        const isLink = !hasSubItems;
+                            {group.items.filter(item => !item.adminOnly || (currentUser?.is_superuser || currentUser?.is_staff)).map((item) => {
+                                const Icon = item.icon;
+                                const hasSubItems = !!item.subItems;
+                                const isExpanded = expandedMenus.includes(item.name);
+                                const isActive = pathname === item.href || (item.subItems && item.subItems.some(sub => pathname + window.location.search === sub.href));
 
-                        const ItemContent = (
-                            <div className={cn(
-                                "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm cursor-pointer",
-                                isActive && !hasSubItems
-                                    ? "bg-[#8b1d2c] text-white shadow-md"
-                                    : "text-slate-400 hover:bg-white/5 hover:text-white",
-                                collapsed && "justify-center px-2"
-                            )}>
-                                <Icon className="w-5 h-5 flex-shrink-0" />
-                                {!collapsed && (
-                                    <>
-                                        <span className="whitespace-nowrap overflow-hidden flex-1">{item.name}</span>
-                                        {hasSubItems && (
-                                            <ChevronRight className={cn("w-4 h-4 transition-transform", isExpanded && "rotate-90")} />
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        );
+                                // If it has subitems, the parent is a toggle, unless invalid href
+                                const isLink = !hasSubItems;
 
-                        return (
-                            <div key={item.name} className="space-y-1">
-                                {isLink ? (
-                                    <Link href={item.href} title={collapsed ? item.name : undefined}>
-                                        {ItemContent}
-                                    </Link>
-                                ) : (
-                                    <div onClick={() => !collapsed && toggleMenu(item.name)} title={collapsed ? item.name : undefined}>
-                                        {ItemContent}
-                                    </div>
-                                )}
-
-                                {/* Subitems */}
-                                {!collapsed && hasSubItems && isExpanded && item.subItems && (
-                                    <div className="pl-12 space-y-1 pb-2 animate-in slide-in-from-top-2 duration-200">
-                                        {item.subItems.map(sub => (
-                                            <Link
-                                                key={sub.name}
-                                                href={sub.href}
-                                                className="flex items-center justify-between py-1.5 pr-4 text-xs text-slate-500 hover:text-white transition-colors"
-                                            >
-                                                <span>{sub.name}</span>
-                                                {sub.count !== undefined && sub.count > 0 && (
-                                                    <span className={cn("px-1.5 py-0.5 rounded-full text-[10px] font-bold min-w-[1.5rem] text-center", sub.color)}>
-                                                        {sub.count}
-                                                    </span>
+                                const ItemContent = (
+                                    <div className={cn(
+                                        "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm cursor-pointer",
+                                        isActive && !hasSubItems
+                                            ? "bg-[#8b1d2c] text-white shadow-md"
+                                            : "text-slate-400 hover:bg-white/5 hover:text-white",
+                                        collapsed && "justify-center px-2"
+                                    )}>
+                                        <Icon className="w-5 h-5 flex-shrink-0" />
+                                        {!collapsed && (
+                                            <>
+                                                <span className="whitespace-nowrap overflow-hidden flex-1">{item.name}</span>
+                                                {hasSubItems && (
+                                                    <ChevronRight className={cn("w-4 h-4 transition-transform", isExpanded && "rotate-90")} />
                                                 )}
-                                            </Link>
-                                        ))}
+                                                {/* @ts-ignore */}
+                                                {item.external && <ChevronRight className="w-3 h-3 opacity-50" />}
+                                            </>
+                                        )}
                                     </div>
-                                )}
-                            </div>
-                        );
-                    })}
+                                );
+
+                                return (
+                                    <div key={item.name} className="space-y-1">
+                                        {isLink ? (
+                                            <Link href={item.href} title={collapsed ? item.name : undefined} target={
+                                                // @ts-ignore
+                                                item.external ? "_blank" : undefined}>
+                                                {ItemContent}
+                                            </Link>
+                                        ) : (
+                                            <div onClick={() => !collapsed && toggleMenu(item.name)} title={collapsed ? item.name : undefined}>
+                                                {ItemContent}
+                                            </div>
+                                        )}
+
+                                        {/* Subitems */}
+                                        {!collapsed && hasSubItems && isExpanded && item.subItems && (
+                                            <div className="pl-12 space-y-1 pb-2 animate-in slide-in-from-top-2 duration-200">
+                                                {item.subItems.map(sub => (
+                                                    <Link
+                                                        key={sub.name}
+                                                        href={sub.href}
+                                                        className="flex items-center justify-between py-1.5 pr-4 text-xs text-slate-500 hover:text-white transition-colors"
+                                                    >
+                                                        <span>{sub.name}</span>
+                                                        {sub.count !== undefined && sub.count > 0 && (
+                                                            <span className={cn("px-1.5 py-0.5 rounded-full text-[10px] font-bold min-w-[1.5rem] text-center", sub.color)}>
+                                                                {sub.count}
+                                                            </span>
+                                                        )}
+                                                    </Link>
+                                                ))}
+                                            </div>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                    ))}
                 </nav>
 
                 <div className="p-4 border-t border-slate-700 space-y-2">
