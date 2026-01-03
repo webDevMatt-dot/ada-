@@ -14,14 +14,20 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import os
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from django.views.generic import RedirectView
 from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse, HttpResponse
+
+def debug_view(request):
+    return JsonResponse({'status': 'ok', 'message': 'Server is running', 'env_db': str(os.environ.get('DATABASE_URL') is not None)})
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/debug', debug_view),
     path('api/', include('prayers.urls')),
     path('api/', include('updates.urls')),
     path('api/', include('accounts.urls')),
