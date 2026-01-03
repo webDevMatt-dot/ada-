@@ -29,7 +29,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         }
 
         // Validate token and get user info
-        fetch("/api/me/", {
+        fetch("/api/me", {
             headers: { "Authorization": `Token ${token}` }
         })
             .then(res => {
