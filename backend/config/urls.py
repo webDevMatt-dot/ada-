@@ -17,9 +17,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
+from django.views.generic import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('prayers.urls')),
     path('api/login/', obtain_auth_token),
+    path('', RedirectView.as_view(url='/admin/', permanent=False)),
 ]

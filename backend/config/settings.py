@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-ag0^p%20msky@*1_u%#++5ugkc01is-_$ajx3ksewd2kdp6i4t
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -62,6 +62,7 @@ MIDDLEWARE = [
 ]
 
 CORS_ALLOW_ALL_ORIGINS = True
+CSRF_TRUSTED_ORIGINS = ['https://*.loca.lt']
 
 ROOT_URLCONF = 'config.urls'
 
