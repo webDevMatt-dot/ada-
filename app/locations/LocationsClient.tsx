@@ -61,53 +61,75 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
             );
         }
 
+        // Group items by province
+        const groupedItems = items.reduce((groups, item) => {
+            const province = item.province || "Other";
+            if (!groups[province]) {
+                groups[province] = [];
+            }
+            groups[province].push(item);
+            return groups;
+        }, {} as Record<string, ApiLocation[]>);
+
+        // Sort provinces alphabetically
+        const sortedProvinces = Object.keys(groupedItems).sort();
+
         return (
-            <div className="space-y-4">
-                {items.sort((a, b) => a.name.localeCompare(b.name)).map((loc) => (
-                    <div
-                        key={loc.id}
-                        className="bg-white p-6 rounded-2xl shadow-sm border border-slate-50 hover:shadow-md transition-all flex gap-6 group"
-                    >
-                        <div className="bg-slate-50 p-4 rounded-xl h-fit shrink-0">
-                            <div className="bg-white p-2 rounded-lg shadow-sm border border-[#8b1d2c]/10 group-hover:border-[#8b1d2c] transition-colors">
-                                <MapPin className="h-6 w-6 text-[#8b1d2c]" />
-                            </div>
-                        </div>
-
-                        <div className="space-y-3 flex-1 min-w-0">
-                            <div className="flex justify-between items-start gap-4">
-                                <h2 className="text-xl font-bold text-[#1e293b] truncate pr-2">{loc.name}</h2>
-                                <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider shrink-0 whitespace-nowrap ${loc.type === 'Assembly'
-                                    ? 'bg-green-100 text-green-700'
-                                    : 'bg-blue-100 text-blue-700'
-                                    }`}>
-                                    {loc.type}
-                                </span>
-                            </div>
-
-                            <div className="space-y-2">
-                                <div className="flex items-start gap-2 text-slate-500 text-sm">
-                                    <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                                    <span className="line-clamp-2">{loc.address || t('locations.addressNotAvailable')}</span>
-                                </div>
-
-                                {loc.province && (
-                                    <div className="flex items-center gap-2 text-slate-500 text-sm">
-                                        <Building2 className="h-4 w-4 shrink-0 mt-0.5" />
-                                        <span>{loc.province}</span>
+            <div className="space-y-8">
+                {sortedProvinces.map((province) => (
+                    <div key={province} className="space-y-4">
+                        <h3 className="text-xl font-bold text-slate-800 px-1 border-b border-slate-200 pb-2">
+                            {province}
+                        </h3>
+                        <div className="space-y-4">
+                            {groupedItems[province].sort((a, b) => a.name.localeCompare(b.name)).map((loc) => (
+                                <div
+                                    key={loc.id}
+                                    className="bg-white p-6 rounded-2xl shadow-sm border border-slate-50 hover:shadow-md transition-all flex gap-6 group"
+                                >
+                                    <div className="bg-slate-50 p-4 rounded-xl h-fit shrink-0">
+                                        <div className="bg-white p-2 rounded-lg shadow-sm border border-[#8b1d2c]/10 group-hover:border-[#8b1d2c] transition-colors">
+                                            <MapPin className="h-6 w-6 text-[#8b1d2c]" />
+                                        </div>
                                     </div>
-                                )}
 
-                                <div className="flex items-center gap-2 text-slate-500 text-sm">
-                                    <User className="h-4 w-4 shrink-0" />
-                                    <span className="truncate">{loc.leader_name || t('locations.regionalPastor')}</span>
-                                </div>
+                                    <div className="space-y-3 flex-1 min-w-0">
+                                        <div className="flex justify-between items-start gap-4">
+                                            <h2 className="text-xl font-bold text-[#1e293b] truncate pr-2">{loc.name}</h2>
+                                            <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider shrink-0 whitespace-nowrap ${loc.type === 'Assembly'
+                                                ? 'bg-green-100 text-green-700'
+                                                : 'bg-blue-100 text-blue-700'
+                                                }`}>
+                                                {loc.type}
+                                            </span>
+                                        </div>
 
-                                <div className="flex items-center gap-2 text-slate-500 text-sm">
-                                    <Phone className="h-4 w-4 shrink-0" />
-                                    <span>{loc.leader_phone ? `+258 ${loc.leader_phone}` : t('locations.contactHQ')}</span>
+                                        <div className="space-y-2">
+                                            <div className="flex items-start gap-2 text-slate-500 text-sm">
+                                                <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+                                                <span className="line-clamp-2">{loc.address || t('locations.addressNotAvailable')}</span>
+                                            </div>
+
+                                            {loc.province && (
+                                                <div className="flex items-center gap-2 text-slate-500 text-sm">
+                                                    <Building2 className="h-4 w-4 shrink-0 mt-0.5" />
+                                                    <span>{loc.province}</span>
+                                                </div>
+                                            )}
+
+                                            <div className="flex items-center gap-2 text-slate-500 text-sm">
+                                                <User className="h-4 w-4 shrink-0" />
+                                                <span className="truncate">{loc.leader_name || t('locations.regionalPastor')}</span>
+                                            </div>
+
+                                            <div className="flex items-center gap-2 text-slate-500 text-sm">
+                                                <Phone className="h-4 w-4 shrink-0" />
+                                                <span>{loc.leader_phone ? `+258 ${loc.leader_phone}` : t('locations.contactHQ')}</span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 ))}
