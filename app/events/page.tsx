@@ -1,4 +1,6 @@
 import { EventsClient } from "./EventsClient";
+export const dynamic = "force-dynamic";
+
 import { NationalEvent } from "@/types/events";
 
 export const metadata = {

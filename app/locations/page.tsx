@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import LocationsClient from "./LocationsClient";
 
 // Updated interface to match specific payload

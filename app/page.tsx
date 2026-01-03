@@ -1,6 +1,9 @@
 
 
 
+
+export const dynamic = "force-dynamic";
+
 import { Hero } from "@/components/Hero";
 import { NationalEvent } from "@/types/events";
 import { HomeEvents } from "@/components/HomeEvents";
