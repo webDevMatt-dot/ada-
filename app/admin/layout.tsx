@@ -144,7 +144,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const prayerWallItem: NavItem = prayerCounts.pending > 0 ? {
         name: "Prayer Wall",
-        href: "#",
+        href: "/admin/prayers",
         icon: MessageSquare,
         adminOnly: true,
         subItems: [
@@ -166,7 +166,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 prayerWallItem,
                 {
                     name: "Updates",
-                    href: "#", // Changed to hash to prevent nav, controlled by click
+                    href: "/admin/updates", // Changed to path to allow nav when collapsed
                     icon: Calendar,
                     subItems: [
                         { name: "Pending", href: "/admin/updates?tab=pending", count: counts.pending, color: "bg-amber-100 text-amber-700" },
@@ -226,8 +226,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 const isExpanded = expandedMenus.includes(item.name);
                                 const isActive = pathname === item.href || (item.subItems && item.subItems.some(sub => pathname + window.location.search === sub.href));
 
-                                // If it has subitems, the parent is a toggle, unless invalid href
-                                const isLink = !hasSubItems;
+                                // If it has subitems, the parent is a toggle, unless invalid href OR collapsed
+                                const isLink = !hasSubItems || collapsed;
 
                                 const ItemContent = (
                                     <div className={cn(
