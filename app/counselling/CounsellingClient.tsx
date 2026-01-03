@@ -12,9 +12,12 @@ import {
     SelectContent,
     SelectItem,
     SelectTrigger,
-    SelectValue
+    SelectValue,
+    SelectSeparator,
+    SelectGroup,
+    SelectLabel
 } from "@/components/ui/select"
-import { COUNTRY_CODES } from "@/data/countryCodes"
+import { countries } from "@/lib/countries"
 import { useLanguage } from "@/context/LanguageContext";
 
 export default function CounsellingClient() {
@@ -23,6 +26,18 @@ export default function CounsellingClient() {
     const [email, setEmail] = useState("")
     const [selectedCountryIso, setSelectedCountryIso] = useState("MZ")
     const { t } = useLanguage();
+
+    useEffect(() => {
+        // Auto-detect user's country
+        fetch("https://ipapi.co/json/")
+            .then(res => res.json())
+            .then(data => {
+                if (data.country_code) {
+                    setSelectedCountryIso(data.country_code);
+                }
+            })
+            .catch(err => console.error("Failed to detect location", err));
+    }, []);
 
     const SUPPORT_TYPES = [
         {
@@ -62,7 +77,7 @@ export default function CounsellingClient() {
         }, 1500)
     }
 
-    const selectedCountry = COUNTRY_CODES.find(c => c.country === selectedCountryIso) || COUNTRY_CODES[0];
+    const selectedCountry = countries.find(c => c.code === selectedCountryIso) || countries.find(c => c.code === "MZ") || countries[0];
     const isMozambique = selectedCountryIso === "MZ";
 
     return (
@@ -108,15 +123,32 @@ export default function CounsellingClient() {
                                         </div>
                                     </SelectTrigger>
                                     <SelectContent position="popper" sideOffset={5} className="max-h-[300px]">
-                                        {COUNTRY_CODES.map((c, i) => (
-                                            <SelectItem key={c.country} value={c.country}>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="text-lg">{c.flag}</span>
-                                                    <span className="font-medium text-slate-700">{c.label}</span>
-                                                    <span className="text-slate-400 text-xs ml-auto">{c.code}</span>
-                                                </div>
-                                            </SelectItem>
-                                        ))}
+                                        <SelectGroup>
+                                            <SelectLabel>Portuguese Speaking</SelectLabel>
+                                            {countries
+                                                .filter(c => ["MZ", "AO", "BR", "PT", "CV", "GW", "ST", "TL", "GQ"].includes(c.code))
+                                                .sort((a, b) => {
+                                                    if (a.code === "MZ") return -1;
+                                                    if (b.code === "MZ") return 1;
+                                                    return a.name.localeCompare(b.name);
+                                                })
+                                                .map((c) => (
+                                                    <SelectItem key={c.code} value={c.code}>
+                                                        {c.flag} {c.dial_code}
+                                                    </SelectItem>
+                                                ))}
+                                        </SelectGroup>
+                                        <SelectSeparator />
+                                        <SelectGroup>
+                                            <SelectLabel>All Countries</SelectLabel>
+                                            {countries
+                                                .filter(c => !["MZ", "AO", "BR", "PT", "CV", "GW", "ST", "TL", "GQ"].includes(c.code))
+                                                .map((c) => (
+                                                    <SelectItem key={c.code} value={c.code}>
+                                                        {c.flag} {c.dial_code}
+                                                    </SelectItem>
+                                                ))}
+                                        </SelectGroup>
                                     </SelectContent>
                                 </Select>
                                 <Input id="phone" type="tel" placeholder={t('counselling.placeholderPhone')} required className="flex-1 rounded-xl border-slate-200 h-12" />
