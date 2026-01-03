@@ -20,7 +20,7 @@ export default function UpdatesPage() {
     useEffect(() => {
         const fetchUpdates = async () => {
             try {
-                const res = await fetch("http://localhost:8000/api/updates/");
+                const res = await fetch("/api/updates");
                 if (res.ok) {
                     const data = await res.json();
                     setUpdates(data);

@@ -39,7 +39,7 @@ export default function PrayersAdminPage() {
 
         try {
             // Use local API for now, plan to configure environment variable
-            const res = await fetch("http://localhost:8000/api/prayers/?admin=true", { headers });
+            const res = await fetch("/api/prayers?admin=true", { headers });
 
             if (res.status === 401 || res.status === 403) {
                 localStorage.removeItem("authToken");
@@ -69,7 +69,7 @@ export default function PrayersAdminPage() {
         if (!headers) return;
 
         try {
-            await fetch(`http://localhost:8000/api/prayers/${id}/approve/`, {
+            await fetch(`/api/prayers/${id}/approve`, {
                 method: "POST",
                 headers
             });
@@ -86,7 +86,7 @@ export default function PrayersAdminPage() {
         if (!headers) return;
 
         try {
-            const res = await fetch(`http://localhost:8000/api/prayers/${id}/`, {
+            const res = await fetch(`/api/prayers/${id}`, {
                 method: "DELETE",
                 headers
             });

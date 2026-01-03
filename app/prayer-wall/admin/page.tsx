@@ -38,7 +38,7 @@ export default function AdminPrayerWall() {
         }
 
         try {
-            const res = await fetch("http://localhost:8000/api/prayers/?admin=true", { headers });
+            const res = await fetch("/api/prayers?admin=true", { headers });
 
             if (res.status === 401 || res.status === 403) {
                 localStorage.removeItem("authToken");
@@ -66,7 +66,7 @@ export default function AdminPrayerWall() {
         if (!headers) return; // Should allow redirect in next fetch
 
         try {
-            await fetch(`http://localhost:8000/api/prayers/${id}/approve/`, {
+            await fetch(`/api/prayers/${id}/approve`, {
                 method: "POST",
                 headers
             });

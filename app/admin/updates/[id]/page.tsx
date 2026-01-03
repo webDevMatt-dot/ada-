@@ -49,7 +49,7 @@ export default function EditUpdatePage() {
             }
 
             try {
-                const res = await fetch(`http://localhost:8000/api/updates/${id}/`, {
+                const res = await fetch(`/api/updates/${id}`, {
                     headers: { "Authorization": `Token ${token}` }
                 });
 
@@ -108,7 +108,7 @@ export default function EditUpdatePage() {
                 data.append("image", imageFile);
             }
 
-            const res = await fetch(`http://localhost:8000/api/updates/${id}/`, {
+            const res = await fetch(`/api/updates/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Authorization": `Token ${token}`,
@@ -140,7 +140,7 @@ export default function EditUpdatePage() {
 
         const token = localStorage.getItem("authToken");
         try {
-            const res = await fetch(`http://localhost:8000/api/updates/${id}/delete_soft/`, {
+            const res = await fetch(`/api/updates/${id}/delete_soft`, {
                 method: "POST",
                 headers: {
                     "Authorization": `Token ${token}`,

@@ -54,7 +54,7 @@ export default function PrayerWallClient() {
     const fetchPrayers = async () => {
         setLoading(true);
         try {
-            const res = await fetch("http://localhost:8000/api/prayers/");
+            const res = await fetch("/api/prayers");
             if (res.ok) {
                 const data = await res.json();
                 setPrayerRequests(data);
@@ -74,7 +74,7 @@ export default function PrayerWallClient() {
         e.preventDefault();
         setSubmitting(true);
         try {
-            const res = await fetch("http://localhost:8000/api/prayers/", {
+            const res = await fetch("/api/prayers", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(formData)
@@ -101,7 +101,7 @@ export default function PrayerWallClient() {
         ));
 
         try {
-            await fetch(`http://localhost:8000/api/prayers/${id}/like/`, { method: "POST" });
+            await fetch(`/api/prayers/${id}/like`, { method: "POST" });
             // Ideally we'd re-fetch or use the response to sync viral status if needed
             // fetchPrayers(); 
         } catch (error) {
