@@ -138,6 +138,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         href: string;
         icon: any;
         adminOnly?: boolean;
+        external?: boolean;
         subItems?: { name: string; href: string; count?: number; color?: string; }[];
     }
 
@@ -157,7 +158,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         adminOnly: true
     };
 
-    const navGroups = [
+    const navGroups: { title: string; items: NavItem[] }[] = [
         {
             title: "",
             items: [
@@ -184,6 +185,9 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             ]
         }
     ];
+
+    const visibleNavItems = navGroups.flatMap(group => group.items)
+        .filter(item => !item.adminOnly || (currentUser?.is_superuser || currentUser?.is_staff));
 
     return (
         <div className="min-h-screen bg-slate-50 flex">
