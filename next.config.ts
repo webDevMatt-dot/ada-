@@ -18,6 +18,10 @@ const nextConfig: NextConfig = {
         source: '/api/:path*',
         destination: `${process.env.BACKEND_URL || 'http://127.0.0.1:8000'}/api/:path*`,
       },
+      {
+        source: '/media/:path*',
+        destination: `${process.env.BACKEND_URL || 'http://127.0.0.1:8000'}/media/:path*`,
+      },
     ];
   },
   // trailingSlash: true, // Kept for reference, but disabled as per previous fix

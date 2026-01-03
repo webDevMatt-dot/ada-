@@ -87,10 +87,9 @@ export default function UpdatesPage() {
     const getImageUrl = (imagePath: string | null) => {
         if (!imagePath) return "/hero.png";
         if (imagePath.startsWith("http")) return imagePath;
-        // Check for client-side custom backend URL or default to localhost
-        // aligning with next.config.ts which allows localhost:8000
-        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
-        return `${backendUrl}${imagePath}`;
+        if (imagePath.startsWith("/media")) return imagePath; // Already correct relative path
+        if (imagePath.startsWith("/")) return `/media${imagePath}`; // Starts with / but not /media
+        return `/media/${imagePath}`; // Plain filename or relative dir
     }
 
     return (
