@@ -252,7 +252,7 @@ export default function ReceiveJesusPage() {
                                         <Label className="text-slate-200">{t('contact.phoneLabel')} <span className="text-slate-500">({t('contact.optional')})</span></Label>
                                         <div className="flex gap-2">
                                             <Select value={countryCode} onValueChange={setCountryCode} name="countryCode">
-                                                <SelectTrigger className="w-[140px] bg-slate-800/50 border-slate-700 text-white focus:ring-amber-500">
+                                                <SelectTrigger className="w-[140px] bg-slate-800/50 border-slate-700 text-white focus:ring-amber-500 h-11">
                                                     <SelectValue placeholder="Country" />
                                                 </SelectTrigger>
                                                 <SelectContent className="max-h-[300px]">
@@ -290,7 +290,7 @@ export default function ReceiveJesusPage() {
                                                 name="phone"
                                                 type="tel"
                                                 placeholder="123 456 7890"
-                                                className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus-visible:ring-amber-500 flex-1"
+                                                className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus-visible:ring-amber-500 flex-1 h-11"
                                             />
                                         </div>
                                     </div>
