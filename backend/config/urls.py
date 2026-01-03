@@ -22,6 +22,8 @@ from django.views.generic import RedirectView
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('prayers.urls')),
+    path('api/', include('updates.urls')),
+    path('api/', include('accounts.urls')),
     path('api/login/', obtain_auth_token),
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
 ]

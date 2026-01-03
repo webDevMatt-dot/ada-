@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
@@ -14,155 +14,25 @@ export default function UpdatesPage() {
     const { t, language } = useLanguage();
     const [searchQuery, setSearchQuery] = useState("")
     const [selectedCategory, setSelectedCategory] = useState("All")
+    const [updates, setUpdates] = useState<any[]>([])
+    const [loading, setLoading] = useState(true)
 
-    const categories = [
-        "All",
-        "Videos",
-        "Announcements",
-        "Newsletters",
-        "Gallery",
-        "Apostle's Update"
-    ]
-
-    // Mock Data for English
-    const featuresEn = {
-        title: "Annual Community Outreach Program Success",
-        excerpt: "Our church family came together this weekend to serve over 500 meals to our local community. See the highlights and testimonies from this incredible day of service.",
-        date: "October 15, 2025",
-        author: "Pastor Matt",
-        category: "Gallery",
-        image: "/hero.png"
-    }
-
-    const updatesEn = [
-        {
-            title: "Sunday Service Live Stream - The Power of Faith",
-            excerpt: "Watch the full recording of this Sunday's powerful message about walking in faith during uncertain times.",
-            date: "October 12, 2025",
-            author: "Media Team",
-            category: "Videos",
-            image: "/hero.png"
-        },
-        {
-            title: "New Sunday Service Times",
-            excerpt: "Starting next month, we will be adding a third service to accommodate our growing family. Please note the new schedule.",
-            date: "October 5, 2025",
-            author: "Admin Team",
-            category: "Announcements",
-            image: "/hero.png"
-        },
-        {
-            title: "October 2025 Monthly Newsletter",
-            excerpt: "Download this month's newsletter to see upcoming events, reading plans, and a word from our leadership.",
-            date: "October 1, 2025",
-            author: "Communications",
-            category: "Newsletters",
-            image: "/hero.png"
-        },
-        {
-            title: "A Word for the Season: Embracing Change",
-            excerpt: "A special update from our Apostle regarding the new direction for our church expansion project.",
-            date: "September 28, 2025",
-            author: "Apostle John",
-            category: "Apostle's Update",
-            image: "/hero.png"
-        },
-        {
-            title: "Youth Camp Highlights 2025",
-            excerpt: "Check out this gallery of photos from our amazing youth summer camp. It was a life-changing experience for many!",
-            date: "September 15, 2025",
-            author: "Youth Ministry",
-            category: "Gallery",
-            image: "/hero.png"
-        },
-        {
-            title: "September 2025 Monthly Newsletter",
-            excerpt: "Recap of last month's events and a look forward to the fall season activities.",
-            date: "September 1, 2025",
-            author: "Communications",
-            category: "Newsletters",
-            image: "/hero.png"
-        }
-    ]
-
-    // Mock Data for Portuguese
-    const featuresPt = {
-        title: "Sucesso do Programa Anual de Apoio Comunitário",
-        excerpt: "A nossa família da igreja reuniu-se este fim de semana para servir mais de 500 refeições à nossa comunidade local. Veja os destaques e testemunhos deste dia incrível de serviço.",
-        date: "15 de Outubro de 2025",
-        author: "Pastor Matt",
-        category: "Galeria",
-        image: "/hero.png"
-    }
-
-    const updatesPt = [
-        {
-            title: "Transmissão do Culto de Domingo - O Poder da Fé",
-            excerpt: "Assista à gravação completa da mensagem poderosa deste domingo sobre caminhar na fé durante tempos incertos.",
-            date: "12 de Outubro de 2025",
-            author: "Equipa de Média",
-            category: "Vídeos",
-            image: "/hero.png"
-        },
-        {
-            title: "Novos Horários dos Cultos de Domingo",
-            excerpt: "A partir do próximo mês, adicionaremos um terceiro culto para acomodar a nossa família em crescimento. Por favor, note o novo horário.",
-            date: "5 de Outubro de 2025",
-            author: "Equipa Administrativa",
-            category: "Anúncios",
-            image: "/hero.png"
-        },
-        {
-            title: "Boletim Informativo de Outubro de 2025",
-            excerpt: "Descarregue o boletim deste mês para ver os próximos eventos, planos de leitura e uma palavra da nossa liderança.",
-            date: "1 de Outubro de 2025",
-            author: "Comunicações",
-            category: "Boletins",
-            image: "/hero.png"
-        },
-        {
-            title: "Uma Palavra para a Estação: Abraçar a Mudança",
-            excerpt: "Uma atualização especial do nosso Apóstolo sobre a nova direção para o nosso projeto de expansão da igreja.",
-            date: "28 de Setembro de 2025",
-            author: "Apóstolo John",
-            category: "Palavra do Apóstolo",
-            image: "/hero.png"
-        },
-        {
-            title: "Destaques do Acampamento de Jovens 2025",
-            excerpt: "Veja esta galeria de fotos do nosso incrível acampamento de verão para jovens. Foi uma experiência transformadora para muitos!",
-            date: "15 de Setembro de 2025",
-            author: "Ministério Jovem",
-            category: "Galeria",
-            image: "/hero.png"
-        },
-        {
-            title: "Boletim Informativo de Setembro de 2025",
-            excerpt: "Resumo dos eventos do mês passado e uma visão das atividades da estação de outono.",
-            date: "1 de Setembro de 2025",
-            author: "Comunicações",
-            category: "Boletins",
-            image: "/hero.png"
-        }
-    ]
-
-    const featuredUpdate = language === 'pt' ? featuresPt : featuresEn;
-    const updates = language === 'pt' ? updatesPt : updatesEn;
-
-    // Map internal categories to translated categories for display
-    const getCategoryLabel = (category: string) => {
-        if (category === "Apostle's Update") return t('updates.categories.apostle');
-        if (category === "Newsletters") return t('updates.categories.newsletters');
-        if (category === "Announcements") return t('updates.categories.announcements');
-        if (category === "Videos") return t('updates.categories.videos');
-        if (category === "Gallery") return t('updates.categories.gallery');
-        return category; // Fallback
-    }
-
-    const getCategoryKey = (category: string) => {
-        if (category === "Apostle's Update") return 'apostle';
-        return category.toLowerCase();
-    }
+    useEffect(() => {
+        const fetchUpdates = async () => {
+            try {
+                const res = await fetch("http://localhost:8000/api/updates/");
+                if (res.ok) {
+                    const data = await res.json();
+                    setUpdates(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch updates", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchUpdates();
+    }, []);
 
     const categoriesList = [
         "All",
@@ -173,23 +43,45 @@ export default function UpdatesPage() {
         "Apostle's Update"
     ];
 
-    // Combine all updates for searching/filtering logic
-    const allUpdates = [featuredUpdate, ...updates]
+    // Map internal categories to translated categories for display
+    const getCategoryLabel = (category: string) => {
+        if (category === "apostle") return t('updates.categories.apostle');
+        if (category === "newsletter") return t('updates.categories.newsletters');
+        if (category === "announcement") return t('updates.categories.announcements');
+        if (category === "video") return t('updates.categories.videos');
+        if (category === "gallery") return t('updates.categories.gallery');
+        // Capitalize first letter for fallback
+        return category.charAt(0).toUpperCase() + category.slice(1);
+    }
+
+    // Helper to map DB categories to the tab values
+    const mapDbCategoryToTab = (dbCategory: string) => {
+        if (dbCategory === 'video') return 'Videos';
+        if (dbCategory === 'announcement') return 'Announcements';
+        if (dbCategory === 'newsletter') return 'Newsletters';
+        if (dbCategory === 'gallery') return 'Gallery';
+        if (dbCategory === 'apostle') return "Apostle's Update";
+        return 'All';
+    }
 
     // Filter items based on search query AND category
-    const filteredUpdates = allUpdates.filter(update => {
+    const filteredUpdates = updates.filter(update => {
+        const categoryTab = mapDbCategoryToTab(update.category);
+
         const matchesSearch =
             update.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            update.excerpt.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            update.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            getCategoryLabel(update.category).toLowerCase().includes(searchQuery.toLowerCase())
+            update.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+            update.category.toLowerCase().includes(searchQuery.toLowerCase())
 
-        const matchesCategory = selectedCategory === "All" ||
-            update.category === selectedCategory ||
-            (language === 'pt' && update.category === t(`updates.categories.${getCategoryKey(selectedCategory)}`));
+        const matchesCategory = selectedCategory === "All" || categoryTab === selectedCategory;
 
         return matchesSearch && matchesCategory
     })
+
+    // Get the latest update as featured
+    const featuredUpdate = filteredUpdates.length > 0 ? filteredUpdates[0] : null;
+    // The rest of the updates
+    const remainingUpdates = filteredUpdates.length > 0 ? filteredUpdates.slice(1) : [];
 
     return (
         <div className="min-h-screen flex flex-col bg-[#f8fafd]">
@@ -271,7 +163,7 @@ export default function UpdatesPage() {
                     <div className="space-y-16">
 
                         {/* Featured Update */}
-                        {!searchQuery && (selectedCategory === "All" || featuredUpdate.category === selectedCategory || (language === 'pt' && featuredUpdate.category === t(`updates.categories.${getCategoryKey(selectedCategory)}`))) && (
+                        {featuredUpdate && (
                             <div className="animate-in fade-in slide-in-from-bottom-8 duration-700">
                                 <h2 className="text-2xl font-bold text-slate-900 mb-6 flex items-center gap-2">
                                     <Rss className="h-5 w-5 text-amber-500" /> {t('updates.featured')}
@@ -279,7 +171,7 @@ export default function UpdatesPage() {
                                 <div className="group relative bg-white rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-2 lg:h-[400px]">
                                     <div className="relative h-[300px] md:h-full w-full overflow-hidden">
                                         <Image
-                                            src={featuredUpdate.image}
+                                            src={featuredUpdate.image || "/hero.png"}
                                             alt={featuredUpdate.title}
                                             fill
                                             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -289,22 +181,22 @@ export default function UpdatesPage() {
                                     <div className="p-8 md:p-12 flex flex-col justify-center relative bg-white">
                                         <div className="mb-4">
                                             <Badge className="bg-amber-500 hover:bg-amber-600 text-white border-none">
-                                                {getCategoryLabel(featuredUpdate.category) || featuredUpdate.category}
+                                                {getCategoryLabel(featuredUpdate.category)}
                                             </Badge>
                                         </div>
                                         <h3 className="text-3xl font-bold text-slate-900 mb-4 leading-tight group-hover:text-primary transition-colors">
                                             {featuredUpdate.title}
                                         </h3>
-                                        <p className="text-slate-600 text-lg mb-6 leading-relaxed">
-                                            {featuredUpdate.excerpt}
+                                        <p className="text-slate-600 text-lg mb-6 leading-relaxed line-clamp-3">
+                                            {featuredUpdate.description}
                                         </p>
                                         <div className="mt-auto flex items-center justify-between border-t pt-6">
                                             <div className="flex items-center gap-4 text-sm text-slate-500">
                                                 <span className="flex items-center gap-1">
-                                                    <Calendar className="h-4 w-4" /> {featuredUpdate.date}
+                                                    <Calendar className="h-4 w-4" /> {new Date(featuredUpdate.created_at).toLocaleDateString()}
                                                 </span>
                                                 <span className="flex items-center gap-1">
-                                                    <User className="h-4 w-4" /> {featuredUpdate.author}
+                                                    <User className="h-4 w-4" /> {featuredUpdate.team || "HQ"}
                                                 </span>
                                             </div>
                                             <Button variant="ghost" className="text-primary hover:text-primary/80 p-0 font-semibold group-hover:translate-x-1 transition-transform">
@@ -319,37 +211,37 @@ export default function UpdatesPage() {
                         {/* Recent Updates Grid (or Search Results) */}
                         <div>
                             <h2 className="text-2xl font-bold text-slate-900 mb-8">
-                                {searchQuery ? `${t('updates.searchResults')} (${filteredUpdates.length})` : t('updates.recentNews')}
+                                {searchQuery ? `${t('updates.searchResults')} (${remainingUpdates.length})` : t('updates.recentNews')}
                             </h2>
 
-                            {filteredUpdates.length > 0 ? (
+                            {remainingUpdates.length > 0 ? (
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                                    {filteredUpdates.map((update, index) => (
+                                    {remainingUpdates.map((update, index) => (
                                         <Card key={index} className="border-none shadow-md hover:shadow-xl transition-all duration-300 group overflow-hidden flex flex-col h-full bg-white">
                                             <div className="relative h-48 w-full overflow-hidden">
                                                 <Image
-                                                    src={update.image}
+                                                    src={update.image || "/hero.png"}
                                                     alt={update.title}
                                                     fill
                                                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                                                 />
                                                 <div className="absolute top-4 left-4">
                                                     <Badge className="bg-white/90 text-slate-900 backdrop-blur-sm shadow-sm hover:bg-white">
-                                                        {getCategoryLabel(update.category) || update.category}
+                                                        {getCategoryLabel(update.category)}
                                                     </Badge>
                                                 </div>
                                             </div>
                                             <CardContent className="flex-1 p-6">
                                                 <div className="flex items-center gap-2 text-xs text-slate-400 mb-3 font-medium uppercase tracking-wider">
-                                                    <span>{update.date}</span>
+                                                    <span>{new Date(update.created_at).toLocaleDateString()}</span>
                                                     <span>•</span>
-                                                    <span>{update.author}</span>
+                                                    <span>{update.team || "HQ"}</span>
                                                 </div>
                                                 <h3 className="text-xl font-bold text-slate-900 mb-3 line-clamp-2 group-hover:text-primary transition-colors">
                                                     {update.title}
                                                 </h3>
                                                 <p className="text-slate-600 leading-relaxed text-sm line-clamp-3">
-                                                    {update.excerpt}
+                                                    {update.description}
                                                 </p>
                                             </CardContent>
                                             <CardFooter className="p-6 pt-0 mt-auto">
