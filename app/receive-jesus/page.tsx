@@ -11,6 +11,9 @@ import {
     SelectItem,
     SelectTrigger,
     SelectValue,
+    SelectSeparator,
+    SelectGroup,
+    SelectLabel,
 } from "@/components/ui/select"
 import { Heart, ArrowRight, ArrowLeft, BookOpen, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -253,11 +256,33 @@ export default function ReceiveJesusPage() {
                                                     <SelectValue placeholder="Country" />
                                                 </SelectTrigger>
                                                 <SelectContent className="max-h-[300px]">
-                                                    {countries.map((c) => (
-                                                        <SelectItem key={c.code} value={c.code}>
-                                                            {c.flag} {c.dial_code}
-                                                        </SelectItem>
-                                                    ))}
+                                                    <SelectGroup>
+                                                        <SelectLabel>Portuguese Speaking</SelectLabel>
+                                                        {countries
+                                                            .filter(c => ["MZ", "AO", "BR", "PT", "CV", "GW", "ST", "TL", "GQ"].includes(c.code))
+                                                            .sort((a, b) => {
+                                                                // Custom sort: MZ first, then alphabetical
+                                                                if (a.code === "MZ") return -1;
+                                                                if (b.code === "MZ") return 1;
+                                                                return a.name.localeCompare(b.name);
+                                                            })
+                                                            .map((c) => (
+                                                                <SelectItem key={c.code} value={c.code}>
+                                                                    {c.flag} {c.dial_code}
+                                                                </SelectItem>
+                                                            ))}
+                                                    </SelectGroup>
+                                                    <SelectSeparator />
+                                                    <SelectGroup>
+                                                        <SelectLabel>All Countries</SelectLabel>
+                                                        {countries
+                                                            .filter(c => !["MZ", "AO", "BR", "PT", "CV", "GW", "ST", "TL", "GQ"].includes(c.code))
+                                                            .map((c) => (
+                                                                <SelectItem key={c.code} value={c.code}>
+                                                                    {c.flag} {c.dial_code}
+                                                                </SelectItem>
+                                                            ))}
+                                                    </SelectGroup>
                                                 </SelectContent>
                                             </Select>
                                             <Input
