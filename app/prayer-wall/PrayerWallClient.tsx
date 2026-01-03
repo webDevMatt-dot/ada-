@@ -248,7 +248,7 @@ export default function PrayerWallClient() {
                             <div key={request.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow group relative overflow-hidden">
                                 {request.is_viral && (
                                     <div className="absolute top-0 right-0 bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-1 rounded-bl-lg z-10 uppercase tracking-widest">
-                                        Viral Prayer
+                                        {t('prayerWall.viral')}
                                     </div>
                                 )}
                                 <div className="flex justify-between items-start mb-4">

@@ -299,7 +299,8 @@ export const translations = {
             categoryLabel: "Category",
             yourRequestLabel: "Your Request",
             requestPlaceholder: "How can we pray for you?",
-            prayed: "Prayed"
+            prayed: "Prayed",
+            viral: "Viral Prayer"
         }
     },
     pt: {
@@ -600,7 +601,8 @@ export const translations = {
             categoryLabel: "Categoria",
             yourRequestLabel: "O Seu Pedido",
             requestPlaceholder: "Como podemos orar por si?",
-            prayed: "Oraram"
+            prayed: "Oraram",
+            viral: "Oração Viral"
         }
     }
 };
