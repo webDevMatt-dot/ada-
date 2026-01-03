@@ -25,6 +25,7 @@ export default function CounsellingClient() {
     const [selectedSupport, setSelectedSupport] = useState<string>("")
     const [email, setEmail] = useState("")
     const [selectedCountryIso, setSelectedCountryIso] = useState("MZ")
+    const [phoneError, setPhoneError] = useState("")
     const { t } = useLanguage();
 
     useEffect(() => {
@@ -69,6 +70,21 @@ export default function CounsellingClient() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
+        setPhoneError("")
+
+        // Validate Phone if Mozambique
+        const form = e.target as HTMLFormElement
+        const phoneInput = form.querySelector('#phone') as HTMLInputElement
+        const phone = phoneInput.value
+
+        if (selectedCountryIso === "MZ" && phone) {
+            const cleanPhone = phone.replace(/\D/g, '') // Remove spaces and non-digits
+            if (!/^8\d{8}$/.test(cleanPhone)) {
+                setPhoneError("Mozambique numbers must start with 8 and have 9 digits.")
+                return
+            }
+        }
+
         setIsSubmitting(true)
         // Simulate API call
         setTimeout(() => {
@@ -115,12 +131,12 @@ export default function CounsellingClient() {
                         <div className="space-y-2">
                             <Label htmlFor="phone" className="text-slate-700 font-medium">{t('contact.phoneLabel')} <span className="text-red-500">*</span></Label>
                             <div className="flex gap-2">
-                                <Select value={selectedCountryIso} onValueChange={setSelectedCountryIso}>
+                                <Select value={selectedCountryIso} onValueChange={(val) => {
+                                    setSelectedCountryIso(val);
+                                    if (val !== "MZ") setPhoneError("");
+                                }}>
                                     <SelectTrigger className="w-[140px] h-12 rounded-xl border-slate-200">
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-lg">{selectedCountry.flag}</span>
-                                            <span className="font-medium">{selectedCountry.code}</span>
-                                        </div>
+                                        <SelectValue placeholder="Country" />
                                     </SelectTrigger>
                                     <SelectContent position="popper" sideOffset={5} className="max-h-[300px]">
                                         <SelectGroup>
@@ -151,8 +167,23 @@ export default function CounsellingClient() {
                                         </SelectGroup>
                                     </SelectContent>
                                 </Select>
-                                <Input id="phone" type="tel" placeholder={t('counselling.placeholderPhone')} required className="flex-1 rounded-xl border-slate-200 h-12" />
+                                <div className="flex-1 flex flex-col gap-1">
+                                    <Input
+                                        id="phone"
+                                        type="tel"
+                                        placeholder={t('counselling.placeholderPhone')}
+                                        required
+                                        className={cn(
+                                            "flex-1 rounded-xl border-slate-200 h-12",
+                                            phoneError && "border-red-500 ring-red-500/20"
+                                        )}
+                                        onChange={() => setPhoneError("")}
+                                    />
+                                </div>
                             </div>
+                            {phoneError && (
+                                <p className="text-red-500 text-sm mt-1">{phoneError}</p>
+                            )}
                         </div>
 
                         <div className="space-y-2">

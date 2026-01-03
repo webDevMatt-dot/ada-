@@ -25,6 +25,7 @@ export default function ReceiveJesusPage() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
     const [countryCode, setCountryCode] = useState("MZ") // Default to Mozambique
+    const [phoneError, setPhoneError] = useState("")
     const { t } = useLanguage();
 
     useEffect(() => {
@@ -68,13 +69,26 @@ export default function ReceiveJesusPage() {
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
-        setIsSubmitting(true)
+        setPhoneError("")
 
         // Collect form data
         const formData = new FormData(e.currentTarget)
+        const phone = formData.get("phone") as string
+
+        // Validation for Mozambique
+        if (countryCode === "MZ" && phone) {
+            const cleanPhone = phone.replace(/\D/g, '') // Remove spaces and non-digits
+            if (!/^8\d{8}$/.test(cleanPhone)) {
+                setPhoneError("Mozambique numbers must start with 8 and have 9 digits.")
+                return
+            }
+        }
+
+        setIsSubmitting(true)
+
         const data = {
             name: formData.get("name"),
-            phone: formData.get("phone"),
+            phone: phone,
             email: formData.get("email"),
             location: formData.get("location"),
             countryCode: countryCode,
@@ -251,7 +265,10 @@ export default function ReceiveJesusPage() {
                                     <div className="space-y-2">
                                         <Label className="text-slate-200">{t('contact.phoneLabel')} <span className="text-slate-500">({t('contact.optional')})</span></Label>
                                         <div className="flex gap-2">
-                                            <Select value={countryCode} onValueChange={setCountryCode} name="countryCode">
+                                            <Select value={countryCode} onValueChange={(val) => {
+                                                setCountryCode(val);
+                                                if (val !== "MZ") setPhoneError("");
+                                            }} name="countryCode">
                                                 <SelectTrigger className="w-[140px] bg-slate-800/50 border-slate-700 text-white focus:ring-amber-500 h-12 text-base">
                                                     <SelectValue placeholder="Country" />
                                                 </SelectTrigger>
@@ -285,14 +302,23 @@ export default function ReceiveJesusPage() {
                                                     </SelectGroup>
                                                 </SelectContent>
                                             </Select>
-                                            <Input
-                                                id="phone"
-                                                name="phone"
-                                                type="tel"
-                                                placeholder="123 456 7890"
-                                                className="bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus-visible:ring-amber-500 flex-1 h-12 text-base"
-                                            />
+                                            <div className="flex-1 flex flex-col gap-1">
+                                                <Input
+                                                    id="phone"
+                                                    name="phone"
+                                                    type="tel"
+                                                    placeholder="123 456 7890"
+                                                    className={cn(
+                                                        "bg-slate-800/50 border-slate-700 text-white placeholder:text-slate-500 focus-visible:ring-amber-500 h-12 text-base",
+                                                        phoneError && "border-red-500 ring-red-500/20"
+                                                    )}
+                                                    onChange={() => setPhoneError("")}
+                                                />
+                                            </div>
                                         </div>
+                                        {phoneError && (
+                                            <p className="text-red-400 text-sm">{phoneError}</p>
+                                        )}
                                     </div>
 
                                     <div className="space-y-2">
