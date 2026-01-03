@@ -1,89 +1,116 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import Image from "next/image"
-import { MapPin, User, Phone, Search, SlidersHorizontal, Plus } from "lucide-react"
+import { MapPin, User, Phone, Search } from "lucide-react"
 import MapWrapper from "@/components/MapWrapper"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useLanguage } from "@/context/LanguageContext"
 
-// Updated interface to match your specific payload
+// Interface matching page.tsx
 interface ApiLocation {
     id: string;
-    type: string;
+    type: "Province" | "District" | "Assembly";
     name: string;
     latitude: number | null;
     longitude: number | null;
     address: string | null;
     leader_name: string | null;
     leader_phone: string | null;
-    // App-specific field injected by server
-    province: string;
 }
-
-const MOZAMBIQUE_PROVINCES = [
-    "Cabo Delgado",
-    "Gaza",
-    "Inhambane",
-    "Manica",
-    "Maputo City",
-    "Maputo Province",
-    "Nampula",
-    "Niassa",
-    "Sofala",
-    "Tete",
-    "Zambézia"
-];
-
-import { useLanguage } from "@/context/LanguageContext";
 
 export default function LocationsClient({ locations }: { locations: ApiLocation[] }) {
     const [searchQuery, setSearchQuery] = useState("")
-    const [selectedProvince, setSelectedProvince] = useState("all")
     const { t } = useLanguage();
 
-    // Filter locations based on search and province
-    const filteredLocations = locations.filter(loc => {
-        const matchesProvince = selectedProvince === "all" || loc.province.toLowerCase() === selectedProvince.toLowerCase();
-
-        if (!searchQuery) return matchesProvince;
-
+    // Filter all locations based on search query first
+    const searchFiltered = useMemo(() => {
+        if (!searchQuery) return locations;
         const query = searchQuery.toLowerCase();
-        const matchesSearch =
+        return locations.filter(loc =>
             loc.name.toLowerCase().includes(query) ||
             (loc.leader_name && loc.leader_name.toLowerCase().includes(query)) ||
             (loc.address && loc.address.toLowerCase().includes(query)) ||
-            (loc.leader_phone && loc.leader_phone.toLowerCase().includes(query)) ||
-            (loc.latitude && loc.longitude && `${loc.latitude},${loc.longitude}`.includes(query));
+            (loc.leader_phone && loc.leader_phone.toLowerCase().includes(query))
+        );
+    }, [locations, searchQuery]);
 
-        return matchesProvince && matchesSearch;
-    });
+    // Split into categories
+    const provinces = useMemo(() => searchFiltered.filter(l => l.type === "Province"), [searchFiltered]);
+    const districts = useMemo(() => searchFiltered.filter(l => l.type === "District"), [searchFiltered]);
+    const assemblies = useMemo(() => searchFiltered.filter(l => l.type === "Assembly"), [searchFiltered]);
 
-    // Group filtered locations by province
-    const groupedLocations = filteredLocations.reduce((acc, loc) => {
-        if (!acc[loc.province]) acc[loc.province] = [];
-        acc[loc.province].push(loc);
-        return acc;
-    }, {} as Record<string, ApiLocation[]>);
+    const renderList = (items: ApiLocation[], emptyMsg: string) => {
+        if (items.length === 0) {
+            return (
+                <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
+                    <p className="text-slate-500 text-lg">{emptyMsg}</p>
+                    {searchQuery && (
+                        <Button
+                            variant="link"
+                            onClick={() => setSearchQuery("")}
+                            className="mt-2 text-[#8b1d2c]"
+                        >
+                            {t('locations.clearFilters')}
+                        </Button>
+                    )}
+                </div>
+            );
+        }
+
+        return (
+            <div className="space-y-4">
+                {items.sort((a, b) => a.name.localeCompare(b.name)).map((loc) => (
+                    <div
+                        key={loc.id}
+                        className="bg-white p-6 rounded-2xl shadow-sm border border-slate-50 hover:shadow-md transition-all flex gap-6 group"
+                    >
+                        <div className="bg-slate-50 p-4 rounded-xl h-fit shrink-0">
+                            <div className="bg-white p-2 rounded-lg shadow-sm border border-[#8b1d2c]/10 group-hover:border-[#8b1d2c] transition-colors">
+                                <MapPin className="h-6 w-6 text-[#8b1d2c]" />
+                            </div>
+                        </div>
+
+                        <div className="space-y-3 flex-1 min-w-0">
+                            <div className="flex justify-between items-start gap-4">
+                                <h2 className="text-xl font-bold text-[#1e293b] truncate pr-2">{loc.name}</h2>
+                                <span className={`text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider shrink-0 whitespace-nowrap ${loc.type === 'Assembly'
+                                    ? 'bg-green-100 text-green-700'
+                                    : 'bg-blue-100 text-blue-700'
+                                    }`}>
+                                    {loc.type}
+                                </span>
+                            </div>
+
+                            <div className="space-y-2">
+                                <div className="flex items-start gap-2 text-slate-500 text-sm">
+                                    <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
+                                    <span className="line-clamp-2">{loc.address || t('locations.addressNotAvailable')}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-slate-500 text-sm">
+                                    <User className="h-4 w-4 shrink-0" />
+                                    <span className="truncate">{loc.leader_name || t('locations.regionalPastor')}</span>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-slate-500 text-sm">
+                                    <Phone className="h-4 w-4 shrink-0" />
+                                    <span>{loc.leader_phone ? `+258 ${loc.leader_phone}` : t('locations.contactHQ')}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                ))}
+            </div>
+        );
+    };
 
     return (
         <div className="min-h-screen bg-[#f8fafd] flex flex-col">
             {/* Hero Section */}
-            <div className="relative h-[400px] w-full flex flex-col items-center justify-center text-center px-4">
-                {/* Background Image/Overlay */}
+            <div className="relative h-[300px] w-full flex flex-col items-center justify-center text-center px-4">
                 <div className="absolute inset-0 z-0 bg-slate-900">
                     <Image
                         src="/hero.png"
@@ -94,147 +121,73 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                     />
                     <div className="absolute inset-0 bg-gradient-to-b from-slate-900/50 to-slate-900/90" />
                 </div>
-
-                {/* Content */}
-                <div className="relative z-10 max-w-3xl mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-1000">
-                    <div className="flex items-center justify-center gap-2 mb-4">
+                <div className="relative z-10 max-w-3xl mx-auto space-y-4">
+                    <div className="flex items-center justify-center gap-2 mb-2">
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
                         <span className="text-xs font-medium uppercase tracking-wider text-amber-500">Community</span>
                         <div className="h-1 w-12 rounded-full bg-amber-500" />
                     </div>
-                    <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white drop-shadow-lg">
+                    <h1 className="text-3xl md:text-5xl font-bold tracking-tight text-white drop-shadow-lg">
                         {t('locations.heroTitle')}
                     </h1>
-                    <p className="text-lg text-slate-200 font-light max-w-2xl mx-auto">
-                        {t('locations.heroSubtitle')}
-                    </p>
                 </div>
             </div>
 
             <div className="container mx-auto max-w-7xl space-y-8 py-10 px-4">
-
-                {/* Search and Filters Bar */}
-                <div className="flex flex-col md:flex-row gap-4 items-center bg-transparent w-full">
-                    <div className="relative flex-1 w-full">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
-                        <Input
-                            placeholder={t('locations.searchPlaceholder')}
-                            className="pl-12 !h-12 bg-white border-none shadow-sm rounded-xl w-full text-base focus-visible:ring-amber-500"
-                            value={searchQuery}
-                            onChange={(e) => setSearchQuery(e.target.value)}
-                        />
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto items-center">
-                        <Select value={selectedProvince} onValueChange={setSelectedProvince}>
-                            <SelectTrigger className="w-full sm:w-[200px] !h-12 bg-white border-none shadow-sm rounded-xl text-base flex items-center">
-                                <SelectValue placeholder={t('locations.allProvinces')} />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="all">{t('locations.allProvinces')}</SelectItem>
-                                {MOZAMBIQUE_PROVINCES.map(province => (
-                                    <SelectItem key={province} value={province.toLowerCase()}>
-                                        {province}
-                                    </SelectItem>
-                                ))}
-                            </SelectContent>
-                        </Select>
-                        <Button className="!h-12 bg-[#8b1d2c] hover:bg-[#6d1722] text-white rounded-xl px-6 gap-2 shrink-0 w-full sm:w-auto shadow-sm text-base font-medium">
-                            <Plus className="h-5 w-5" /> {t('locations.submitLocation')}
-                        </Button>
-                    </div>
+                {/* Search Bar */}
+                <div className="relative w-full max-w-2xl mx-auto">
+                    <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400" />
+                    <Input
+                        placeholder={t('locations.searchPlaceholder')}
+                        className="pl-12 h-14 bg-white border-slate-200 shadow-sm rounded-2xl w-full text-lg focus-visible:ring-amber-500"
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-
-                    {/* Left: Map Section */}
-                    <div className="sticky top-24">
-                        <MapWrapper locations={filteredLocations} />
+                <Tabs defaultValue="assemblies" className="w-full">
+                    <div className="flex justify-center mb-8">
+                        <TabsList className="grid w-full max-w-xl grid-cols-3 h-auto p-1 bg-slate-100 rounded-xl">
+                            <TabsTrigger value="assemblies" className="py-2.5 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#8b1d2c] data-[state=active]:shadow-sm transition-all font-medium">
+                                Local Churches ({assemblies.length})
+                            </TabsTrigger>
+                            <TabsTrigger value="districts" className="py-2.5 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#8b1d2c] data-[state=active]:shadow-sm transition-all font-medium">
+                                Districts ({districts.length})
+                            </TabsTrigger>
+                            <TabsTrigger value="provinces" className="py-2.5 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#8b1d2c] data-[state=active]:shadow-sm transition-all font-medium">
+                                Provinces ({provinces.length})
+                            </TabsTrigger>
+                        </TabsList>
                     </div>
 
-                    {/* Right: Categorized List */}
-                    <div className="space-y-10">
-                        {Object.keys(groupedLocations).length === 0 ? (
-                            <div className="text-center py-20 bg-white rounded-2xl shadow-sm">
-                                <p className="text-slate-500 text-lg">{t('locations.noResults')}</p>
-                                {(searchQuery || selectedProvince !== "all") && (
-                                    <Button
-                                        variant="link"
-                                        onClick={() => {
-                                            setSearchQuery("");
-                                            setSelectedProvince("all");
-                                        }}
-                                        className="mt-2 text-[#8b1d2c]"
-                                    >
-                                        {t('locations.clearFilters')}
-                                    </Button>
-                                )}
-                            </div>
-                        ) : (
-                            <Accordion type="multiple" className="w-full space-y-4">
-                                {Object.entries(groupedLocations).map(([province, churches]) => (
-                                    <AccordionItem key={province} value={province} className="bg-transparent border-none">
-                                        <AccordionTrigger className="hover:no-underline py-2">
-                                            <div className="flex items-center gap-3 w-full text-left">
-                                                <div className="bg-[#c29c21] text-white font-bold px-4 py-1 rounded-md text-sm shrink-0">
-                                                    {province}
-                                                </div>
-                                                <span className="text-slate-400 text-sm font-medium">
-                                                    {churches.length} {t('locations.churches')}
-                                                </span>
-                                            </div>
-                                        </AccordionTrigger>
-                                        <AccordionContent className="pt-4 pb-2">
-                                            <div className="space-y-4">
-                                                {churches.map((loc) => (
-                                                    <div
-                                                        key={loc.id}
-                                                        className="bg-white p-6 rounded-2xl shadow-sm border border-slate-50 hover:shadow-md transition-all flex gap-6 group"
-                                                    >
-                                                        <div className="bg-slate-50 p-4 rounded-xl h-fit">
-                                                            <div className="bg-white p-2 rounded-lg shadow-sm border border-[#8b1d2c]/10 group-hover:border-[#8b1d2c] transition-colors">
-                                                                <MapPin className="h-6 w-6 text-[#8b1d2c]" />
-                                                            </div>
-                                                        </div>
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+                        {/* sticky map matching current tab selection */}
+                        <div className="hidden lg:block sticky top-24 h-[600px] bg-slate-200 rounded-3xl overflow-hidden shadow-sm">
+                            <TabsContent value="assemblies" className="m-0 h-full force-mount">
+                                <MapWrapper locations={assemblies} />
+                            </TabsContent>
+                            <TabsContent value="districts" className="m-0 h-full force-mount">
+                                <MapWrapper locations={districts} />
+                            </TabsContent>
+                            <TabsContent value="provinces" className="m-0 h-full force-mount">
+                                <MapWrapper locations={provinces} />
+                            </TabsContent>
+                        </div>
 
-                                                        <div className="space-y-3 flex-1">
-                                                            <h2 className="text-2xl font-bold text-[#1e293b]">{loc.name}</h2>
-
-                                                            <div className="space-y-2">
-                                                                <div className="flex items-start gap-2 text-slate-500 text-sm">
-                                                                    <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
-                                                                    <span>{loc.address || t('locations.addressNotAvailable')}</span>
-                                                                </div>
-
-                                                                {/* Service time removed as it's not in new payload */}
-
-                                                                <div className="flex items-center gap-2 text-slate-500 text-sm">
-                                                                    <User className="h-4 w-4 shrink-0" />
-                                                                    <span>{loc.leader_name || t('locations.regionalPastor')}</span>
-                                                                </div>
-
-                                                                <div className="flex items-center gap-2 text-slate-500 text-sm">
-                                                                    <Phone className="h-4 w-4 shrink-0" />
-                                                                    <span>{loc.leader_phone || t('locations.contactHQ')}</span>
-                                                                </div>
-
-                                                                {loc.latitude && loc.longitude && (
-                                                                    <div className="flex items-center gap-2 text-slate-400 text-xs font-mono pt-1">
-                                                                        <span>{loc.latitude.toFixed(4)}, {loc.longitude.toFixed(4)}</span>
-                                                                    </div>
-                                                                )}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                ))}
-                            </Accordion>
-                        )}
+                        {/* List view */}
+                        <div>
+                            <TabsContent value="assemblies" className="m-0 focus-visible:outline-none">
+                                {renderList(assemblies, t('locations.noResults'))}
+                            </TabsContent>
+                            <TabsContent value="districts" className="m-0 focus-visible:outline-none">
+                                {renderList(districts, t('locations.noResults'))}
+                            </TabsContent>
+                            <TabsContent value="provinces" className="m-0 focus-visible:outline-none">
+                                {renderList(provinces, t('locations.noResults'))}
+                            </TabsContent>
+                        </div>
                     </div>
-                </div>
+                </Tabs>
             </div>
         </div>
     );
