@@ -286,6 +286,7 @@ export const translations = {
                 spiritual_growth: "Spiritual Growth",
                 guidance: "Guidance",
                 health: "Health",
+                viral: "Viral",
                 other: "Other"
             },
             submitRequest: "Submit Prayer Request",

@@ -45,7 +45,7 @@ export default function PrayerWallClient() {
         content: ""
     });
 
-    const categories = ["All", "Healing", "Family", "Employment", "Spiritual Growth", "Guidance", "Health", "Other"];
+    const categories = ["All", "Viral", "Healing", "Family", "Employment", "Spiritual Growth", "Guidance", "Health", "Other"];
 
     const getCategoryLabel = (category: string) => {
         const key = category.toLowerCase().replace(" ", "_");
@@ -274,7 +274,11 @@ export default function PrayerWallClient() {
                                 <p>No prayers found to display. Be the first to share.</p>
                             </div>
                         )}
-                        {prayerRequests.filter(r => activeCategory === "All" || r.category === activeCategory).map((request) => (
+                        {prayerRequests.filter(r => {
+                            if (activeCategory === "All") return true;
+                            if (activeCategory === "Viral") return r.is_viral;
+                            return r.category === activeCategory;
+                        }).map((request) => (
                             <div key={request.id} className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-shadow group relative overflow-hidden">
                                 {request.is_viral && (
                                     <div className="absolute top-0 right-0 bg-purple-100 text-purple-700 text-[10px] font-bold px-2 py-1 rounded-bl-lg z-10 uppercase tracking-widest">

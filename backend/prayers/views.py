@@ -40,7 +40,7 @@ class PrayerRequestViewSet(viewsets.ModelViewSet):
     def like(self, request, pk=None):
         prayer = self.get_object()
         prayer.likes += 1
-        if prayer.likes > 500:
+        if prayer.likes >= 500:
             prayer.is_viral = True
         prayer.save()
         return Response({'status': 'liked', 'likes': prayer.likes, 'is_viral': prayer.is_viral})
