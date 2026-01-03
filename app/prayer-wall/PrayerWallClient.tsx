@@ -29,6 +29,7 @@ interface PrayerRequest {
 
 export default function PrayerWallClient() {
     const [isDialogOpen, setIsDialogOpen] = useState(false)
+    const [success, setSuccess] = useState(false)
     const [activeCategory, setActiveCategory] = useState("All")
     const { t } = useLanguage();
 
@@ -81,9 +82,8 @@ export default function PrayerWallClient() {
             });
 
             if (res.ok) {
-                setIsDialogOpen(false);
+                setSuccess(true);
                 setFormData({ author: "", category: "Healing", content: "" });
-                alert("Your prayer request has been submitted and is awaiting approval.");
             } else {
                 alert("Failed to submit prayer request. Please try again.");
             }
@@ -162,53 +162,79 @@ export default function PrayerWallClient() {
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[425px]">
-                                <DialogHeader>
-                                    <DialogTitle>{t('prayerWall.shareRequest')}</DialogTitle>
-                                    <DialogDescription>
-                                        {t('prayerWall.shareSubtitle')}
-                                    </DialogDescription>
-                                </DialogHeader>
-                                <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
-                                    <div className="space-y-2">
-                                        <label htmlFor="name" className="text-sm font-medium text-slate-700">{t('contact.nameLabel')} ({t('contact.optional')})</label>
-                                        <Input
-                                            id="name"
-                                            placeholder={t('prayerWall.namePlaceholder')}
-                                            value={formData.author}
-                                            onChange={(e) => setFormData({ ...formData, author: e.target.value })}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label htmlFor="category" className="text-sm font-medium text-slate-700">{t('prayerWall.categoryLabel')}</label>
-                                        <select
-                                            id="category"
-                                            className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
-                                            value={formData.category}
-                                            onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                {success ? (
+                                    <div className="flex flex-col items-center justify-center text-center py-6 space-y-4 animate-in fade-in zoom-in-95 duration-300">
+                                        <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mb-2">
+                                            <Heart className="h-8 w-8 text-green-600 fill-green-600" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <DialogTitle className="text-2xl text-center text-green-700">Prayer Received</DialogTitle>
+                                            <DialogDescription className="text-center text-base">
+                                                {t('prayerWall.successMessage') || "Your prayer request has been submitted and is awaiting approval."}
+                                            </DialogDescription>
+                                        </div>
+                                        <Button
+                                            className="mt-4 bg-green-600 hover:bg-green-700 text-white min-w-[120px]"
+                                            onClick={() => {
+                                                setIsDialogOpen(false);
+                                                // Reset after animation
+                                                setTimeout(() => setSuccess(false), 300);
+                                            }}
                                         >
-                                            {categories.filter(c => c !== "All").map(c => (
-                                                <option key={c} value={c}>{getCategoryLabel(c)}</option>
-                                            ))}
-                                        </select>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <label htmlFor="request" className="text-sm font-medium text-slate-700">{t('prayerWall.yourRequestLabel')}</label>
-                                        <Textarea
-                                            id="request"
-                                            placeholder={t('prayerWall.requestPlaceholder')}
-                                            className="min-h-[100px]"
-                                            value={formData.content}
-                                            onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                                            required
-                                        />
-                                    </div>
-                                    <div className="footer pt-4 flex justify-end">
-                                        <Button type="submit" className="bg-[#8b1d2c] hover:bg-[#6d1722]" disabled={submitting}>
-                                            {submitting ? <Loader2 className="animate-spin w-4 h-4" /> : t('prayerWall.submitButton')}
+                                            {t('common.close') || "Close"}
                                         </Button>
                                     </div>
-                                </form>
+                                ) : (
+                                    <>
+                                        <DialogHeader>
+                                            <DialogTitle>{t('prayerWall.shareRequest')}</DialogTitle>
+                                            <DialogDescription>
+                                                {t('prayerWall.shareSubtitle')}
+                                            </DialogDescription>
+                                        </DialogHeader>
+                                        <form className="space-y-4 mt-4" onSubmit={handleSubmit}>
+                                            <div className="space-y-2">
+                                                <label htmlFor="name" className="text-sm font-medium text-slate-700">{t('contact.nameLabel')} ({t('contact.optional')})</label>
+                                                <Input
+                                                    id="name"
+                                                    placeholder={t('prayerWall.namePlaceholder')}
+                                                    value={formData.author}
+                                                    onChange={(e) => setFormData({ ...formData, author: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label htmlFor="category" className="text-sm font-medium text-slate-700">{t('prayerWall.categoryLabel')}</label>
+                                                <select
+                                                    id="category"
+                                                    className="flex h-10 w-full rounded-md border border-slate-200 bg-white px-3 py-2 text-sm ring-offset-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-slate-950"
+                                                    value={formData.category}
+                                                    onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                                                >
+                                                    {categories.filter(c => c !== "All").map(c => (
+                                                        <option key={c} value={c}>{getCategoryLabel(c)}</option>
+                                                    ))}
+                                                </select>
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label htmlFor="request" className="text-sm font-medium text-slate-700">{t('prayerWall.yourRequestLabel')}</label>
+                                                <Textarea
+                                                    id="request"
+                                                    placeholder={t('prayerWall.requestPlaceholder')}
+                                                    className="min-h-[100px]"
+                                                    value={formData.content}
+                                                    onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                                                    required
+                                                />
+                                            </div>
+                                            <div className="footer pt-4 flex justify-end">
+                                                <Button type="submit" className="bg-[#8b1d2c] hover:bg-[#6d1722]" disabled={submitting}>
+                                                    {submitting ? <Loader2 className="animate-spin w-4 h-4" /> : t('prayerWall.submitButton')}
+                                                </Button>
+                                            </div>
+                                        </form>
+                                    </>
+                                )}
                             </DialogContent>
                         </Dialog>
                     </div>
