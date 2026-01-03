@@ -83,6 +83,16 @@ export default function UpdatesPage() {
     // The rest of the updates
     const remainingUpdates = filteredUpdates.length > 0 ? filteredUpdates.slice(1) : [];
 
+    // Helper to get full image URL
+    const getImageUrl = (imagePath: string | null) => {
+        if (!imagePath) return "/hero.png";
+        if (imagePath.startsWith("http")) return imagePath;
+        // Check for client-side custom backend URL or default to localhost
+        // aligning with next.config.ts which allows localhost:8000
+        const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8000";
+        return `${backendUrl}${imagePath}`;
+    }
+
     return (
         <div className="min-h-screen flex flex-col bg-[#f8fafd]">
             {/* Hero Section */}
@@ -171,7 +181,7 @@ export default function UpdatesPage() {
                                 <div className="group relative bg-white rounded-2xl shadow-xl overflow-hidden grid grid-cols-1 md:grid-cols-2 lg:h-[400px]">
                                     <div className="relative h-[300px] md:h-full w-full overflow-hidden">
                                         <Image
-                                            src={featuredUpdate.image || "/hero.png"}
+                                            src={getImageUrl(featuredUpdate.image)}
                                             alt={featuredUpdate.title}
                                             fill
                                             className="object-cover transition-transform duration-500 group-hover:scale-105"
@@ -220,7 +230,7 @@ export default function UpdatesPage() {
                                         <Card key={index} className="border-none shadow-md hover:shadow-xl transition-all duration-300 group overflow-hidden flex flex-col h-full bg-white">
                                             <div className="relative h-48 w-full overflow-hidden">
                                                 <Image
-                                                    src={update.image || "/hero.png"}
+                                                    src={getImageUrl(update.image)}
                                                     alt={update.title}
                                                     fill
                                                     className="object-cover transition-transform duration-500 group-hover:scale-110"

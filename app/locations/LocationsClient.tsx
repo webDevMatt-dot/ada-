@@ -316,13 +316,15 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                 <Tabs defaultValue="assemblies" className="w-full">
                     <div className="flex justify-center mb-8">
                         <TabsList className="grid w-full max-w-xl grid-cols-3 h-auto p-1 bg-slate-100 rounded-xl">
-                            <TabsTrigger value="assemblies" className="py-2.5 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#8b1d2c] data-[state=active]:shadow-sm transition-all font-medium">
-                                Local Churches ({assemblies.length})
+                            <TabsTrigger value="assemblies" className="py-1.5 sm:py-2.5 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#8b1d2c] data-[state=active]:shadow-sm transition-all font-medium text-[10px] sm:text-sm leading-tight">
+                                <span className="sm:hidden">Churches</span>
+                                <span className="hidden sm:inline">Local Churches</span>
+                                <span className="ml-1">({assemblies.length})</span>
                             </TabsTrigger>
-                            <TabsTrigger value="districts" className="py-2.5 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#8b1d2c] data-[state=active]:shadow-sm transition-all font-medium">
+                            <TabsTrigger value="districts" className="py-1.5 sm:py-2.5 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#8b1d2c] data-[state=active]:shadow-sm transition-all font-medium text-[10px] sm:text-sm leading-tight">
                                 Districts ({districts.length})
                             </TabsTrigger>
-                            <TabsTrigger value="provinces" className="py-2.5 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#8b1d2c] data-[state=active]:shadow-sm transition-all font-medium">
+                            <TabsTrigger value="provinces" className="py-1.5 sm:py-2.5 rounded-lg data-[state=active]:bg-white data-[state=active]:text-[#8b1d2c] data-[state=active]:shadow-sm transition-all font-medium text-[10px] sm:text-sm leading-tight">
                                 Provinces ({provinces.length})
                             </TabsTrigger>
                         </TabsList>
