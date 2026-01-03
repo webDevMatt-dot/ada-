@@ -18,12 +18,13 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.authtoken.views import obtain_auth_token
 from django.views.generic import RedirectView
+from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('prayers.urls')),
     path('api/', include('updates.urls')),
     path('api/', include('accounts.urls')),
-    path('api/login/', obtain_auth_token),
+    path('api/login/', csrf_exempt(obtain_auth_token)),
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
 ]
