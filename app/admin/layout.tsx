@@ -133,7 +133,15 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     }
 
     // Dynamic Navigation Configuration
-    const prayerWallItem = prayerCounts.pending > 0 ? {
+    interface NavItem {
+        name: string;
+        href: string;
+        icon: any;
+        adminOnly?: boolean;
+        subItems?: { name: string; href: string; count?: number; color?: string; }[];
+    }
+
+    const prayerWallItem: NavItem = prayerCounts.pending > 0 ? {
         name: "Prayer Wall",
         href: "#",
         icon: MessageSquare,
@@ -149,7 +157,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         adminOnly: true
     };
 
-    const navItems = [
+    const navItems: NavItem[] = [
         { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
         prayerWallItem,
         {
@@ -231,7 +239,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                                 )}
 
                                 {/* Subitems */}
-                                {!collapsed && hasSubItems && isExpanded && (
+                                {!collapsed && hasSubItems && isExpanded && item.subItems && (
                                     <div className="pl-12 space-y-1 pb-2 animate-in slide-in-from-top-2 duration-200">
                                         {item.subItems.map(sub => (
                                             <Link
