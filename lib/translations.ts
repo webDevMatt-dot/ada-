@@ -282,7 +282,8 @@ export const translations = {
                 employment: "Employment",
                 spiritual_growth: "Spiritual Growth",
                 guidance: "Guidance",
-                health: "Health"
+                health: "Health",
+                other: "Other"
             },
             submitRequest: "Submit Prayer Request",
             searchPlaceholder: "Search requests...",
@@ -582,7 +583,8 @@ export const translations = {
                 employment: "Emprego",
                 spiritual_growth: "Crescimento Espiritual",
                 guidance: "Orientação",
-                health: "Saúde"
+                health: "Saúde",
+                other: "Outro"
             },
             submitRequest: "Submeter Pedido de Oração",
             searchPlaceholder: "Pesquisar pedidos...",
