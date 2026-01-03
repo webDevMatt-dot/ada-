@@ -40,7 +40,7 @@ export default function AdminDashboard() {
 
             try {
                 // 1. Fetch User
-                const userRes = await fetch("http://localhost:8000/api/me/", {
+                const userRes = await fetch("/api/me", {
                     headers: { "Authorization": `Token ${token}` }
                 });
 
@@ -52,7 +52,7 @@ export default function AdminDashboard() {
 
                 // 2. Fetch User's Updates
                 // Fetch ALL updates and filter client-side to be safe and consistent
-                const updatesRes = await fetch("http://localhost:8000/api/updates/", {
+                const updatesRes = await fetch("/api/updates", {
                     headers: { "Authorization": `Token ${token}` }
                 });
 

@@ -31,7 +31,7 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
             if (!token) return;
 
             try {
-                const res = await fetch(`http://localhost:8000/api/users/${id}/`, {
+                const res = await fetch(`/api/users/${id}`, {
                     headers: { "Authorization": `Token ${token}` }
                 });
 
@@ -66,7 +66,7 @@ export default function EditUserPage({ params }: { params: Promise<{ id: string 
         const token = localStorage.getItem("authToken");
 
         try {
-            const res = await fetch(`http://localhost:8000/api/users/${id}/`, {
+            const res = await fetch(`/api/users/${id}`, {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",

@@ -89,7 +89,16 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     const navItems = [
         { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
         { name: "Prayer Wall", href: "/admin/prayers", icon: MessageSquare, adminOnly: true },
-        { name: "Updates", href: "/admin/updates", icon: Calendar },
+        {
+            name: "Updates",
+            href: "/admin/updates",
+            icon: Calendar,
+            subItems: [
+                { name: "Pending", href: "/admin/updates?tab=pending" },
+                { name: "Live", href: "/admin/updates?tab=live" },
+                { name: "Review", href: "/admin/updates?tab=review" },
+            ]
+        },
         { name: "Users", href: "/admin/users", icon: Users, adminOnly: true },
     ];
 
@@ -116,26 +125,44 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     )}
                 </div>
 
-                <nav className="flex-1 p-4 space-y-2">
+                <nav className="flex-1 p-4 space-y-1 overflow-y-auto custom-scrollbar">
                     {visibleNavItems.map((item) => {
                         const Icon = item.icon;
-                        const isActive = pathname === item.href;
+                        const isActive = pathname === item.href || (item.subItems && pathname === item.href); // Keep parent active if on main page
+                        const isSubActive = item.subItems?.some(sub => pathname + window.location.search === sub.href); // Complex check usually needed but keeping simple for now
+
                         return (
-                            <Link
-                                key={item.href}
-                                href={item.href}
-                                title={collapsed ? item.name : undefined}
-                                className={cn(
-                                    "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm",
-                                    isActive
-                                        ? "bg-[#8b1d2c] text-white shadow-md"
-                                        : "text-slate-400 hover:bg-white/5 hover:text-white",
-                                    collapsed && "justify-center px-2"
+                            <div key={item.name} className="space-y-1">
+                                <Link
+                                    href={item.href}
+                                    title={collapsed ? item.name : undefined}
+                                    className={cn(
+                                        "flex items-center gap-3 px-4 py-3 rounded-xl transition-all font-medium text-sm",
+                                        isActive
+                                            ? "bg-[#8b1d2c] text-white shadow-md"
+                                            : "text-slate-400 hover:bg-white/5 hover:text-white",
+                                        collapsed && "justify-center px-2"
+                                    )}
+                                >
+                                    <Icon className="w-5 h-5 flex-shrink-0" />
+                                    {!collapsed && <span className="whitespace-nowrap overflow-hidden flex-1">{item.name}</span>}
+                                </Link>
+
+                                {/* Subitems */}
+                                {!collapsed && item.subItems && (
+                                    <div className="pl-12 space-y-1 pb-2">
+                                        {item.subItems.map(sub => (
+                                            <Link
+                                                key={sub.name}
+                                                href={sub.href}
+                                                className="block py-1.5 text-xs text-slate-500 hover:text-white transition-colors"
+                                            >
+                                                {sub.name}
+                                            </Link>
+                                        ))}
+                                    </div>
                                 )}
-                            >
-                                <Icon className="w-5 h-5 flex-shrink-0" />
-                                {!collapsed && <span className="whitespace-nowrap overflow-hidden">{item.name}</span>}
-                            </Link>
+                            </div>
                         );
                     })}
                 </nav>
