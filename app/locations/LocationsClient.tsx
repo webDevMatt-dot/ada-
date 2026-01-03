@@ -83,7 +83,7 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
         const sortedProvinces = Object.keys(groupedItems).sort();
 
         return (
-            <Accordion type="multiple" className="space-y-4" defaultValue={sortedProvinces}>
+            <Accordion type="multiple" className="space-y-4">
                 {sortedProvinces.map((province) => (
                     <AccordionItem key={province} value={province} className="border-none">
                         <AccordionTrigger className="hover:no-underline bg-white px-6 rounded-2xl shadow-sm border border-slate-50 mb-2 data-[state=open]:rounded-b-none data-[state=open]:shadow-none data-[state=open]:border-b-0 transition-all [&[data-state=open]]:bg-slate-50/50">
