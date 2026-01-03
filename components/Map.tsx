@@ -42,7 +42,7 @@ export default function Map({ locations }: { locations: ApiLocation[] }) {
             center={center}
             zoom={6}
             scrollWheelZoom={false}
-            className="h-[400px] w-full rounded-2xl shadow-sm border border-slate-200 z-0"
+            className="h-full w-full z-0"
         >
             <TileLayer
                 attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
