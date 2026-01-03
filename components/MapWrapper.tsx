@@ -22,6 +22,6 @@ interface ApiLocation {
     province: string | null;
 }
 
-export default function MapWrapper({ locations }: { locations: ApiLocation[] }) {
-    return <Map locations={locations} />;
+export default function MapWrapper({ locations, userLocation }: { locations: ApiLocation[], userLocation?: { latitude: number; longitude: number } | null }) {
+    return <Map locations={locations} userLocation={userLocation} />;
 }

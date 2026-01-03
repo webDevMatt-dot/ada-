@@ -25,7 +25,10 @@ interface ApiLocation {
     province: string | null;
 }
 
-export default function Map({ locations }: { locations: ApiLocation[] }) {
+userLocation ?: { latitude: number; longitude: number } | null;
+}
+
+export default function Map({ locations, userLocation }: { locations: ApiLocation[], userLocation?: { latitude: number; longitude: number } | null }) {
 
     useEffect(() => {
         fixLeafletIcons();
@@ -56,11 +59,28 @@ export default function Map({ locations }: { locations: ApiLocation[] }) {
                     <Popup>
                         <div className="p-1">
                             <h3 className="font-bold text-slate-800 text-sm mb-1">{loc.name}</h3>
-                            <p className="text-xs text-slate-600 m-0">{loc.address}</p>
+                            <p className="text-xs text-slate-600 m-0 mb-2">{loc.address}</p>
+                            <a
+                                href={`https://www.google.com/maps/dir/?api=1&destination=${loc.latitude},${loc.longitude}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-xs font-medium text-[#8b1d2c] hover:underline"
+                            >
+                                Get Directions
+                            </a>
                         </div>
                     </Popup>
                 </Marker>
             ))}
+            {userLocation && (
+                <Marker position={[userLocation.latitude, userLocation.longitude]}>
+                    <Popup>
+                        <div className="p-1">
+                            <h3 className="font-bold text-slate-800 text-sm mb-1">Your Location</h3>
+                        </div>
+                    </Popup>
+                </Marker>
+            )}
         </MapContainer>
     )
 }
