@@ -43,7 +43,7 @@ export default function Map({ locations, userLocation }: { locations: ApiLocatio
         <MapContainer
             center={center}
             zoom={6}
-            scrollWheelZoom={false}
+            scrollWheelZoom={true}
             className="h-full w-full z-0"
         >
             <TileLayer
@@ -72,7 +72,17 @@ export default function Map({ locations, userLocation }: { locations: ApiLocatio
                 </Marker>
             ))}
             {userLocation && (
-                <Marker position={[userLocation.latitude, userLocation.longitude]}>
+                <Marker
+                    position={[userLocation.latitude, userLocation.longitude]}
+                    icon={new L.Icon({
+                        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+                        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
+                        iconSize: [25, 41],
+                        iconAnchor: [12, 41],
+                        popupAnchor: [1, -34],
+                        shadowSize: [41, 41]
+                    })}
+                >
                     <Popup>
                         <div className="p-1">
                             <h3 className="font-bold text-slate-800 text-sm mb-1">Your Location</h3>
