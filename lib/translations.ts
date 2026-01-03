@@ -14,7 +14,8 @@ export const translations = {
             prayer: "Prayer",
             counselling: "Counselling",
             contact: "Contact",
-            receiveJesus: "Receive Jesus"
+            receiveJesus: "Receive Jesus",
+            finance: "Finance Portal"
         },
         hero: {
             badge: "Bound by the Holy Spirit",
@@ -316,7 +317,8 @@ export const translations = {
             prayer: "Oração",
             counselling: "Aconselhamento",
             contact: "Contacto",
-            receiveJesus: "Aceitar Jesus"
+            receiveJesus: "Aceitar Jesus",
+            finance: "Portal de Finanças"
         },
         hero: {
             badge: "Guiada pelo Espírito Santo",

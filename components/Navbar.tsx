@@ -30,6 +30,7 @@ export function Navbar() {
         { name: t("nav.prayerWall"), href: "/prayer-wall" },
         { name: t("nav.counselling"), href: "/counselling" },
         { name: t("nav.contact"), href: "/contact" },
+        { name: t("nav.finance"), href: "https://financas.ada.org.mz/", external: true },
     ]
 
     return (
@@ -53,7 +54,13 @@ export function Navbar() {
                 {/* Desktop Nav */}
                 <nav className="hidden xl:flex gap-6">
                     {navItems.map((item) => (
-                        <Link key={item.href} href={item.href} className="text-sm font-medium hover:underline underline-offset-4">
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            target={item.external ? "_blank" : undefined}
+                            rel={item.external ? "noopener noreferrer" : undefined}
+                            className="text-sm font-medium hover:underline underline-offset-4"
+                        >
                             {item.name}
                         </Link>
                     ))}
@@ -105,6 +112,8 @@ export function Navbar() {
                                             <Link
                                                 key={item.href}
                                                 href={item.href}
+                                                target={item.external ? "_blank" : undefined}
+                                                rel={item.external ? "noopener noreferrer" : undefined}
                                                 onClick={() => setIsOpen(false)}
                                                 className="group flex items-center justify-between py-3 px-4 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all"
                                             >
