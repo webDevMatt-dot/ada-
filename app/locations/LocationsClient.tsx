@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from "react"
 import Image from "next/image"
-import { MapPin, User, Phone, Search } from "lucide-react"
+import { MapPin, User, Phone, Search, Building2 } from "lucide-react"
 import MapWrapper from "@/components/MapWrapper"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -19,6 +19,7 @@ interface ApiLocation {
     address: string | null;
     leader_name: string | null;
     leader_phone: string | null;
+    province: string | null;
 }
 
 export default function LocationsClient({ locations }: { locations: ApiLocation[] }) {
@@ -89,6 +90,13 @@ export default function LocationsClient({ locations }: { locations: ApiLocation[
                                     <MapPin className="h-4 w-4 shrink-0 mt-0.5" />
                                     <span className="line-clamp-2">{loc.address || t('locations.addressNotAvailable')}</span>
                                 </div>
+
+                                {loc.province && (
+                                    <div className="flex items-center gap-2 text-slate-500 text-sm">
+                                        <Building2 className="h-4 w-4 shrink-0 mt-0.5" />
+                                        <span>{loc.province}</span>
+                                    </div>
+                                )}
 
                                 <div className="flex items-center gap-2 text-slate-500 text-sm">
                                     <User className="h-4 w-4 shrink-0" />

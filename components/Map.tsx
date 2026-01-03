@@ -22,7 +22,7 @@ interface ApiLocation {
     address: string | null;
     latitude: number | null;
     longitude: number | null;
-    province?: string; // Optional if not always present, but we adding it
+    province: string | null;
 }
 
 export default function Map({ locations }: { locations: ApiLocation[] }) {

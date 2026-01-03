@@ -19,7 +19,7 @@ interface ApiLocation {
     address: string | null;
     latitude: number | null;
     longitude: number | null;
-    province?: string;
+    province: string | null;
 }
 
 export default function MapWrapper({ locations }: { locations: ApiLocation[] }) {

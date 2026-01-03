@@ -12,6 +12,7 @@ export interface ApiLocation {
     address: string | null;
     leader_name: string | null;
     leader_phone: string | null;
+    province: string | null;
 }
 
 // Raw API response item (id is number there)
@@ -24,7 +25,14 @@ interface RawApiLocation {
     address: string | null;
     leader_name: string;
     leader_phone: string;
+    official_government_province?: string;
 }
+
+const formatProvince = (raw: string | undefined): string | null => {
+    if (!raw) return null;
+    // remote underscores and capitalize words
+    return raw.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+};
 
 export default async function Locations() {
     let cleanedLocations: ApiLocation[] = [];
@@ -55,6 +63,7 @@ export default async function Locations() {
             address: (item.address && item.address.trim().length > 0) ? item.address : null,
             leader_name: (item.leader_name && item.leader_name !== "N/A") ? item.leader_name : null,
             leader_phone: item.leader_phone || null,
+            province: formatProvince(item.official_government_province),
         }));
 
     } catch (error) {
