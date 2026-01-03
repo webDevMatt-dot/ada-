@@ -14,6 +14,7 @@ export const translations = {
             prayer: "Prayer",
             counselling: "Counselling",
             contact: "Contact",
+            login: "Login",
             receiveJesus: "Receive Jesus",
             finance: "Finance Portal"
         },
@@ -317,6 +318,7 @@ export const translations = {
             prayer: "Oração",
             counselling: "Aconselhamento",
             contact: "Contacto",
+            login: "Login",
             receiveJesus: "Aceitar Jesus",
             finance: "Portal de Finanças"
         },

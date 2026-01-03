@@ -14,6 +14,8 @@ export default function AdminLoginPage() {
     const [error, setError] = useState("");
     const router = useRouter();
 
+    const [failedAttempts, setFailedAttempts] = useState(0);
+
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
@@ -35,6 +37,14 @@ export default function AdminLoginPage() {
                 // Redirect to the main admin dashboard
                 router.push("/admin");
             } else {
+                const newAttempts = failedAttempts + 1;
+                setFailedAttempts(newAttempts);
+
+                if (newAttempts > 2) {
+                    router.push("/");
+                    return;
+                }
+
                 setError("Invalid credentials");
             }
         } catch (err) {
