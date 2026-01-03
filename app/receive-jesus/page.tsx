@@ -1,6 +1,4 @@
-"use client"
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,12 +13,26 @@ import {
 import { Heart, ArrowRight, ArrowLeft, BookOpen, CheckCircle2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useLanguage } from "@/context/LanguageContext";
+import { countries } from "@/lib/countries"
 
 export default function ReceiveJesusPage() {
     const [hasDecided, setHasDecided] = useState(false)
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [isSubmitted, setIsSubmitted] = useState(false)
+    const [countryCode, setCountryCode] = useState("MZ") // Default to Mozambique
     const { t } = useLanguage();
+
+    useEffect(() => {
+        // Auto-detect user's country
+        fetch("https://ipapi.co/json/")
+            .then(res => res.json())
+            .then(data => {
+                if (data.country_code) {
+                    setCountryCode(data.country_code);
+                }
+            })
+            .catch(err => console.error("Failed to detect location", err));
+    }, []);
 
     const steps = [
         {
@@ -57,13 +69,14 @@ export default function ReceiveJesusPage() {
         const formData = new FormData(e.currentTarget)
         const data = {
             name: formData.get("name"),
-            phone: formData.get("phone"), // You might want to combine calling code + phone
+            phone: formData.get("phone"),
             email: formData.get("email"),
             location: formData.get("location"),
-            countryCode: "ZA", // Hardcoded default for now or get from state if you manage it
+            countryCode: countryCode,
         }
 
         try {
+            // Using existing endpoint logic
             const response = await fetch('https://ada-org.free.beeceptor.com/api/user', {
                 method: 'POST',
                 headers: {
@@ -72,20 +85,14 @@ export default function ReceiveJesusPage() {
                 body: JSON.stringify(data),
             })
 
-            // Beeceptor might return text or 200 OK even if not configured
             if (response.ok) {
-                // Success
                 setIsSubmitted(true)
             } else {
                 console.warn("API returned error status:", response.status)
-                // For user experience, we might still show success or a specific error
-                // For now, let's assume if it fails, we show success in frontend (mock behavior fallback) 
-                // OR alert the user. Let's start with showing success but logging error.
                 setIsSubmitted(true)
             }
         } catch (error) {
             console.error("Submission error:", error)
-            // Fallback success for demo purposes if API is down
             setIsSubmitted(true)
         } finally {
             setIsSubmitting(false)
@@ -239,18 +246,16 @@ export default function ReceiveJesusPage() {
                                     <div className="space-y-2">
                                         <Label className="text-slate-200">{t('contact.phoneLabel')} <span className="text-slate-500">({t('contact.optional')})</span></Label>
                                         <div className="flex gap-2">
-                                            <Select defaultValue="ZA" name="countryCode">
+                                            <Select value={countryCode} onValueChange={setCountryCode} name="countryCode">
                                                 <SelectTrigger className="w-[140px] bg-slate-800/50 border-slate-700 text-white focus:ring-amber-500">
                                                     <SelectValue placeholder="Country" />
                                                 </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="ZA">🇿🇦 +27</SelectItem>
-                                                    <SelectItem value="US">🇺🇸 +1</SelectItem>
-                                                    <SelectItem value="GB">🇬🇧 +44</SelectItem>
-                                                    <SelectItem value="NG">🇳🇬 +234</SelectItem>
-                                                    <SelectItem value="MZ">🇲🇿 +258</SelectItem>
-                                                    <SelectItem value="AO">🇦🇴 +244</SelectItem>
-                                                    <SelectItem value="ZW">🇿🇼 +263</SelectItem>
+                                                <SelectContent className="max-h-[300px]">
+                                                    {countries.map((c) => (
+                                                        <SelectItem key={c.code} value={c.code}>
+                                                            {c.flag} {c.dial_code}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
                                             <Input
