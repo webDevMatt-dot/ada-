@@ -303,7 +303,11 @@ export const translations = {
             yourRequestLabel: "Your Request",
             requestPlaceholder: "How can we pray for you?",
             prayed: "Prayed",
-            viral: "Viral Prayer"
+            viral: "Viral Prayer",
+            successMessage: "Thank you for submitting your prayer request, we stand strong in prayer with you.\n\n\"For where two or three are gathered in My name, I am there among them.\" — Matthew 18:20"
+        },
+        common: {
+            close: "Close"
         }
     },
     pt: {
@@ -323,6 +327,9 @@ export const translations = {
             receiveJesus: "Aceitar Jesus",
             finance: "Portal de Finanças",
             sessionExpired: "Você foi desconectado devido à inatividade."
+        },
+        common: {
+            close: "Fechar"
         },
         hero: {
             badge: "Guiada pelo Espírito Santo",

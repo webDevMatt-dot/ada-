@@ -167,11 +167,15 @@ export default function PrayerWallClient() {
                                         <div className="h-16 w-16 bg-green-100 rounded-full flex items-center justify-center mb-2">
                                             <Heart className="h-8 w-8 text-green-600 fill-green-600" />
                                         </div>
-                                        <div className="space-y-2">
-                                            <DialogTitle className="text-2xl text-center text-green-700">Prayer Received</DialogTitle>
-                                            <DialogDescription className="text-center text-base">
-                                                {t('prayerWall.successMessage') || "Your prayer request has been submitted and is awaiting approval."}
-                                            </DialogDescription>
+                                        <div className="space-y-4 px-4">
+                                            <DialogTitle className="text-2xl text-center text-green-700 font-bold tracking-tight">Prayer Received</DialogTitle>
+                                            <div className="text-center text-slate-600 space-y-4">
+                                                {(t('prayerWall.successMessage') || "Your prayer request has been submitted and is awaiting approval.").split('\n\n').map((part, index) => (
+                                                    <p key={index} className={index === 1 ? "italic font-serif text-lg text-slate-500 border-l-4 border-amber-500 pl-4 py-1 bg-amber-50 rounded-r-lg" : "text-base font-medium"}>
+                                                        {part}
+                                                    </p>
+                                                ))}
+                                            </div>
                                         </div>
                                         <Button
                                             className="mt-4 bg-green-600 hover:bg-green-700 text-white min-w-[120px]"
