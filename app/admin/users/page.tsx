@@ -34,7 +34,7 @@ export default function UsersAdminPage() {
         }
 
         try {
-            const res = await fetch("http://localhost:8000/api/users/", {
+            const res = await fetch("/api/users", {
                 headers: { "Authorization": `Token ${token}` }
             });
 
@@ -121,7 +121,7 @@ function DeleteUserButton({ userId, onDeleted }: { userId: number, onDeleted: ()
         const token = localStorage.getItem("authToken");
 
         try {
-            const res = await fetch(`http://localhost:8000/api/users/${userId}/`, {
+            const res = await fetch(`/api/users/${userId}`, {
                 method: "DELETE",
                 headers: { "Authorization": `Token ${token}` }
             });
