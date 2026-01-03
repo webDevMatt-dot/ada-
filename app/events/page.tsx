@@ -23,8 +23,14 @@ export default async function EventsPage() {
         );
 
         const results = await Promise.all(fetchPromises);
-        // Flatten and deduplicate by ID
-        const allEvents = results.flat() as NationalEvent[];
+
+        // Extract 'results' array from each response page
+        const allEvents = results.flatMap((data: any) => {
+            if (Array.isArray(data)) return data; // Handle if API returns array directly
+            if (data && Array.isArray(data.results)) return data.results; // Handle { results: [...] }
+            return [];
+        }) as NationalEvent[];
+
         const uniqueEvents = new Map(allEvents.map(e => [e.id, e]));
         events = Array.from(uniqueEvents.values());
 
