@@ -7,6 +7,16 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter }
 import { Check, X, Loader2, RefreshCw } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogFooter,
+} from "@/components/ui/dialog";
+import { AlertTriangle, Trash2 } from "lucide-react";
+
 interface PrayerRequest {
     id: number;
     author: string;
@@ -21,6 +31,8 @@ interface PrayerRequest {
 export default function PrayersAdminPage() {
     const [prayers, setPrayers] = useState<PrayerRequest[]>([]);
     const [loading, setLoading] = useState(true);
+    const [deleteId, setDeleteId] = useState<number | null>(null);
+    const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const router = useRouter();
 
     const getAuthHeaders = () => {
@@ -79,19 +91,26 @@ export default function PrayersAdminPage() {
         }
     };
 
-    const handleDelete = async (id: number) => {
-        if (!confirm("Are you sure you want to delete this prayer request?")) return;
+    const handleDeleteClick = (id: number) => {
+        setDeleteId(id);
+        setIsDeleteDialogOpen(true);
+    };
+
+    const confirmDelete = async () => {
+        if (!deleteId) return;
 
         const headers = getAuthHeaders();
         if (!headers) return;
 
         try {
-            const res = await fetch(`/api/prayers/${id}`, {
+            const res = await fetch(`/api/prayers/${deleteId}`, {
                 method: "DELETE",
                 headers
             });
             if (res.ok) {
                 fetchPrayers();
+                setIsDeleteDialogOpen(false);
+                setDeleteId(null);
             }
         } catch (error) {
             console.error("Failed to delete", error);
@@ -134,7 +153,7 @@ export default function PrayersAdminPage() {
                                     key={prayer.id}
                                     prayer={prayer}
                                     onApprove={() => handleApprove(prayer.id)}
-                                    onDelete={() => handleDelete(prayer.id)}
+                                    onDelete={() => handleDeleteClick(prayer.id)}
                                 />
                             ))}
                         </div>
@@ -153,13 +172,35 @@ export default function PrayersAdminPage() {
                                     key={prayer.id}
                                     prayer={prayer}
                                     readonly
-                                    onDelete={() => handleDelete(prayer.id)}
+                                    onDelete={() => handleDeleteClick(prayer.id)}
                                 />
                             ))}
                         </div>
                     </div>
                 </div>
             )}
+
+            <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
+                <DialogContent className="sm:max-w-[400px]">
+                    <DialogHeader>
+                        <div className="mx-auto w-12 h-12 rounded-full bg-red-100 flex items-center justify-center mb-4">
+                            <AlertTriangle className="w-6 h-6 text-red-600" />
+                        </div>
+                        <DialogTitle className="text-center text-xl">Delete Prayer Request?</DialogTitle>
+                        <DialogDescription className="text-center pt-2">
+                            This action cannot be undone. This will permanently remove the prayer request from the database.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter className="sm:justify-center gap-2 mt-4">
+                        <Button variant="outline" onClick={() => setIsDeleteDialogOpen(false)} className="w-full sm:w-auto">
+                            Cancel
+                        </Button>
+                        <Button variant="destructive" onClick={confirmDelete} className="w-full sm:w-auto gap-2 bg-red-600 hover:bg-red-700">
+                            <Trash2 className="w-4 h-4" /> Delete Prayer
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
     );
 }

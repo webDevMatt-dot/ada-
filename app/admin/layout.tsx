@@ -17,6 +17,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
 
     const [expandedMenus, setExpandedMenus] = useState<string[]>([]);
     const [counts, setCounts] = useState({ pending: 0, live: 0, review: 0 });
+    const [prayerCounts, setPrayerCounts] = useState({ pending: 0 });
 
     useEffect(() => {
         // Skip check on login page
@@ -65,6 +66,22 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                 setCounts(newCounts);
             })
             .catch(err => console.error("Failed to fetch counts", err));
+
+        // Fetch prayers for counts
+        fetch("/api/prayers?admin=true", {
+            headers: { "Authorization": `Token ${token}` }
+        })
+            .then(res => res.ok ? res.json() : [])
+            .then(prayers => {
+                const newCounts = { pending: 0 };
+                if (Array.isArray(prayers)) {
+                    prayers.forEach((p: any) => {
+                        if (!p.is_approved) newCounts.pending++;
+                    });
+                }
+                setPrayerCounts(newCounts);
+            })
+            .catch(err => console.error("Failed to fetch prayer counts", err));
 
         // Inactivity Timer
         let timeout: NodeJS.Timeout;
@@ -115,9 +132,26 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         return <>{children}</>;
     }
 
+    // Dynamic Navigation Configuration
+    const prayerWallItem = prayerCounts.pending > 0 ? {
+        name: "Prayer Wall",
+        href: "#",
+        icon: MessageSquare,
+        adminOnly: true,
+        subItems: [
+            { name: "Pending", href: "/admin/prayers", count: prayerCounts.pending, color: "bg-amber-100 text-amber-700 font-bold" },
+            { name: "All Prayers", href: "/admin/prayers" },
+        ]
+    } : {
+        name: "Prayer Wall",
+        href: "/admin/prayers",
+        icon: MessageSquare,
+        adminOnly: true
+    };
+
     const navItems = [
         { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-        { name: "Prayer Wall", href: "/admin/prayers", icon: MessageSquare, adminOnly: true },
+        prayerWallItem,
         {
             name: "Updates",
             href: "#", // Changed to hash to prevent nav, controlled by click
