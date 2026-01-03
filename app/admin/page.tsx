@@ -61,8 +61,6 @@ export default function AdminDashboard() {
                     // Filter for: Status is 'review' AND Created by Me
                     const myDenied = updates.filter(u => u.status === 'review' && u.created_by === user.id);
 
-                    // console.log("DEBUG: Found matched denied updates", myDenied);
-
                     // Check session storage to see if we already ignored this session globally
                     const globalIgnored = sessionStorage.getItem("ignoredDeniedPopup");
 

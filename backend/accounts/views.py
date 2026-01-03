@@ -15,6 +15,7 @@ class UserViewSet(viewsets.ModelViewSet):
 def current_user(request):
     user = request.user
     return Response({
+        'id': user.id,
         'username': user.username,
         'is_superuser': user.is_superuser,
         'is_staff': user.is_staff,
