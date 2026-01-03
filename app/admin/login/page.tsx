@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
         try {
             // Use relative path to leverage Next.js rewrites (proxies to backend)
             // This works for localhost, local network (mobile), and production.
-            const apiUrl = "/api/login/";
+            const apiUrl = "/api/login";
 
             const res = await fetch(apiUrl, {
                 method: "POST",
