@@ -40,7 +40,7 @@ export default function NewUpdatePage() {
                 data.append("image", imageFile);
             }
 
-            const res = await fetch("http://localhost:8000/api/updates/", {
+            const res = await fetch("/api/updates", {
                 method: "POST",
                 headers: {
                     "Authorization": `Token ${token}`,
