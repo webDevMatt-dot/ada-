@@ -1,4 +1,4 @@
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
@@ -10,6 +10,14 @@ from .serializers import PrayerRequestSerializer
 class PrayerRequestViewSet(viewsets.ModelViewSet):
     queryset = PrayerRequest.objects.all()
     serializer_class = PrayerRequestSerializer
+
+    def get_permissions(self):
+        if self.action in ['approve', 'destroy', 'update', 'partial_update']:
+            return [permissions.IsAuthenticated()]
+        # Check for admin list parameter
+        if self.action == 'list' and self.request.query_params.get('admin') == 'true':
+            return [permissions.IsAuthenticated()]
+        return [permissions.AllowAny()]
 
     def get_queryset(self):
         # Admin view: show all or filter by param

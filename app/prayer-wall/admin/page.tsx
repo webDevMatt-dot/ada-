@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Check, X, Loader2 } from "lucide-react";
+import { Check, X, Loader2, LogOut } from "lucide-react";
 
 interface PrayerRequest {
     id: number;
@@ -20,11 +21,31 @@ interface PrayerRequest {
 export default function AdminPrayerWall() {
     const [prayers, setPrayers] = useState<PrayerRequest[]>([]);
     const [loading, setLoading] = useState(true);
+    const router = useRouter();
+
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem("authToken");
+        return token ? { "Authorization": `Token ${token}` } : null;
+    };
 
     const fetchPrayers = async () => {
         setLoading(true);
+        const headers = getAuthHeaders();
+
+        if (!headers) {
+            router.push("/prayer-wall/login");
+            return;
+        }
+
         try {
-            const res = await fetch("http://localhost:8000/api/prayers/?admin=true");
+            const res = await fetch("http://localhost:8000/api/prayers/?admin=true", { headers });
+
+            if (res.status === 401 || res.status === 403) {
+                localStorage.removeItem("authToken");
+                router.push("/prayer-wall/login");
+                return;
+            }
+
             if (res.ok) {
                 const data = await res.json();
                 setPrayers(data);
@@ -41,16 +62,25 @@ export default function AdminPrayerWall() {
     }, []);
 
     const handleApprove = async (id: number) => {
+        const headers = getAuthHeaders();
+        if (!headers) return; // Should allow redirect in next fetch
+
         try {
-            await fetch(`http://localhost:8000/api/prayers/${id}/approve/`, { method: "POST" });
+            await fetch(`http://localhost:8000/api/prayers/${id}/approve/`, {
+                method: "POST",
+                headers
+            });
             fetchPrayers(); // Refresh
         } catch (error) {
             console.error("Failed to approve", error);
         }
     };
 
-    // Only show pending by default? Or show all with status?
-    // Let's show pending first.
+    const handleLogout = () => {
+        localStorage.removeItem("authToken");
+        router.push("/prayer-wall/login");
+    }
+
     const pendingPrayers = prayers.filter(p => !p.is_approved);
     const approvedPrayers = prayers.filter(p => p.is_approved);
 
@@ -58,7 +88,12 @@ export default function AdminPrayerWall() {
 
     return (
         <div className="container mx-auto p-8 max-w-5xl">
-            <h1 className="text-3xl font-bold mb-8">Prayer Wall Admin</h1>
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold">Prayer Wall Admin</h1>
+                <Button variant="outline" onClick={handleLogout} className="text-slate-600 gap-2">
+                    <LogOut className="w-4 h-4" /> Logout
+                </Button>
+            </div>
 
             <div className="space-y-8">
                 <section>
