@@ -163,6 +163,12 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             title: "",
             items: [
                 { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+                { name: "Users", href: "/admin/users", icon: Users, adminOnly: true },
+            ]
+        },
+        {
+            title: "CMS",
+            items: [
                 prayerWallItem,
                 {
                     name: "Updates",
@@ -174,15 +180,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                         { name: "Review", href: "/admin/updates?tab=review", count: counts.review, color: "bg-red-100 text-red-700" },
                     ]
                 },
-                { name: "Users", href: "/admin/users", icon: Users, adminOnly: true },
+                { name: "History", href: "/admin/history", icon: History },
             ]
         },
         {
-            title: "CMS",
+            title: "CMS API",
             items: [
                 { name: "Events", href: "/events", icon: CalendarDays, external: true },
                 { name: "Locations", href: "/locations", icon: MapPin, external: true },
-                { name: "History", href: "/admin/history", icon: History },
             ]
         }
     ];

@@ -105,21 +105,26 @@ export default function AdminDashboard() {
             title: "Overview",
             items: [
                 {
-                    title: "Prayer Wall",
-                    description: "Manage prayer requests, approve pending items, and monitor activity.",
-                    icon: MessageSquare,
-                    href: "/admin/prayers",
-                    color: "text-blue-500",
-                    bg: "bg-blue-50",
-                    adminOnly: true
-                },
-                {
                     title: "Users",
                     description: "Create accounts and assign team departments.",
                     icon: Users,
                     href: "/admin/users",
                     color: "text-pink-500",
                     bg: "bg-pink-50",
+                    adminOnly: true
+                },
+            ]
+        },
+        {
+            title: "CMS",
+            items: [
+                {
+                    title: "Prayer Wall",
+                    description: "Manage prayer requests, approve pending items, and monitor activity.",
+                    icon: MessageSquare,
+                    href: "/admin/prayers",
+                    color: "text-blue-500",
+                    bg: "bg-blue-50",
                     adminOnly: true
                 },
                 {
@@ -130,10 +135,19 @@ export default function AdminDashboard() {
                     color: "text-amber-500",
                     bg: "bg-amber-50"
                 },
+                {
+                    title: "History",
+                    description: "Manage church history timeline and events.",
+                    icon: History,
+                    href: "/admin/history",
+                    color: "text-amber-700",
+                    bg: "bg-amber-100",
+                    adminOnly: true
+                }
             ]
         },
         {
-            title: "CMS",
+            title: "CMS API",
             items: [
                 {
                     title: "Events",
@@ -155,15 +169,6 @@ export default function AdminDashboard() {
                     external: true,
                     adminOnly: true
                 },
-                {
-                    title: "History",
-                    description: "Manage church history timeline and events.",
-                    icon: History,
-                    href: "/admin/history",
-                    color: "text-amber-700",
-                    bg: "bg-amber-100",
-                    adminOnly: true
-                }
             ]
         }
     ];
