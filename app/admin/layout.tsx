@@ -181,6 +181,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
                     ]
                 },
                 { name: "History", href: "/admin/history", icon: History },
+                { name: "FAQ", href: "/admin/faq", icon: MessageSquare },
             ]
         },
         {

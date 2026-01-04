@@ -143,6 +143,15 @@ export default function AdminDashboard() {
                     color: "text-amber-700",
                     bg: "bg-amber-100",
                     adminOnly: true
+                },
+                {
+                    title: "FAQ",
+                    description: "Manage frequently asked questions.",
+                    icon: MessageSquare,
+                    href: "/admin/faq",
+                    color: "text-blue-600",
+                    bg: "bg-blue-100",
+                    adminOnly: true
                 }
             ]
         },

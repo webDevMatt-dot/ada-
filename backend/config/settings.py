@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'updates',
     'accounts',
     'history',
+    'faq',
 ]
 
 REST_FRAMEWORK = {

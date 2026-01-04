@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import { Search } from "lucide-react"
 
@@ -19,45 +19,52 @@ export default function FAQPage() {
     const [searchQuery, setSearchQuery] = useState("")
     const [activeCategory, setActiveCategory] = useState("All")
     const { t } = useLanguage();
+    const [faqs, setFaqs] = useState<any[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    // FAQ Content moved inside component to access t()
-    const faqs = [
-        {
-            category: "Services",
-            question: t('faq.question1'),
-            answer: t('faq.answer1'),
-            badgeColor: "bg-blue-100 text-blue-600 hover:bg-blue-100"
-        },
-        {
-            category: "Membership",
-            question: t('faq.question2'),
-            answer: t('faq.answer2'),
-            badgeColor: "bg-green-100 text-green-600 hover:bg-green-100"
-        },
-        {
-            category: "Beliefs",
-            question: t('faq.question3'),
-            answer: t('faq.answer3'),
-            badgeColor: "bg-purple-100 text-purple-600 hover:bg-purple-100"
-        },
-        {
-            category: "Services",
-            question: t('faq.question4'),
-            answer: t('faq.answer4'),
-            badgeColor: "bg-blue-100 text-blue-600 hover:bg-blue-100"
-        },
-        {
-            category: "General",
-            question: t('faq.question5'),
-            answer: t('faq.answer5'),
-            badgeColor: "bg-gray-100 text-gray-600 hover:bg-gray-100"
+    useEffect(() => {
+        const fetchFaqs = async () => {
+            try {
+                const res = await fetch("/api/faqs/");
+                if (res.ok) {
+                    const data = await res.json();
+                    // Map backend categories to badge colors if needed, or use default
+                    const mappedFaqs = data.map((item: any) => ({
+                        ...item,
+                        badgeColor: getBadgeColor(item.category)
+                    }));
+                    setFaqs(mappedFaqs);
+                }
+            } catch (error) {
+                console.error("Failed to fetch FAQs", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchFaqs();
+    }, []);
+
+    const getBadgeColor = (category: string) => {
+        switch (category) {
+            case "Services": return "bg-blue-100 text-blue-600 hover:bg-blue-100";
+            case "Membership": return "bg-green-100 text-green-600 hover:bg-green-100";
+            case "Beliefs": return "bg-purple-100 text-purple-600 hover:bg-purple-100";
+            case "General": return "bg-gray-100 text-gray-600 hover:bg-gray-100";
+            default: return "bg-amber-100 text-amber-600 hover:bg-amber-100"; // Other
         }
-    ]
+    };
 
-    const categories = ["All", "Beliefs", "Services", "Membership", "General"]
+    const categories = ["All", "Beliefs", "Services", "Membership", "General", "Other"]
 
     const getCategoryLabel = (category: string) => {
-        return t(`faq.categories.${category.toLowerCase()}`);
+        // Fallback to English category name if translation fails or just display as is
+        // Since backend data is dynamic, we might just want to display the category string directly
+        // unless we want to try to map it to a translation key.
+        // For now, let's try to translate if it matches known keys, otherwise show as is.
+        const key = `faq.categories.${category.toLowerCase()}`;
+        const translated = t(key);
+        return translated === key ? category : translated;
     }
 
     const filteredFaqs = faqs.filter(faq => {
@@ -136,14 +143,14 @@ export default function FAQPage() {
                         <Accordion type="single" collapsible className="w-full space-y-4">
                             {filteredFaqs.map((faq, index) => (
                                 <AccordionItem
-                                    key={index}
+                                    key={faq.id || index}
                                     value={`item-${index}`}
                                     className="border-none bg-white rounded-xl shadow-sm px-8 overflow-hidden"
                                 >
                                     <AccordionTrigger className="hover:no-underline py-8 group [&[data-state=open]>svg]:rotate-180">
                                         <div className="flex flex-col items-start text-left gap-3">
                                             <Badge className={`rounded-md px-2 py-0.5 text-[11px] font-bold border-none ${faq.badgeColor}`}>
-                                                {getCategoryLabel(faq.category)}
+                                                {faq.category}
                                             </Badge>
                                             <span className="text-xl font-bold text-slate-800 tracking-tight">
                                                 {faq.question}
@@ -158,7 +165,7 @@ export default function FAQPage() {
                         </Accordion>
                     ) : (
                         <div className="text-center py-12 bg-white rounded-xl border border-dashed border-slate-300">
-                            <p className="text-slate-400">{t('faq.noResults')}</p>
+                            <p className="text-slate-400">{loading ? "Loading..." : t('faq.noResults')}</p>
                         </div>
                     )}
                 </div>

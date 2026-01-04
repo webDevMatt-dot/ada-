@@ -33,6 +33,7 @@ urlpatterns = [
     path('api/', include('updates.urls')),
     path('api/', include('accounts.urls')),
     path('api/', include('history.urls')),
+    path('api/faqs/', include('faq.urls')),
     path('api/login', csrf_exempt(CustomAuthToken.as_view())),
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
 ]
