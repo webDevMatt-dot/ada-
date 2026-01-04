@@ -4,4 +4,4 @@ from .models import HistoryEvent
 class HistoryEventSerializer(serializers.ModelSerializer):
     class Meta:
         model = HistoryEvent
-        fields = ['id', 'year', 'title', 'description']
+        fields = ['id', 'year', 'date', 'title', 'description']

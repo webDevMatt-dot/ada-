@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { MessageSquare, Calendar, MapPin, ArrowRight, Users, RotateCcw, type LucideIcon } from "lucide-react";
+import { MessageSquare, Calendar, MapPin, ArrowRight, Users, RotateCcw, History, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -153,6 +153,15 @@ export default function AdminDashboard() {
                     color: "text-green-500",
                     bg: "bg-green-50",
                     external: true,
+                    adminOnly: true
+                },
+                {
+                    title: "History",
+                    description: "Manage church history timeline and events.",
+                    icon: History,
+                    href: "/admin/history",
+                    color: "text-amber-700",
+                    bg: "bg-amber-100",
                     adminOnly: true
                 }
             ]

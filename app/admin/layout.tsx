@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { LayoutDashboard, MessageSquare, LogOut, Menu, X, Calendar, Users, ChevronLeft, ChevronRight, CalendarDays, MapPin } from "lucide-react";
+import { LayoutDashboard, MessageSquare, LogOut, Menu, X, Calendar, Users, ChevronLeft, ChevronRight, CalendarDays, MapPin, History } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
@@ -182,6 +182,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             items: [
                 { name: "Events", href: "/events", icon: CalendarDays, external: true },
                 { name: "Locations", href: "/locations", icon: MapPin, external: true },
+                { name: "History", href: "/admin/history", icon: History },
             ]
         }
     ];

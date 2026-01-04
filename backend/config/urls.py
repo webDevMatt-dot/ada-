@@ -17,7 +17,8 @@ Including another URLconf
 import os
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework.authtoken.views import obtain_auth_token
+# from rest_framework.authtoken.views import obtain_auth_token
+from accounts.views import CustomAuthToken
 from django.views.generic import RedirectView
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse, HttpResponse
@@ -32,6 +33,6 @@ urlpatterns = [
     path('api/', include('updates.urls')),
     path('api/', include('accounts.urls')),
     path('api/', include('history.urls')),
-    path('api/login', csrf_exempt(obtain_auth_token)),
+    path('api/login', csrf_exempt(CustomAuthToken.as_view())),
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
 ]
