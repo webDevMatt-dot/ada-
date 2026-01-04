@@ -40,10 +40,13 @@ export default function NewFAQPage() {
             if (res.ok) {
                 router.push("/admin/faq");
             } else {
-                alert("Failed to create FAQ");
+                const data = await res.json();
+                console.error("Error creating FAQ:", data);
+                alert(`Failed to create FAQ: ${JSON.stringify(data)}`);
             }
         } catch (error) {
             console.error("Failed to create FAQ", error);
+            alert("An error occurred. Check console for details.");
         } finally {
             setLoading(false);
         }
