@@ -4,8 +4,37 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { useLanguage } from "@/context/LanguageContext";
 
+import { useEffect, useState } from "react";
+
+interface HistoryEvent {
+    id: number;
+    year: number;
+    title: string;
+    description: string;
+}
+
 export default function HistoryPage() {
     const { t } = useLanguage();
+    const [events, setEvents] = useState<HistoryEvent[]>([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchHistory = async () => {
+            try {
+                const response = await fetch(`/api/history/`);
+                if (response.ok) {
+                    const data = await response.json();
+                    setEvents(data);
+                }
+            } catch (error) {
+                console.error("Failed to fetch history:", error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchHistory();
+    }, []);
 
     return (
         <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -50,56 +79,65 @@ export default function HistoryPage() {
                     </p>
                 </div>
 
-                {/* Timeline Placeholder */}
+                {/* Timeline */}
                 <div className="relative border-l-2 border-slate-200 ml-4 md:ml-0 md:pl-0 space-y-12">
+                    {loading ? (
+                        <div className="text-center text-slate-500">Loading history...</div>
+                    ) : (
+                        events.map((item, index) => {
+                            const isEven = index % 2 === 0;
+                            // Colors for dots/badges - can be cycled or random, using the existing ones for now
+                            const colors = [
+                                { dot: 'bg-[#8b1d2c]', text: 'text-[#8b1d2c]', border: 'border-[#8b1d2c]/20', bgText: 'text-[#8b1d2c]/20' },
+                                { dot: 'bg-[#c29c21]', text: 'text-[#c29c21]', border: 'border-[#c29c21]/20', bgText: 'text-[#c29c21]/20' },
+                                { dot: 'bg-slate-300', text: 'text-slate-500', border: 'border-slate-500/20', bgText: 'text-slate-200' }
+                            ];
+                            const color = colors[index % colors.length];
 
-                    {/* Item 1 */}
-                    <div className="relative flex flex-col md:flex-row md:items-center gap-6 md:gap-12 pl-8 md:pl-0">
-                        <div className="absolute left-[-9px] top-0 md:static md:w-1/2 md:text-right md:pr-12">
-                            <span className="hidden md:inline-block text-4xl font-bold text-[#8b1d2c]/20">{t('history.timeline.item1.year')}</span>
-                        </div>
-                        <div className="absolute left-[-9px] top-2 md:left-1/2 md:-ml-[9px] h-4 w-4 rounded-full bg-[#8b1d2c] border-2 border-white shadow-sm z-10" />
-                        <div className="md:w-1/2 md:pl-12 space-y-2">
-                            <Badge variant="outline" className="md:hidden mb-2 text-[#8b1d2c] border-[#8b1d2c]/20">{t('history.timeline.item1.year')}</Badge>
-                            <h3 className="text-xl font-bold text-slate-800">{t('history.timeline.item1.title')}</h3>
-                            <p className="text-slate-600">
-                                {t('history.timeline.item1.description')}
-                            </p>
-                        </div>
-                    </div>
+                            return (
+                                <div key={item.id} className="relative flex flex-col md:flex-row md:items-center gap-6 md:gap-12 pl-8 md:pl-0">
+                                    {/* Left Side (Desktop) */}
+                                    <div className={`
+                                        ${isEven
+                                            ? 'absolute left-[-9px] top-0 md:static md:w-1/2 md:text-right md:pr-12'
+                                            : 'flex flex-col md:block md:w-1/2 md:text-right md:pr-12 order-2 md:order-1'
+                                        }
+                                    `}>
+                                        {isEven ? (
+                                            <span className={`hidden md:inline-block text-4xl font-bold ${color.bgText}`}>{item.year}</span>
+                                        ) : (
+                                            <div className="md:w-full space-y-2">
+                                                <h3 className="text-xl font-bold text-slate-800">{item.title}</h3>
+                                                <p className="text-slate-600">{item.description}</p>
+                                            </div>
+                                        )}
+                                    </div>
 
-                    {/* Item 2 */}
-                    <div className="relative flex flex-col md:flex-row md:items-center gap-6 md:gap-12 pl-8 md:pl-0">
-                        <div className="absolute left-[-9px] top-0 md:static md:w-1/2 md:text-right md:pr-12">
-                            <div className="md:w-full space-y-2">
-                                <h3 className="text-xl font-bold text-slate-800">{t('history.timeline.item2.title')}</h3>
-                                <p className="text-slate-600">
-                                    {t('history.timeline.item2.description')}
-                                </p>
-                            </div>
-                        </div>
-                        <div className="absolute left-[-9px] top-2 md:left-1/2 md:-ml-[9px] h-4 w-4 rounded-full bg-[#c29c21] border-2 border-white shadow-sm z-10" />
-                        <div className="md:w-1/2 md:pl-12">
-                            <span className="hidden md:inline-block text-4xl font-bold text-[#c29c21]/20">{t('history.timeline.item2.year')}</span>
-                            <Badge variant="outline" className="md:hidden mb-2 text-[#c29c21] border-[#c29c21]/20">{t('history.timeline.item2.year')}</Badge>
-                        </div>
-                    </div>
+                                    {/* Center Dot */}
+                                    <div className={`absolute left-[-9px] top-2 md:left-1/2 md:-ml-[9px] h-4 w-4 rounded-full ${color.dot} border-2 border-white shadow-sm z-10`} />
 
-                    {/* Item 3 */}
-                    <div className="relative flex flex-col md:flex-row md:items-center gap-6 md:gap-12 pl-8 md:pl-0">
-                        <div className="absolute left-[-9px] top-0 md:static md:w-1/2 md:text-right md:pr-12">
-                            <span className="hidden md:inline-block text-4xl font-bold text-slate-200">{t('history.timeline.item3.year')}</span>
-                        </div>
-                        <div className="absolute left-[-9px] top-2 md:left-1/2 md:-ml-[9px] h-4 w-4 rounded-full bg-slate-300 border-2 border-white shadow-sm z-10" />
-                        <div className="md:w-1/2 md:pl-12 space-y-2">
-                            <Badge variant="outline" className="md:hidden mb-2 text-slate-500">{t('history.timeline.item3.year')}</Badge>
-                            <h3 className="text-xl font-bold text-slate-800">{t('history.timeline.item3.title')}</h3>
-                            <p className="text-slate-600">
-                                {t('history.timeline.item3.description')}
-                            </p>
-                        </div>
-                    </div>
-
+                                    {/* Right Side (Desktop) */}
+                                    <div className={`
+                                        md:w-1/2 md:pl-12 space-y-2
+                                        ${!isEven ? 'order-1 md:order-2' : ''}
+                                    `}>
+                                        {isEven ? (
+                                            <>
+                                                <Badge variant="outline" className={`md:hidden mb-2 ${color.text} ${color.border}`}>{item.year}</Badge>
+                                                <h3 className="text-xl font-bold text-slate-800">{item.title}</h3>
+                                                <p className="text-slate-600">{item.description}</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <span className={`hidden md:inline-block text-4xl font-bold ${color.bgText}`}>{item.year}</span>
+                                                <Badge variant="outline" className={`md:hidden mb-2 ${color.text} ${color.border}`}>{item.year}</Badge>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
+                            );
+                        })
+                    )}
                 </div>
 
             </div>

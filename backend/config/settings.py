@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'prayers',
     'updates',
     'accounts',
+    'history',
 ]
 
 REST_FRAMEWORK = {

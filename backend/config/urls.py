@@ -31,6 +31,7 @@ urlpatterns = [
     path('api/', include('prayers.urls')),
     path('api/', include('updates.urls')),
     path('api/', include('accounts.urls')),
+    path('api/', include('history.urls')),
     path('api/login', csrf_exempt(obtain_auth_token)),
     path('', RedirectView.as_view(url='/admin/', permanent=False)),
 ]
